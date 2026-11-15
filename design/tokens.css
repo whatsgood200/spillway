@@ -1,0 +1,202 @@
+/*
+  Design tokens. The only place colours, type sizes, spacing and radii are defined.
+  Components read these variables and nothing else.
+
+  How to use:
+  1. Pick the family in design/DESIGN.md. Paper and ink is the default below.
+     For black and one colour, set data-family="black" on <html>.
+  2. Replace the three font names and the accent with this project's choices.
+  3. Pick ONE corner rule: keep --radius at 2px (sharp) or set it to 999px (pill).
+  Values are a neutral starting point. Change them per product.
+*/
+
+:root {
+  /* Fonts: one display face with character, one neutral body, one mono */
+  --font-display: "REPLACE Display", Georgia, serif;
+  --font-body: "REPLACE Body", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "REPLACE Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Paper and ink */
+  --ground: #f4f2ec;      /* page */
+  --surface: #fbfaf6;     /* cards, panels */
+  --ink: #16150f;         /* primary text, primary button */
+  --ink-2: #4a473d;       /* secondary text */
+  --ink-3: #6a665a;       /* labels, captions (4.5:1 or better on ground and surface) */
+  --line: #ddd9cc;        /* borders, rules */
+  --on-ink: #f4f2ec;      /* text on the primary button */
+
+  /* One accent. Used for the emphasized word, live status, the positive number. */
+  --accent: #1f6f5c;
+  --accent-soft: #d6ebe4;
+
+  /* Meaning, kept separate from the accent */
+  --positive: #1f6f5c;
+  --negative: #a23b2a;
+  --warning: #8a6410;
+
+  /* Type scale (desktop). Headlines scale down on phones with clamp(). */
+  --text-label: 0.6875rem;                         /* 11px mono labels */
+  --text-small: 0.8125rem;                         /* 13px */
+  --text-body: 0.9375rem;                          /* 15px */
+  --text-lead: 1.125rem;                           /* 18px */
+  --text-h3: 1.5rem;
+  --text-h2: clamp(1.75rem, 3.2vw, 2.75rem);
+  --text-h1: clamp(2.5rem, 6.5vw, 5.25rem);        /* 40px to 84px */
+  --text-stat: clamp(2rem, 4.5vw, 3.5rem);         /* big numerals */
+
+  --tracking-display: -0.03em;
+  --tracking-label: 0.08em;
+  --leading-display: 1.02;
+  --leading-body: 1.55;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 7rem;
+
+  /* One corner rule for the whole product: 2px (sharp) or 999px (pill) */
+  --radius: 2px;
+  --radius-panel: 4px;
+
+  --border: 1px solid var(--line);
+  --focus-ring: 2px solid var(--accent);
+  --tap-min: 44px;
+  --measure: 62ch;        /* longest comfortable line of body text */
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+}
+
+/* Black and one colour: games, trading, live data */
+:root[data-family="black"] {
+  --ground: #08090b;
+  --surface: #111318;
+  --ink: #eceae4;
+  --ink-2: #a3a199;
+  --ink-3: #8e8c85;
+  --line: #22252b;
+  --on-ink: #08090b;
+  --accent: #2fd08a;
+  --accent-soft: #10271d;
+  --positive: #2fd08a;
+  --negative: #f0614d;
+  --warning: #e3b341;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+  }
+}
+
+/* Base elements. Everything else is a component that reads the tokens above. */
+html {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 100%;
+  line-height: var(--leading-body);
+}
+
+body {
+  margin: 0;
+  font-size: var(--text-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-display);
+  font-weight: 400;
+  margin: 0;
+}
+
+h1 { font-size: var(--text-h1); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); }
+
+/* The one emphasized word in a headline */
+h1 em,
+h2 em {
+  color: var(--accent);
+}
+
+/* Section label: small uppercase mono with a square marker */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.label::before {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  background: var(--accent);
+}
+
+/* Numbers, addresses and status lines */
+.mono,
+.stat,
+code {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat {
+  font-size: var(--text-stat);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+
+/* Buttons: one primary style. The label names the action. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-min);
+  padding: 0 var(--space-5);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity var(--motion-fast) ease;
+}
+
+.button:hover { opacity: 0.88; }
+.button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.button--secondary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.panel {
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-panel);
+  padding: var(--space-5);
+}

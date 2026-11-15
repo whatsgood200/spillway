@@ -1,9 +1,11 @@
 # Plan: Spillway (working name)
 
-Track: Every Second Counts. Status: awaiting Right's approval (Phase 1 gate). Written 2026-11-15.
+Track: Every Second Counts. Written 2026-11-15. Right chose to keep the idea and lead with the pool on 2026-11-15, after the originality check found two entrants building a queue alone; treated as approval of this plan.
 
 ## One line
-Spillway pays queued vault withdrawals the second liquidity returns, and lets anyone in the queue sell their place for cash now.
+Spillway lets a lender stuck in a vault withdrawal queue sell their place for cash now, and repays the buyer the second liquidity returns.
+
+Positioning: the pool is the product; the self-settling queue is the mechanism underneath. Two other entrants (`sainath998/instant-queue`, `emilhuseyn/reactive-omni`) built the queue alone on mock vaults, so every public description leads with the pool, the real Morpho Blue market, and the measured race.
 
 ## Five question test
 1. **Who has it.** Lenders in curated lending vaults (Morpho style) when utilization hits 100 percent. Their funds are lent out, so withdrawals wait.

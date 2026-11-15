@@ -19,3 +19,8 @@ build/
 
 research_notes/
 reports/
+
+contracts/lib/
+contracts/out/
+contracts/cache/
+contracts/broadcast/

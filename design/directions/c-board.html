@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction C: Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:wght@700;800&family=Figtree:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#eceef0;--surface:#f8f9fa;--ink:#101317;--ink2:#434a52;--ink3:#626a73;--line:#cfd4d9;--accent:#d93a1e;--soft:#f6ddd7;
+--d:"Sofia Sans Extra Condensed",Impact,sans-serif;--b:"Figtree",system-ui,sans-serif;--m:"Spline Sans Mono",ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.55 var(--b)}
+.bar{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding:10px 20px;font:11px var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.bar b{color:var(--ink);font-weight:500}.net{border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--surface)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px 64px}
+.label{font:11px var(--m);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);display:flex;gap:8px;align-items:center}
+.label:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+h1{font:800 clamp(56px,10vw,128px)/.86 var(--d);letter-spacing:-.01em;text-transform:uppercase;margin:16px 0 14px;max-width:12ch}
+h1 em{font-style:normal;color:var(--accent)}
+.lead{max-width:54ch;color:var(--ink2);font-size:17px;margin:0}
+.hero{padding:36px 0 28px}
+.board{background:var(--ink);color:#eceef0;border-radius:18px;padding:18px 18px 8px;margin-bottom:24px}
+.board .label{color:#9aa2ab}
+.brow{display:grid;grid-template-columns:44px 1fr 1fr 1.2fr;gap:8px;align-items:center;padding:11px 0;border-top:1px solid #262b31;font:13px var(--m)}
+.brow.h{border:0;color:#9aa2ab;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;padding-top:14px}
+.brow span:last-child{text-align:right}.brow.me{color:#fff}.brow.me span:first-child{background:var(--accent);border-radius:999px;text-align:center;padding:2px 0}
+.paid{color:#7fd6a4}.wait{color:#9aa2ab}
+.grid{display:grid;gap:16px}@media(min-width:820px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.card.pick{border-color:var(--ink)}
+.card h3{font:800 44px/.9 var(--d);text-transform:uppercase;margin:0}
+.big{font:500 30px/1 var(--m);letter-spacing:-.03em}.big small{font-size:12px;color:var(--ink3);margin-left:6px}
+.rows{margin:0;display:grid;gap:6px}.rows div{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink2)}
+.rows dd{margin:0;font:12.5px var(--m);color:var(--ink)}
+.btn{min-height:50px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:#fff;font:600 15px var(--b);cursor:pointer;margin-top:auto}
+.btn.sec{background:transparent;color:var(--ink);border-color:var(--line)}
+.amount{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:0 0 16px}
+.amount .n{font:500 34px var(--m);letter-spacing:-.03em}.amount .n small{font-size:12px;color:var(--ink3);margin-left:8px}
+.chips{display:flex;gap:6px}.chips span{font:11px var(--m);border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:var(--surface)}
+.risk{font-size:12.5px;color:var(--ink3);margin:14px 0 0}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin-top:28px;border-top:1px solid var(--line)}
+@media(min-width:820px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpis div{padding:16px 0}.kpis .v{font:800 56px/.9 var(--d)}.kpis .k{font:11px var(--m);color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="bar"><span><b>Spillway</b> &nbsp; Withdraw &nbsp; Pool &nbsp; Latency &nbsp; Docs</span><span class="net">Sample data &nbsp;·&nbsp; Base Sepolia testnet &nbsp;·&nbsp; <b>Not connected</b></span></div>
+<div class="wrap">
+  <section class="hero">
+    <div class="label">Withdraw from a full vault</div>
+    <h1>Skip the <em>line.</em></h1>
+    <p class="lead">This vault is 100% lent out, so withdrawals wait their turn. Sell your place for cash now, or hold it and get paid the second a repayment lands.</p>
+  </section>
+  <section class="board">
+    <div class="label">Withdrawal line, live</div>
+    <div class="brow h"><span>No.</span><span>Amount</span><span>Waiting</span><span>Status</span></div>
+    <div class="brow"><span>—</span><span>800.00 USDC</span><span>4 min</span><span class="paid">Paid 1.2 s after repayment</span></div>
+    <div class="brow"><span>1</span><span>1,200.00 USDC</span><span>11 min</span><span class="wait">Next to be paid</span></div>
+    <div class="brow"><span>2</span><span>1,250.00 USDC</span><span>9 min</span><span class="wait">Waiting</span></div>
+    <div class="brow me"><span>3</span><span>1,000.00 USDC</span><span>new</span><span>Your place</span></div>
+    <div class="brow"><span>4</span><span>500.00 USDC</span><span>—</span><span class="wait">Waiting</span></div>
+  </section>
+  <div class="amount"><div class="n">1,000.00<small>USDC to withdraw</small></div><div class="chips"><span>25%</span><span>50%</span><span>Max</span></div></div>
+  <div class="grid">
+    <div class="card pick">
+      <div class="label">Option one</div>
+      <h3>Cash now</h3>
+      <div class="big">992.40<small>USDC back right away</small></div>
+      <dl class="rows">
+        <div><dt>You give up</dt><dd>place 3 of 7</dd></div>
+        <div><dt>Fee to the pool</dt><dd>7.60 USDC · 0.76%</dd></div>
+        <div><dt>Most you can lose</dt><dd>7.60 USDC</dd></div>
+      </dl>
+      <button class="btn">Get 992.40 USDC now</button>
+    </div>
+    <div class="card">
+      <div class="label">Option two</div>
+      <h3>Wait in line</h3>
+      <div class="big">1,000.00<small>USDC when repaid</small></div>
+      <dl class="rows">
+        <div><dt>Ahead of you</dt><dd>2,450.00 USDC</dd></div>
+        <div><dt>Fee</dt><dd>0.00 USDC</dd></div>
+        <div><dt>Paid</dt><dd>about 1.3 s after repayment</dd></div>
+      </dl>
+      <button class="btn sec">Join the queue at place 3</button>
+    </div>
+  </div>
+  <p class="risk">The fee rises as the pool empties. Queue payouts depend on borrowers repaying; nobody can promise when. Testnet funds only.</p>
+  <div class="kpis">
+    <div><div class="v">100%</div><div class="k">Vault lent out</div></div>
+    <div><div class="v">0.00</div><div class="k">USDC withdrawable</div></div>
+    <div><div class="v">1.3 S</div><div class="k">Median payout after repayment</div></div>
+    <div><div class="v">214</div><div class="k">Loops measured on chain</div></div>
+  </div>
+</div>
+</body>
+</html>

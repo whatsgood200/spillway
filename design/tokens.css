@@ -12,25 +12,25 @@
 
 :root {
   /* Fonts: one display face with character, one neutral body, one mono */
-  --font-display: "REPLACE Display", Georgia, serif;
-  --font-body: "REPLACE Body", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "REPLACE Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Paper and ink */
-  --ground: #f4f2ec;      /* page */
-  --surface: #fbfaf6;     /* cards, panels */
-  --ink: #16150f;         /* primary text, primary button */
-  --ink-2: #4a473d;       /* secondary text */
-  --ink-3: #6a665a;       /* labels, captions (4.5:1 or better on ground and surface) */
-  --line: #ddd9cc;        /* borders, rules */
-  --on-ink: #f4f2ec;      /* text on the primary button */
+  --ground: #f3f0e8;      /* page */
+  --surface: #fbf9f3;     /* cards, panels */
+  --ink: #17160f;         /* primary text, primary button */
+  --ink-2: #4b483d;       /* secondary text */
+  --ink-3: #6b6759;       /* labels, captions (4.5:1 or better on ground and surface) */
+  --line: #d9d4c5;        /* borders, rules */
+  --on-ink: #f3f0e8;      /* text on the primary button */
 
   /* One accent. Used for the emphasized word, live status, the positive number. */
-  --accent: #1f6f5c;
-  --accent-soft: #d6ebe4;
+  --accent: #1d4f8f;
+  --accent-soft: #dbe5f2;
 
   /* Meaning, kept separate from the accent */
-  --positive: #1f6f5c;
+  --positive: #1d4f8f;
   --negative: #a23b2a;
   --warning: #8a6410;
 

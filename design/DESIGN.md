@@ -15,16 +15,16 @@
 
 | Decision | Choice | Why |
 |---|---|---|
-| Family | <paper and ink, or black and one colour> | <money, proof, infrastructure go paper; games, trading, live data go black> |
-| Display face | <name> | <what character it gives> |
-| Body face | <name>, 15 or 16px | |
-| Mono face | <name> | labels, nav, numbers, addresses |
-| Accent | <one colour, as a token> | used for the emphasized word, live status, the positive number |
-| Corners | <sharp 0 to 4px, or full pill> | one rule for the whole product |
-| Signature detail | <one repeated device: label marker, frame, grid> | |
-| Hero visual | <the live data shown, and the one custom visual> | |
+| Family | paper and ink | money and proof |
+| Display face | Fraunces 400 | a bookkeeping serif; italic for the one emphasized word |
+| Body face | Public Sans, 15px | |
+| Mono face | Martian Mono | labels, nav, numbers, addresses |
+| Accent | ink blue `#1d4f8f` | emphasized word, your place in line, measured times |
+| Corners | sharp, 2 to 3px | one rule for the whole product |
+| Signature detail | numbered mono section labels with a square marker |  |
+| Hero visual | the withdrawal line drawn as numbered tickets, with live vault numbers | the line is the product |
 
-Directions offered to Right on 2026-11-15 (mockups in `design/directions/`): A Ledger (paper and ink, Fraunces serif, sharp corners, blue accent, queue as tickets); B Gauge (black and amber, Bricolage Grotesque, sharp corners, vault level gauge, millisecond loop table); C Board (cool grey and vermilion, condensed uppercase display, pill corners, queue as a departures board). Chosen: pending.
+Directions offered to Right on 2026-11-15 (mockups in `design/directions/`): A Ledger (paper and ink, Fraunces serif, sharp corners, blue accent, queue as tickets); B Gauge (black and amber, Bricolage Grotesque, sharp corners, vault level gauge, millisecond loop table); C Board (cool grey and vermilion, condensed uppercase display, pill corners, queue as a departures board). Chosen: A Ledger, by Right on 2026-11-15.
 
 ## 3. Rules for every screen
 

@@ -1,0 +1,140 @@
+/**
+ * The single seam between the UI and everything on chain.
+ * Phase 2 runs on the mock implementation; Phase 4 swaps in the real one without touching screens.
+ */
+export type Network = "base-sepolia" | "lasna";
+
+export type WalletState =
+  | { status: "disconnected" }
+  | { status: "wrong-network"; address: string }
+  | { status: "connected"; address: string; usdc: bigint; vaultBalance: bigint; poolBalance: bigint };
+
+export interface VaultState {
+  totalAssets: bigint;
+  lentOut: bigint;
+  withdrawable: bigint;
+  utilizationBps: number;
+  queueLength: number;
+  queuedAssets: bigint;
+}
+
+export interface QueueEntry {
+  requestId: number;
+  position: number;
+  assets: bigint;
+  queuedAtMs: number;
+  heldByPool: boolean;
+  mine: boolean;
+}
+
+export interface WithdrawQuote {
+  assets: bigint;
+  /** True when the vault can pay in full right now and nobody is waiting. */
+  paidAtOnce: boolean;
+  position: number;
+  aheadAssets: bigint;
+  cashNow: { available: true; receive: bigint; fee: bigint; feeBps: number } | { available: false; reason: string };
+}
+
+export type ClaimStatus = "queued" | "sold" | "paid";
+
+export interface ClaimEvent {
+  kind: "queued" | "sold" | "liquidity" | "reactive" | "paid";
+  atMs: number;
+  txHash: string;
+  network: Network;
+}
+
+export interface Claim {
+  requestId: number;
+  assets: bigint;
+  status: ClaimStatus;
+  position: number | null;
+  aheadAssets: bigint;
+  received: bigint | null;
+  fee: bigint | null;
+  latencyMs: number | null;
+  events: ClaimEvent[];
+}
+
+export interface PoolState {
+  totalAssets: bigint;
+  idle: bigint;
+  claimsHeld: number;
+  claimsValue: bigint;
+  depthBps: number;
+  feeBpsNow: number;
+  feesEarned: bigint;
+}
+
+export interface Loop {
+  id: number;
+  atMs: number;
+  assets: bigint;
+  latencyMs: number;
+  repayTx: string;
+  reactiveTx: string;
+  payoutTx: string;
+}
+
+export interface LatencyStats {
+  count: number;
+  p50: number;
+  p90: number;
+  p99: number;
+  min: number;
+  max: number;
+  histogram: { fromMs: number; count: number }[];
+  /** Share of freed liquidity that reached the queue when a competing borrower was this many seconds behind. */
+  race: { delaySeconds: number; toQueueBps: number }[];
+}
+
+export type ChainErrorCode = "rejected" | "reverted" | "disconnected" | "wrong-network" | "insufficient" | "unavailable";
+
+export class ChainError extends Error {
+  constructor(
+    public readonly code: ChainErrorCode,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ChainError";
+  }
+}
+
+export type TxPhase = "wallet" | "pending";
+
+export interface TxOptions {
+  onPhase?: (phase: TxPhase) => void;
+}
+
+export interface ChainAdapter {
+  readonly isMock: boolean;
+  subscribe(listener: () => void): () => void;
+
+  getWallet(): Promise<WalletState>;
+  connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  switchNetwork(): Promise<void>;
+
+  getVaultState(): Promise<VaultState>;
+  getQueue(): Promise<QueueEntry[]>;
+  getPoolState(): Promise<PoolState>;
+  quoteWithdraw(assets: bigint): Promise<WithdrawQuote>;
+  getClaim(requestId: number): Promise<Claim | null>;
+  getMyClaims(): Promise<Claim[]>;
+  getLoops(limit: number): Promise<Loop[]>;
+  getLatencyStats(): Promise<LatencyStats>;
+
+  deposit(assets: bigint, options?: TxOptions): Promise<void>;
+  requestRedeem(assets: bigint, options?: TxOptions): Promise<{ requestId: number; paidAtOnce: boolean }>;
+  sellClaim(requestId: number, options?: TxOptions): Promise<{ received: bigint }>;
+  poolDeposit(assets: bigint, options?: TxOptions): Promise<void>;
+  poolWithdraw(assets: bigint, options?: TxOptions): Promise<void>;
+
+  /** Demo console: actions taken by the labelled demo borrower, not by the user. */
+  demoRepay(assets: bigint): Promise<void>;
+  demoBorrowIdle(): Promise<void>;
+  demoSetNextFailure(failure: "rejected" | "reverted" | null): Promise<void>;
+  demoSetWrongNetwork(wrong: boolean): Promise<void>;
+  demoReset(mode: "seeded" | "empty"): Promise<void>;
+}

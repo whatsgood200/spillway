@@ -17,3 +17,11 @@ remappings = [
 base_sepolia = "${BASE_SEPOLIA_RPC}"
 unichain_sepolia = "${UNICHAIN_SEPOLIA_RPC}"
 lasna = "https://lasna-rpc.rnk.dev/"
+
+[fuzz]
+runs = 256
+
+[invariant]
+runs = 64
+depth = 80
+fail_on_revert = true

@@ -8,5 +8,5 @@ mkdir -p lib
 pin foundry-rs/forge-std 15b2df92a05d4d2f76a06653872fefb287e0e01c forge-std
 pin morpho-org/morpho-blue 339a885801972740eb27f51da110a4675b839d42 morpho-blue
 pin Reactive-Network/reactive-lib-omni 3ade0dcf1d27e67e5783ef807e73a1b9e0c0cce8 reactive-lib-omni
-pin OpenZeppelin/openzeppelin-contracts 7df9390d5989ea2cb7a70ad93f96245d8a82574e openzeppelin-contracts
+pin OpenZeppelin/openzeppelin-contracts c64a1edb67b6e3f4a15cca8909c9482ad33a02b0 openzeppelin-contracts  # v5.4.0
 echo "Dependencies installed."

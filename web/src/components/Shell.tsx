@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/Logo";
 import { getChain } from "@/lib/chain";
 import { useChainQuery } from "@/lib/useChain";
 import { formatUsdc, shortHash } from "@/lib/format";
@@ -28,10 +29,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </p>
       )}
       <header className="bar">
+        <Link href="/" className="brand" aria-label="Spillway home">
+          <Logo />
+        </Link>
         <nav className="nav" aria-label="Main">
-          <Link href="/" className="brand">
-            Spillway
-          </Link>
           {NAV.map((item) => (
             <Link key={item.href} href={item.href} aria-current={pathname === item.href ? "page" : undefined}>
               {item.label}

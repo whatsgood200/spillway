@@ -22,3 +22,6 @@ Enter Every Second Counts with a vault withdrawal queue that a reactive contract
 - The cross-chain refill needs a CCTP attestation relayer, so it is a slower secondary leg and not the measured loop.
 
 Research notes: `research_notes/Reactive buildathon project candidates/` (local only, not committed).
+
+## Correction, same day
+The claim that no entry does withdrawal-queue settlement was true of the DoraHacks list only. A GitHub search found two entrants building a self-settling queue (`sainath998/instant-queue`, `emilhuseyn/reactive-omni`), both on mock vaults with small samples. The queue alone is no longer original here. What remains unbuilt in this field: the pool that buys queue places, settlement driven by a real lending protocol's events, the race experiment, and millisecond timing. Whether to keep the idea with the pool as the headline or switch is Right's call.

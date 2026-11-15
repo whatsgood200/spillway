@@ -24,7 +24,7 @@ Checked on chain 2026-11-15: vault asset, Morpho address and market id match; po
 
 | Contract | Address | Deploy transaction | Source verified |
 |---|---|---|---|
-| QueueReactor | pending | pending | no |
+| QueueReactor | `0x45805145536767435185c991097D8193A8518581` | `0x167e956d3db0ab44e286e2396f435994976eece8c9c9876780c03b4ef8fe9390` | no |
 
 ## One full lifecycle on chain
 

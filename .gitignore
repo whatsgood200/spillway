@@ -16,3 +16,6 @@ broadcast/*/31337/
 # Move / Sui
 build/
 .sui/
+
+research_notes/
+reports/

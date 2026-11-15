@@ -12,7 +12,7 @@ Reactive Omni Buildathon, deployed 2026-11-15. Deployer: `0xd4171f06da70216e0bb1
 | InstantPool | `0xD8f888161FAcB6529e9389B2b1b9E3Df2636957e` | `0xbfb1d05aa2a5ec4fd9b1144b2fb5077d3caa39fd86ab8e3648b0705c1543178b` | no |
 | DemoCollateral (sdCOL, ours, freely mintable) | `0xd7F44463230e95f6b490Da29b8bc475De25C98AB` | `0x3ccf3c2c0c5cfb6afe706732976843f2f14187f4f674d625fa67cfc82eaeea5f` | no |
 | DemoOracle (ours, fixed price) | `0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77` | `0xa1dcfb91d2ee35339fcbde7999ee9f8771d520f69a171cca61edf55d49921060` | no |
-| SpillwayCallback | pending | pending | no |
+| SpillwayCallback | `0x2C0aecdBef8B4CB99461C53a17811B104D2F17C5` | `0xee6fc16dcf0d1fa5408e4822ba649dafc54bbdcf72d7b3fd670142813eac2b4e` | no |
 
 Morpho Blue market created by us on the deployed Morpho Blue (`0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb`): id `0x521b1156d589a7aa2e41ef70a44a075b46c81605a4b00e8b036de52fe9344d9b`, loan token USDC `0x036CbD53842c5426634e7929541eC2318f3dCF7e`, Adaptive Curve IRM, LLTV 86 percent. Create transaction `0xf0f366f77cca4700d0428923e9d3d9da09471686bede81f2608ffc12a1aeb9f6`.
 
@@ -25,6 +25,8 @@ Checked on chain 2026-11-15: vault asset, Morpho address and market id match; po
 | Contract | Address | Deploy transaction | Source verified |
 |---|---|---|---|
 | QueueReactor | `0x45805145536767435185c991097D8193A8518581` | `0x167e956d3db0ab44e286e2396f435994976eece8c9c9876780c03b4ef8fe9390` | no |
+
+Reactor wired to the callback contract on Lasna: `0x5e94eddc24edf004b9e995cd24d690bdc619d01b06e891225f12dca69e7ac67e`. Checked on chain 2026-11-15: callback sender is the reactor, service provider is the Base Sepolia callback proxy, callback holds 0.01 ETH with no debt, reactor holds 2 lREACT with no debt.
 
 ## One full lifecycle on chain
 

@@ -32,13 +32,17 @@ Reactor wired to the callback contract on Lasna: `0x5e94eddc24edf004b9e995cd24d6
 
 <!-- Run this before submitting. Every step is a clickable transaction. -->
 
-| Step | Transaction |
-|---|---|
-| Create or mint | `<tx>` |
-| Use | `<tx>` |
-| Settle | `<tx>` |
-| Redeem or withdraw | `<tx>` |
-| Replay or bad input | **Refused**: `<tx or test>` |
+| Step | Chain | Transaction |
+|---|---|---|
+| Deposit 5 USDC into the vault | Base Sepolia | `0x9b54cf384b9572a5ee1ed2c1626283fa308511275af255fabc37d8e1ab1e9385` |
+| Demo borrower borrows all 5 USDC (vault 100 percent lent out) | Base Sepolia | `0xcdc57dbe4eadf1dc3cfc860c6cec502855b92af1c7cbfe0fd51bc33a7abbe54f` |
+| Withdrawal requested and queued as request 1 | Base Sepolia | `0x0e6b1a747b44f1ea122c380515059d0fece2d844c55871759955aaecf3749a37` |
+| Demo borrower repays 5 USDC (origin event, block 59303697, 1794782608200 ms) | Base Sepolia | `0x1ba8d9e8db14848011a9ac119e351316315203960fb717d30a15fb55c5898577` |
+| Reactive contract reacts and requests the callback (block 8442934) | Reactive Lasna | `0xdd56bdf581656aada4f2909568cdaace8c1706ec1db0c1d940e65a73c86eb275` |
+| Callback pays request 1, sent by Reactive's signer through the callback proxy (block 59303703, 1794782609400 ms) | Base Sepolia | `0x337000876ee11c33b79a42935b070ee211f4885e1a502b9779a27247fa536482` |
+| Replay or bad input | | **Refused** in tests: `test_callbackRejectsAnyoneButTheProxyAndTheReactor`, `test_nobodyJumpsTheLine`. Not yet shown on chain. |
+
+First live loop, 2026-11-15: repayment to payout in 1,200 ms (6 Base Sepolia blocks), measured from the two blocks' millisecond timestamps. One loop only; the 200 loop measurement is still to run.
 
 These are our own transactions made to show the flow. They are not user traction.
 

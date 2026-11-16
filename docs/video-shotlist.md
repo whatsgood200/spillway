@@ -1,6 +1,6 @@
 # Video shot list: Spillway
 
-Technical demo, 2:44 (limit 3:00), 1920 x 1080, 30 fps, captions burned in, narration at -16 LUFS. Built entirely from code in [video/](../video): every live shot is the real site on Base Sepolia, recorded by a script, unedited except for trims and the clearly labelled speed-ups of waiting stretches.
+Technical demo, 2:44 (limit 3:00), 1920 x 1080, 30 fps, narration at -16 LUFS. No burned-in captions, so nothing covers the product; a timed subtitle file (`video/out/spillway-demo.srt`) is uploaded with the video so viewers can turn captions on. Built entirely from code in [video/](../video): every live shot is the real site on Base Sepolia, recorded by a script, unedited except for trims and the clearly labelled speed-ups of waiting stretches.
 
 ## Final cut
 
@@ -22,7 +22,7 @@ Technical demo, 2:44 (limit 3:00), 1920 x 1080, 30 fps, captions burned in, narr
 - **Live footage:** `video/record.mjs` drives the live site in Chromium at 1920 x 1080 and captures it frame by frame through the DevTools screencast, so text stays sharp. The demo clip uses the demo console (no wallet). The cash-out clip uses a fresh wallet created in memory, funded with 1.2 test USDC by the demo account, signing in Node; its key is never written anywhere. A cursor and click rings are drawn because a headless browser shows none.
 - **Scenes:** `video/scenes/scenes.html`, in the site's own fonts and colours. Every frame is a pure function of time, rendered one at a time, so scenes are identical on every build and land on the narration's cue times. The real-data scene plots all 135 events from `measurements/morpho-base-2026-11-16.json`; the abuse scene shows revert output captured from the live contracts.
 - **Voice:** Kokoro (open model, Apache-2.0, voice `af_heart`), rendered locally one sentence at a time, so captions match the speech exactly.
-- **Assembly:** `video/build.mjs` lays out the timeline from `video/script.json`, the voice lengths and the moments recorded during capture (when a button was clicked, when the payout appeared), then cuts, mixes and burns in captions with ffmpeg.
+- **Assembly:** `video/build.mjs` lays out the timeline from `video/script.json`, the voice lengths and the moments recorded during capture (when a button was clicked, when the payout appeared), then cuts and mixes with ffmpeg. It writes the subtitle file from the same timings; `"burnCaptions": true` in `script.json` burns them into the picture instead.
 
 ## Rebuild
 
@@ -42,4 +42,4 @@ The narration is rendered with Kokoro, installed outside the repo: `python batch
 
 ## Still to do
 
-- Upload unlisted to YouTube, test the link in a private window, put it in the submission and the README.
+- Upload unlisted to YouTube with `spillway-demo.srt` as English subtitles, test the link in a private window, put it in the submission and the README.

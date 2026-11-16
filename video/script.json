@@ -1,6 +1,7 @@
 {
   "voice": "af_heart",
   "speed": 1.0,
+  "burnCaptions": false,
   "segments": [
     {
       "id": "problem",

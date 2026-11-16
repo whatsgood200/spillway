@@ -164,7 +164,14 @@ function chunks(text) {
   if (best === -1) best = text.lastIndexOf(" ", middle);
   return [...chunks(text.slice(0, best + 1).trim()), ...chunks(text.slice(best + 1).trim())];
 }
+// Captions are burned in only when script.json asks; a subtitle file is always written for upload (YouTube).
 const events = [];
+const srt = [];
+const srtTime = (t) => {
+  const ms = Math.round(t * 1000);
+  const pad = (n, w = 2) => String(n).padStart(w, "0");
+  return `${pad(Math.floor(ms / 3_600_000))}:${pad(Math.floor(ms / 60_000) % 60)}:${pad(Math.floor(ms / 1000) % 60)},${pad(ms % 1000, 3)}`;
+};
 for (const s of timeline) {
   for (const l of s.lines) {
     const parts = chunks(l.caption);
@@ -172,7 +179,8 @@ for (const s of timeline) {
     let t = s.start + l.start;
     for (const part of parts) {
       const length = (l.length * part.length) / totalChars;
-      events.push(`Dialogue: 0,${ts(t)},${ts(t + length + 0.08)},Caption,,0,0,0,,${part}`);
+      if (script.burnCaptions) events.push(`Dialogue: 0,${ts(t)},${ts(t + length + 0.08)},Caption,,0,0,0,,${part}`);
+      srt.push(`${srt.length + 1}\n${srtTime(t)} --> ${srtTime(t + length + 0.08)}\n${part}\n`);
       t += length;
     }
   }
@@ -203,6 +211,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 ${events.join("\n")}
 `,
 );
+
+writeFileSync("out/spillway-demo.srt", srt.join("\n"));
 
 // 7. Final encode: picture, captions burned in, narration.
 ffmpeg([

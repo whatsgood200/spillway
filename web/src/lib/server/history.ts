@@ -7,9 +7,8 @@ import { ADDRESSES, BASE_SEPOLIA_RPC, LASNA_DEPLOY_BLOCK, LASNA_RPC, callbackAbi
  * History for the app, read from the contracts' own storage. There is no indexer and no third-party API:
  * the vault keeps every request, the pool keeps every sale and the callback contract keeps every loop.
  *
- * Two things are not in storage and come from the RPC instead:
- * - the origin block's millisecond timestamp (needed for latency), one block lookup per loop, cached;
- * - transaction hashes, found by asking for the logs of the single block each record names, cached.
+ * Transaction hashes are not in storage; they are found by asking for the logs of the single block each record
+ * names, and cached.
  * Amounts are decimal strings because JSON has no bigint.
  */
 
@@ -63,6 +62,7 @@ export interface ClaimDetail {
 }
 
 const RESPONSE_CACHE_MS = 2_500;
+const BASE_BLOCK_MS = 200;
 const LASNA_EVERY_MS = 5_000;
 const PAGE = 100n;
 const RECENT_LOOPS_WITH_TX = 25;
@@ -81,27 +81,12 @@ const loopClosedEvent = parseAbiItem("event LoopClosed(uint256 indexed originTxH
 /** Records that can no longer change are kept; only open requests and new loops are re-read. */
 const finalRequests = new Map<number, HistoryRequest>();
 const loopStore: HistoryLoop[] = [];
-const blockMsCache = new Map<number, number>();
 const txCache = new Map<string, string | null>();
 const reactiveByOrigin = new Map<string, string>();
 let lasnaNotBefore = 0;
 let lasnaScannedTo = LASNA_DEPLOY_BLOCK;
 let cached: { at: number; value: History } | null = null;
 let inFlight: Promise<History> | null = null;
-
-/** Millisecond timestamp of a Base Sepolia block. Blocks are 200 ms apart; `timestamp` alone is whole seconds. */
-async function blockMs(block: number): Promise<number> {
-  const known = blockMsCache.get(block);
-  if (known !== undefined) return known;
-  const result = (await client.request({ method: "eth_getBlockByNumber", params: [`0x${block.toString(16)}`, false] })) as unknown as {
-    timestamp: Hex;
-    timestampMs?: Hex;
-  } | null;
-  if (!result) throw new Error(`Base Sepolia block ${block} not found`);
-  const ms = result.timestampMs ? Number(BigInt(result.timestampMs)) : Number(BigInt(result.timestamp)) * 1000;
-  blockMsCache.set(block, ms);
-  return ms;
-}
 
 /** The transaction that emitted one specific event, found by reading the logs of the single block it is in. */
 async function txOf(key: string, lookup: () => Promise<readonly { transactionHash: Hex | null }[]>): Promise<string | null> {
@@ -214,36 +199,50 @@ async function refreshLoops(): Promise<HistoryLoop[]> {
     const offset = loopStore.length;
     const page = await client.readContract({ address: ADDRESSES.callback, abi: callbackAbi, functionName: "loopsSlice", args: [BigInt(offset), PAGE] });
     if (page.length === 0) break;
-    const origins = await Promise.all(page.map((raw) => blockMs(Number(raw.originBlock))));
     page.forEach((raw, index) => {
       const paidAtMs = Number(raw.paidAtMs);
+      // Base Sepolia makes exactly one block every 200 ms, so the repayment block's time follows from the payout
+      // time and the block gap. Checked against each block's own timestampMs for all 204 loops measured on
+      // 2026-11-16 (measurements/latency-2026-11-16.json): no difference. This saves one RPC call per loop.
+      const originMs = paidAtMs - (Number(raw.payoutBlock) - Number(raw.originBlock)) * BASE_BLOCK_MS;
       loopStore.push({
         id: offset + index + 1,
         originTx: `0x${raw.originTxHash.toString(16).padStart(64, "0")}`,
         originBlock: Number(raw.originBlock),
-        originMs: origins[index],
+        originMs,
         reactiveTx: null,
         payoutTx: null,
         payoutBlock: Number(raw.payoutBlock),
         paidAtMs,
-        latencyMs: paidAtMs - origins[index],
+        latencyMs: paidAtMs - originMs,
         settled: raw.settled,
         assets: raw.assets.toString(),
       });
     });
   }
-  const recent = loopStore.slice(-RECENT_LOOPS_WITH_TX);
-  await Promise.all(
-    recent.map(async (loop) => {
-      if (!loop.payoutTx) loop.payoutTx = await payoutTx(loop);
-    }),
-  );
+  // Transaction links are filled in the background: the numbers come from storage and must not wait on log lookups.
+  void fillPayoutTx();
   for (const loop of loopStore) loop.reactiveTx ??= reactiveByOrigin.get(loop.originTx) ?? null;
   return loopStore.map((loop) => ({ ...loop }));
 }
 
+let fillingPayouts = false;
+async function fillPayoutTx() {
+  if (fillingPayouts) return;
+  fillingPayouts = true;
+  try {
+    for (const loop of loopStore.slice(-RECENT_LOOPS_WITH_TX)) {
+      if (!loop.payoutTx) loop.payoutTx = await payoutTx(loop);
+    }
+  } finally {
+    fillingPayouts = false;
+  }
+}
+
 async function load(): Promise<History> {
-  const [requests] = await Promise.all([refreshRequests(), refreshReactive()]);
+  // The Lasna scan only adds links to reactive transactions; it runs alongside and is picked up on the next read.
+  void refreshReactive();
+  const requests = await refreshRequests();
   const loops = await refreshLoops();
   return { requests, loops, fetchedAtMs: Date.now() };
 }

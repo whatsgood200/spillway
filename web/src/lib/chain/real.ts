@@ -13,6 +13,7 @@ import {
 } from "viem";
 import { baseSepolia } from "viem/chains";
 import type { ClaimDetail, History, HistoryRequest } from "../server/history";
+import race from "../../data/race.json";
 import { ADDRESSES, BASE_SEPOLIA_ID, BASE_SEPOLIA_RPC, erc20Abi, poolAbi, vaultAbi } from "./config";
 import {
   ChainError,
@@ -418,8 +419,9 @@ export function createRealAdapter(): ChainAdapter {
         min: sorted[0] ?? 0,
         max: sorted[sorted.length - 1] ?? 0,
         histogram: [...buckets.entries()].sort((a, b) => a[0] - b[0]).map(([fromMs, count]) => ({ fromMs, count })),
-        // Filled from the race experiment's recorded results once it has been run.
-        race: [],
+        // Recorded by scripts/race.mjs and summarised by scripts/race-report.mjs; each trial is on chain.
+        race: race.rows,
+        raceSource: race.rows.length ? `${race.trials} trials on Base Sepolia, ${race.source}` : null,
       };
     },
 

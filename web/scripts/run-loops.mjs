@@ -5,130 +5,13 @@
 //
 // Run from web/:  node scripts/run-loops.mjs 200
 // Output: one JSON line per loop in ../measurements/loops-<date>.jsonl, plus a summary at the end.
-// The demo key is read from web/.env.local and never printed.
-import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
-import { createPublicClient, createWalletClient, http, maxUint256, parseAbi } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
+import { appendFileSync } from "node:fs";
+import { A, account, blockMs, clearQueue, debtOwed, measurementFile, prepare, queueOne, read, reactorReady, send, sleep } from "./lib/live.mjs";
 
-const RPC = "https://sepolia.base.org";
-const LASNA = "https://lasna-rpc.rnk.dev/";
-const A = {
-  vault: "0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0",
-  callback: "0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20",
-  usdc: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-  morpho: "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
-  collateral: "0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806",
-  reactor: "0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77",
-  system: "0x8888888888888888888888888888888888888888",
-};
-const MARKET = "0x29c415df812658c358fbd137cb13745f337bdec8c043cb7f3247274a80115631";
-const MIN_REACTOR_BALANCE = 400000000000000000n; // 0.4 lREACT: below this the script pauses for a top-up.
 const LOOP_TIMEOUT_MS = 90_000;
-
 const total = Number(process.argv[2] ?? 200);
-const env = readFileSync(new URL("../.env.local", import.meta.url), "utf8");
-const key = env.match(/^DEMO_PRIVATE_KEY=(0x[0-9a-fA-F]{64})\s*$/m)?.[1];
-if (!key) throw new Error("DEMO_PRIVATE_KEY missing from web/.env.local");
-const account = privateKeyToAccount(key);
-
-const abi = parseAbi([
-  "function approve(address,uint256) returns (bool)",
-  "function allowance(address,address) view returns (uint256)",
-  "function balanceOf(address) view returns (uint256)",
-  "function mint(address,uint256)",
-  "function deposit(uint256,address) returns (uint256)",
-  "function requestRedeem(uint256,address) returns (uint256,uint256,bool)",
-  "function withdrawable() view returns (uint256)",
-  "function queueLength() view returns (uint256)",
-  "function loopCount() view returns (uint256)",
-  "struct Loop { uint256 originTxHash; uint64 originBlock; uint64 payoutBlock; uint64 paidAtMs; uint32 settled; uint256 assets; }",
-  "function loopsSlice(uint256,uint256) view returns (Loop[])",
-  "struct MarketParams { address loanToken; address collateralToken; address oracle; address irm; uint256 lltv; }",
-  "function idToMarketParams(bytes32) view returns (MarketParams)",
-  "function market(bytes32) view returns (uint128,uint128,uint128,uint128,uint128,uint128)",
-  "function position(bytes32,address) view returns (uint256,uint128,uint128)",
-  "function supplyCollateral(MarketParams,uint256,address,bytes)",
-  "function borrow(MarketParams,uint256,uint256,address,address) returns (uint256,uint256)",
-  "function repay(MarketParams,uint256,uint256,address,bytes) returns (uint256,uint256)",
-  "function debt(address) view returns (uint256)",
-]);
-
-const pub = createPublicClient({ chain: baseSepolia, transport: http(RPC, { retryCount: 4, retryDelay: 800 }) });
-const wallet = createWalletClient({ account, chain: baseSepolia, transport: http(RPC, { retryCount: 4, retryDelay: 800 }) });
-const lasna = createPublicClient({ transport: http(LASNA, { retryCount: 4, retryDelay: 800 }) });
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const read = (address, functionName, args = []) => pub.readContract({ address, abi, functionName, args });
-
-async function send(address, functionName, args) {
-  const estimate = await pub.estimateContractGas({ address, abi, functionName, args, account });
-  const hash = await wallet.writeContract({ address, abi, functionName, args, gas: (estimate * 3n) / 2n + 60_000n });
-  const receipt = await pub.waitForTransactionReceipt({ hash, timeout: 60_000 });
-  if (receipt.status !== "success") throw new Error(`${functionName} reverted: ${hash}`);
-  return { hash, block: Number(receipt.blockNumber) };
-}
-
-async function approveOnce(token, spender) {
-  if ((await read(token, "allowance", [account.address, spender])) < 10n ** 30n) await send(token, "approve", [spender, maxUint256]);
-}
-
-async function blockMs(block) {
-  const b = await pub.request({ method: "eth_getBlockByNumber", params: [`0x${block.toString(16)}`, false] });
-  return b.timestampMs ? Number(BigInt(b.timestampMs)) : Number(BigInt(b.timestamp)) * 1000;
-}
-
-async function reactorReady() {
-  for (let waited = 0; ; waited += 30) {
-    const [balance, debt] = await Promise.all([
-      lasna.getBalance({ address: A.reactor }),
-      lasna.readContract({ address: A.system, abi, functionName: "debt", args: [A.reactor] }),
-    ]);
-    if (balance >= MIN_REACTOR_BALANCE && debt === 0n) return balance;
-    if (waited === 0) console.log(`PAUSED: reactor has ${Number(balance) / 1e18} lREACT and debt ${debt}. Top it up to continue; checking every 30 s.`);
-    if (waited > 3600) throw new Error("Reactor was not topped up within an hour. Stopping.");
-    await sleep(30_000);
-  }
-}
-
-/** What the demo borrower owes, rounded down so Morpho never sees an overpayment. */
-async function debtOwed() {
-  const [, , borrowAssets, borrowShares] = await read(A.morpho, "market", [MARKET]);
-  const [, myShares] = await read(A.morpho, "position", [MARKET, account.address]);
-  return (myShares * (borrowAssets + 1n)) / (borrowShares + 1_000_000n);
-}
-
-/** Repays until the queue is empty. Payouts go back to the demo account, so it can repay in rounds. */
-async function clearQueue(params) {
-  for (let round = 0; round < 10; round++) {
-    if ((await read(A.vault, "queueLength")) === 0n) return;
-    const owed = await debtOwed();
-    const cash = await read(A.usdc, "balanceOf", [account.address]);
-    const repay = owed < cash ? owed : cash;
-    if (repay === 0n) throw new Error("queue is stuck and the demo account has nothing to repay with");
-    console.log(`clearing a stuck queue: repaying ${Number(repay) / 1e6} USDC`);
-    await send(A.morpho, "repay", [params, repay, 0n, account.address, "0x"]);
-    for (let waited = 0; waited < 60_000; waited += 2000) {
-      await sleep(2000);
-      if ((await read(A.vault, "queueLength")) === 0n) break;
-    }
-  }
-  if ((await read(A.vault, "queueLength")) > 0n) throw new Error("could not clear the queue");
-}
-
-const day = new Date().toISOString().slice(0, 10);
-const outDir = new URL("../../measurements/", import.meta.url);
-mkdirSync(outDir, { recursive: true });
-const outFile = new URL(`loops-${day}.jsonl`, outDir);
-
-const params = await read(A.morpho, "idToMarketParams", [MARKET]);
-await approveOnce(A.usdc, A.vault);
-await approveOnce(A.usdc, A.morpho);
-await approveOnce(A.collateral, A.morpho);
-const [, , collateral] = await read(A.morpho, "position", [MARKET, account.address]);
-if (collateral < 10n ** 20n) {
-  await send(A.collateral, "mint", [account.address, 10n ** 21n]);
-  await send(A.morpho, "supplyCollateral", [params, 10n ** 21n, account.address, "0x"]);
-}
+const outFile = measurementFile("loops");
+const params = await prepare();
 
 console.log(`Demo account ${account.address}. Running ${total} loops. Writing ${outFile.pathname}`);
 const latencies = [];
@@ -141,12 +24,7 @@ for (let i = 1; i <= total; i++) {
     // 1.00 to 3.00 USDC, varied so the record is not one repeated number.
     const amount = 1_000_000n + BigInt(Math.floor(Math.random() * 21)) * 100_000n;
     const before = Number(await read(A.callback, "loopCount"));
-
-    await send(A.vault, "deposit", [amount, account.address]);
-    const free = await read(A.vault, "withdrawable");
-    if (free > 0n) await send(A.morpho, "borrow", [params, free, 0n, account.address, account.address]);
-    const shares = await read(A.vault, "balanceOf", [account.address]);
-    const queued = await send(A.vault, "requestRedeem", [shares, account.address]);
+    const { queued } = await queueOne(params, amount);
 
     // Repay everything owed, so nothing a failed step left behind can carry into the next loop.
     const owed = await debtOwed();

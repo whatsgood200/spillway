@@ -362,13 +362,12 @@ export function createMockAdapter(): ChainAdapter {
           histogram: [...buckets.entries()].sort((a, b) => a[0] - b[0]).map(([fromMs, count]) => ({ fromMs, count })),
           race: sorted.length
             ? [
-                { delaySeconds: 1, toQueueBps: 3100 },
-                { delaySeconds: 2, toQueueBps: 9400 },
-                { delaySeconds: 3, toQueueBps: 9900 },
-                { delaySeconds: 5, toQueueBps: 10_000 },
-                { delaySeconds: 7, toQueueBps: 10_000 },
+                { delayMs: 0, medianLagMs: 400, minLagMs: 200, maxLagMs: 600, trials: 5, queueWins: 0 },
+                { delayMs: 1000, medianLagMs: 1400, minLagMs: 1200, maxLagMs: 1600, trials: 5, queueWins: 2 },
+                { delayMs: 2000, medianLagMs: 2400, minLagMs: 2200, maxLagMs: 2800, trials: 5, queueWins: 5 },
               ]
             : [],
+          raceSource: sorted.length ? "sample data" : null,
         };
       }),
 

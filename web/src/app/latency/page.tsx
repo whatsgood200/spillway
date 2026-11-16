@@ -2,7 +2,7 @@
 
 import { getChain } from "@/lib/chain";
 import { TxLink } from "@/components/TxLink";
-import { formatBps, formatMs, formatUsdc } from "@/lib/format";
+import { formatMs, formatUsdc } from "@/lib/format";
 import { useChainQuery } from "@/lib/useChain";
 
 export default function LatencyPage() {
@@ -74,29 +74,40 @@ export default function LatencyPage() {
 
           <section className="panel" aria-label="Race experiment">
             <h2 className="label">Why one second matters</h2>
-            <p className="empty">Freed liquidity is contested. A competing borrower tries to take each repayment a fixed delay after it lands. This is how much of it reached the queue first.</p>
+            <p className="empty">
+              Cash a borrower repays is contested. In each trial a competing borrower tried to take exactly that cash, some time after the repayment. Whoever landed first got it.
+            </p>
             {data && data.race.length === 0 && <p className="empty">Not measured yet. The experiment has not been run on the live contracts.</p>}
             {data && data.race.length > 0 && (
               <div className="table-scroll">
                 <table>
                   <thead>
                     <tr>
-                      <th>Borrower is behind by</th>
-                      <th className="num">Reached the queue</th>
+                      <th>Competitor landed after the repayment</th>
+                      <th className="num">Queue got the cash</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.race.map((row) => (
-                      <tr key={row.delaySeconds}>
-                        <td>{row.delaySeconds} s</td>
-                        <td className={`num${row.toQueueBps >= 9000 ? " good" : ""}`}>{formatBps(row.toQueueBps)}</td>
+                      <tr key={row.delayMs}>
+                        <td>
+                          {formatMs(row.medianLagMs)}
+                          {row.minLagMs !== row.maxLagMs && ` (${formatMs(row.minLagMs)} to ${formatMs(row.maxLagMs)})`}
+                        </td>
+                        <td className={`num${row.queueWins === row.trials ? " good" : ""}`}>
+                          {row.queueWins} of {row.trials}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
-            <p className="muted">On the previous Reactive Network, with blocks about 7 s apart, the queue could not have answered inside a few seconds.</p>
+            {data?.raceSource && <p className="muted">Source: {data.raceSource}. The competitor is our own demo account.</p>}
+            <p className="muted">
+              A borrower on the same chain that acts within about a second will always be first: no cross-chain loop is faster than the next block. On the previous Reactive Network, with blocks about 7 s apart, the loop
+              alone took longer than that, so the queue lost to anyone acting within several seconds (an estimate from block times, not measured).
+            </p>
           </section>
         </div>
       )}

@@ -90,8 +90,21 @@ export interface LatencyStats {
   min: number;
   max: number;
   histogram: { fromMs: number; count: number }[];
-  /** Share of freed liquidity that reached the queue when a competing borrower was this many seconds behind. */
-  race: { delaySeconds: number; toQueueBps: number }[];
+  /** The race experiment: how often the queue got the freed cash before a competing borrower, by how late that borrower landed. */
+  race: RaceRow[];
+  /** Where the race rows come from, for the caption. Null when there are none. */
+  raceSource: string | null;
+}
+
+export interface RaceRow {
+  /** How long the competitor waited after sending the repayment. */
+  delayMs: number;
+  /** How late its borrow actually landed after the repayment, from block timestamps. */
+  medianLagMs: number;
+  minLagMs: number;
+  maxLagMs: number;
+  trials: number;
+  queueWins: number;
 }
 
 export type ChainErrorCode = "rejected" | "reverted" | "disconnected" | "wrong-network" | "insufficient" | "unavailable";

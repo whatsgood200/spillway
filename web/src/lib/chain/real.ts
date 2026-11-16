@@ -197,6 +197,7 @@ export function createRealAdapter(): ChainAdapter {
     const settled = request.settledAtMs !== null;
     return {
       requestId: request.id,
+      requester: request.requester,
       assets,
       status: sale ? "sold" : settled ? "paid" : "queued",
       position: index >= 0 && !sale ? index + 1 : null,

@@ -48,6 +48,8 @@ export interface ClaimEvent {
 
 export interface Claim {
   requestId: number;
+  /** Who asked for the withdrawal. Null in the simulation. */
+  requester: string | null;
   assets: bigint;
   status: ClaimStatus;
   position: number | null;

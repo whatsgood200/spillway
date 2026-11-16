@@ -390,6 +390,7 @@ export function createMockAdapter(): ChainAdapter {
         const queued = event("queued", "base-sepolia");
         const claim: Claim = {
           requestId,
+          requester: null,
           assets,
           status: paidAtOnce ? "paid" : "queued",
           position: null,

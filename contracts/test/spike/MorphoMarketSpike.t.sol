@@ -42,7 +42,13 @@ contract MorphoMarketSpike is Test {
     Id id;
 
     function setUp() public {
-        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC"));
+        // Skipped, not failed, when no RPC is set, like the fork tests.
+        string memory rpc = vm.envOr("BASE_SEPOLIA_RPC", string(""));
+        if (bytes(rpc).length == 0) {
+            vm.skip(true);
+            return;
+        }
+        vm.createSelectFork(rpc);
         SpikeCollateral collateral = new SpikeCollateral();
         // 1 SPK (18 decimals) = 2,000 USDC (6 decimals): price = 2000 * 1e6 * 1e36 / 1e18.
         SpikeOracle oracle = new SpikeOracle(2000 * 1e6 * 1e36 / 1e18);

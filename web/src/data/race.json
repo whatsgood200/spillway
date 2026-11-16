@@ -1,6 +1,71 @@
 {
-  "source": "none yet",
-  "generatedAt": null,
-  "trials": 0,
-  "rows": []
+  "source": "measurements/race-2026-11-16.jsonl",
+  "generatedAt": "2026-11-16T14:00:13.371Z",
+  "trials": 40,
+  "rows": [
+    {
+      "delayMs": 0,
+      "medianLagMs": 400,
+      "minLagMs": 200,
+      "maxLagMs": 400,
+      "trials": 5,
+      "queueWins": 0
+    },
+    {
+      "delayMs": 400,
+      "medianLagMs": 800,
+      "minLagMs": 600,
+      "maxLagMs": 1000,
+      "trials": 5,
+      "queueWins": 0
+    },
+    {
+      "delayMs": 800,
+      "medianLagMs": 1000,
+      "minLagMs": 1000,
+      "maxLagMs": 1400,
+      "trials": 5,
+      "queueWins": 0
+    },
+    {
+      "delayMs": 1200,
+      "medianLagMs": 1600,
+      "minLagMs": 1400,
+      "maxLagMs": 1600,
+      "trials": 5,
+      "queueWins": 4
+    },
+    {
+      "delayMs": 1600,
+      "medianLagMs": 2200,
+      "minLagMs": 1800,
+      "maxLagMs": 2600,
+      "trials": 5,
+      "queueWins": 4
+    },
+    {
+      "delayMs": 2000,
+      "medianLagMs": 2400,
+      "minLagMs": 2200,
+      "maxLagMs": 2600,
+      "trials": 5,
+      "queueWins": 4
+    },
+    {
+      "delayMs": 3000,
+      "medianLagMs": 3400,
+      "minLagMs": 3200,
+      "maxLagMs": 3400,
+      "trials": 5,
+      "queueWins": 5
+    },
+    {
+      "delayMs": 5000,
+      "medianLagMs": 5800,
+      "minLagMs": 5400,
+      "maxLagMs": 6600,
+      "trials": 5,
+      "queueWins": 5
+    }
+  ]
 }

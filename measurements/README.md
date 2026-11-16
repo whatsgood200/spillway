@@ -40,3 +40,47 @@ From `web/`, with the demo account's key in `web/.env.local`:
 node scripts/run-loops.mjs 200      # runs loops, writes loops-<date>.jsonl
 node scripts/latency-report.mjs     # recomputes every loop from the chain, writes latency-<date>.json
 ```
+
+## Race experiment, 2026-11-16
+
+**Question:** when a borrower repays into a fully lent vault, who gets that cash: the withdrawal queue, paid through Reactive Network, or a competing borrower trying to take the same cash?
+
+**Result, 40 trials:** a competitor that landed within 1.4 s of the repayment won every time (16 of 16). Between 1.6 and 2.6 s the queue won 12 of 14. From 3.2 s on the queue won every time (10 of 10).
+
+| Competitor landed after the repayment | Trials | Queue got the cash |
+|---|---|---|
+| 0.2 to 1.4 s | 16 | 0 |
+| 1.6 to 2.6 s | 14 | 12 |
+| 3.2 to 6.6 s | 10 | 10 |
+
+By the delay the competitor waited (from `src/data/race.json`, made by `scripts/race-report.mjs`):
+
+| Competitor waited | Landed after the repayment (median, range) | Queue won |
+|---|---|---|
+| 0 ms | 400 ms (200 to 400) | 0 of 5 |
+| 400 ms | 800 ms (600 to 1,000) | 0 of 5 |
+| 800 ms | 1,000 ms (1,000 to 1,400) | 0 of 5 |
+| 1,200 ms | 1,600 ms (1,400 to 1,600) | 4 of 5 |
+| 1,600 ms | 2,200 ms (1,800 to 2,600) | 4 of 5 |
+| 2,000 ms | 2,400 ms (2,200 to 2,600) | 4 of 5 |
+| 3,000 ms | 3,400 ms (3,200 to 3,400) | 5 of 5 |
+| 5,000 ms | 5,800 ms (5,400 to 6,600) | 5 of 5 |
+
+The two queue losses in the middle band (competitor at 1.8 s and 2.4 s) were trials where the loop itself was slower than the competitor. In every queue win the payout landed 1.0 to 2.6 s after the repayment.
+
+### What this does and does not show
+- **A borrower on the same chain who acts within about a second always wins.** No cross-chain loop beats the next block. Spillway does not claim to beat a bot that watches Morpho and borrows in the next block.
+- **It does show where Omni's speed changes the outcome.** Anyone slower than about 1.5 to 2 s, such as a person, a keeper polling on a schedule, or a bot that waits a few blocks to be safe, loses the cash to the queue. On the previous Reactive Network, blocks were about 7 s apart, so the loop alone would have taken longer than that, and the queue would have lost to anyone acting within several seconds. That legacy figure is an estimate from block times, not something we measured.
+
+### How it was measured
+- Each trial: clear the queue, deposit 1.5 USDC, borrow everything, queue the withdrawal (`scripts/lib/live.mjs`).
+- The repayment and the competitor's borrow of the same amount are prepared and signed before either is sent, then broadcast with the chosen gap (`scripts/race.mjs`). Without pre-signing, the competitor could not land sooner than 1.4 s, which would flatter the queue.
+- The winner is read from the chain: the competitor's receipt status (its borrow reverts with "insufficient liquidity" if the queue already took the cash) and the request's `settledBlock` in `QueueVault` storage. Lag is measured from the two blocks' millisecond timestamps.
+- The competitor is our own demo account. Delays were interleaved across the run, not run in blocks.
+- Two earlier attempts are kept but not counted, because both let the competitor start late and so favoured the queue: `race-2026-11-16-pilot.jsonl` (competitor waited for our own receipt) and `race-2026-11-16-unsigned.jsonl` (competitor prepared its transaction after the repayment was sent).
+
+### Reproduce
+```
+node scripts/race.mjs 5                    # 5 trials per delay, writes race-<date>.jsonl
+node scripts/race-report.mjs 2026-11-16    # summary, and the file the latency page reads
+```

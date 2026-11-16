@@ -40,6 +40,7 @@ const abi = parseAbi([
   "function deposit(uint256,address) returns (uint256)",
   "function requestRedeem(uint256,address) returns (uint256,uint256,bool)",
   "function withdrawable() view returns (uint256)",
+  "function queueLength() view returns (uint256)",
   "function loopCount() view returns (uint256)",
   "struct Loop { uint256 originTxHash; uint64 originBlock; uint64 payoutBlock; uint64 paidAtMs; uint32 settled; uint256 assets; }",
   "function loopsSlice(uint256,uint256) view returns (Loop[])",
@@ -60,7 +61,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const read = (address, functionName, args = []) => pub.readContract({ address, abi, functionName, args });
 
 async function send(address, functionName, args) {
-  const hash = await wallet.writeContract({ address, abi, functionName, args });
+  const estimate = await pub.estimateContractGas({ address, abi, functionName, args, account });
+  const hash = await wallet.writeContract({ address, abi, functionName, args, gas: (estimate * 3n) / 2n + 60_000n });
   const receipt = await pub.waitForTransactionReceipt({ hash, timeout: 60_000 });
   if (receipt.status !== "success") throw new Error(`${functionName} reverted: ${hash}`);
   return { hash, block: Number(receipt.blockNumber) };
@@ -88,6 +90,31 @@ async function reactorReady() {
   }
 }
 
+/** What the demo borrower owes, rounded down so Morpho never sees an overpayment. */
+async function debtOwed() {
+  const [, , borrowAssets, borrowShares] = await read(A.morpho, "market", [MARKET]);
+  const [, myShares] = await read(A.morpho, "position", [MARKET, account.address]);
+  return (myShares * (borrowAssets + 1n)) / (borrowShares + 1_000_000n);
+}
+
+/** Repays until the queue is empty. Payouts go back to the demo account, so it can repay in rounds. */
+async function clearQueue(params) {
+  for (let round = 0; round < 10; round++) {
+    if ((await read(A.vault, "queueLength")) === 0n) return;
+    const owed = await debtOwed();
+    const cash = await read(A.usdc, "balanceOf", [account.address]);
+    const repay = owed < cash ? owed : cash;
+    if (repay === 0n) throw new Error("queue is stuck and the demo account has nothing to repay with");
+    console.log(`clearing a stuck queue: repaying ${Number(repay) / 1e6} USDC`);
+    await send(A.morpho, "repay", [params, repay, 0n, account.address, "0x"]);
+    for (let waited = 0; waited < 60_000; waited += 2000) {
+      await sleep(2000);
+      if ((await read(A.vault, "queueLength")) === 0n) break;
+    }
+  }
+  if ((await read(A.vault, "queueLength")) > 0n) throw new Error("could not clear the queue");
+}
+
 const day = new Date().toISOString().slice(0, 10);
 const outDir = new URL("../../measurements/", import.meta.url);
 mkdirSync(outDir, { recursive: true });
@@ -110,6 +137,7 @@ let failures = 0;
 for (let i = 1; i <= total; i++) {
   try {
     await reactorReady();
+    await clearQueue(params);
     // 1.00 to 3.00 USDC, varied so the record is not one repeated number.
     const amount = 1_000_000n + BigInt(Math.floor(Math.random() * 21)) * 100_000n;
     const before = Number(await read(A.callback, "loopCount"));
@@ -120,11 +148,10 @@ for (let i = 1; i <= total; i++) {
     const shares = await read(A.vault, "balanceOf", [account.address]);
     const queued = await send(A.vault, "requestRedeem", [shares, account.address]);
 
-    // Repay exactly what the queue needs, rounded down so Morpho never sees an overpayment.
-    const [, , borrowAssets, borrowShares] = await read(A.morpho, "market", [MARKET]);
-    const [, myShares] = await read(A.morpho, "position", [MARKET, account.address]);
-    const owed = (myShares * (borrowAssets + 1n)) / (borrowShares + 1_000_000n);
-    const repay = amount < owed ? amount : owed;
+    // Repay everything owed, so nothing a failed step left behind can carry into the next loop.
+    const owed = await debtOwed();
+    const cash = await read(A.usdc, "balanceOf", [account.address]);
+    const repay = owed < cash ? owed : cash;
     const repaid = await send(A.morpho, "repay", [params, repay, 0n, account.address, "0x"]);
 
     // Watch only. The payout must come from Reactive Network.

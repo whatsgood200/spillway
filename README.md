@@ -16,7 +16,7 @@ When a lending vault is fully lent out, withdrawals wait, and returning cash goe
 |---|---|
 | Live app, no wallet needed | https://spillway-phi.vercel.app/demo |
 | Measured latency and the race experiment | https://spillway-phi.vercel.app/latency |
-| Contract addresses and transactions | [deployments.md](deployments.md) |
+| Contract addresses, transactions and verified source | [deployments.md](deployments.md) |
 | How every number was measured | [measurements/README.md](measurements/README.md) |
 | Track | Reactive Omni Buildathon, Every Second Counts |
 

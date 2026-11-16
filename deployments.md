@@ -4,17 +4,19 @@
 
 Reactive Omni Buildathon. Current deployment (v2) made 2026-11-16. Deployer: `0xd4171f06da70216e0bb1069e41907f3d6723a097`.
 
+Source verified 2026-11-16 with Solidity 0.8.31, optimizer 200 runs, EVM cancun: Base Sepolia contracts on Blockscout and Sourcify, the Lasna reactor on Sourcify (Reactscan has no verification API). Basescan not yet: it needs an Etherscan API key.
+
 Every hash below was checked against the chain with `eth_getTransactionByHash` and `eth_getTransactionReceipt` (what it created, or which contract and function it called). The deploy tool's own printout pairs some hashes with the wrong step, so its output is not copied directly.
 
 ## Current (v2): Base Sepolia (chain 84532), explorer https://sepolia.basescan.org
 
 | Contract | Address | Deploy transaction | Source verified |
 |---|---|---|---|
-| QueueVault | `0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0` | `0x91a7f3c3c403ee703f9512df481f521620cf2cd0331339e9eb56a985d8235154` | no |
-| InstantPool | `0x15d5F39A464875634349a88c5E9F48D84f603207` | `0x1553e50868b6fcd26e0cbbeec15152f7bf3883cf0cca55228892ed46b352cb59` | no |
-| SpillwayCallback | `0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20` | `0x29b1a71e6c166b3842f26e7a95b68f0387f4561fa049c83474e9d36b7ef085f2` | no |
-| DemoCollateral (sdCOL, ours, freely mintable) | `0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806` | `0x55d3315947d86c43c7b16e0e588f5ddd3b8934b44a92ed38e619bf4ab73d28dd` | no |
-| DemoOracle (ours, fixed price) | `0x02ae94417d2100B93C886e1A9f09139C60DC24A9` | `0x675b3a3d0ef865bb3a78741d48ad12df50fc3ad0b02e7c2c8ba1270c81e35b76` | no |
+| QueueVault | `0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0` | `0x91a7f3c3c403ee703f9512df481f521620cf2cd0331339e9eb56a985d8235154` | [Blockscout](https://base-sepolia.blockscout.com/address/0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0?tab=contract), Sourcify |
+| InstantPool | `0x15d5F39A464875634349a88c5E9F48D84f603207` | `0x1553e50868b6fcd26e0cbbeec15152f7bf3883cf0cca55228892ed46b352cb59` | [Blockscout](https://base-sepolia.blockscout.com/address/0x15d5F39A464875634349a88c5E9F48D84f603207?tab=contract), Sourcify |
+| SpillwayCallback | `0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20` | `0x29b1a71e6c166b3842f26e7a95b68f0387f4561fa049c83474e9d36b7ef085f2` | [Blockscout](https://base-sepolia.blockscout.com/address/0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20?tab=contract), Sourcify |
+| DemoCollateral (sdCOL, ours, freely mintable) | `0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806` | `0x55d3315947d86c43c7b16e0e588f5ddd3b8934b44a92ed38e619bf4ab73d28dd` | [Sourcify](https://repo.sourcify.dev/84532/0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806) exact match |
+| DemoOracle (ours, fixed price) | `0x02ae94417d2100B93C886e1A9f09139C60DC24A9` | `0x675b3a3d0ef865bb3a78741d48ad12df50fc3ad0b02e7c2c8ba1270c81e35b76` | [Sourcify](https://repo.sourcify.dev/84532/0x02ae94417d2100B93C886e1A9f09139C60DC24A9) exact match |
 
 Morpho Blue market created by us on the deployed Morpho Blue (`0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb`): id `0x29c415df812658c358fbd137cb13745f337bdec8c043cb7f3247274a80115631`, loan token USDC `0x036CbD53842c5426634e7929541eC2318f3dCF7e`, collateral sdCOL, oracle DemoOracle, Adaptive Curve IRM `0x46415998764C29aB2a25CbeA6254146D50D22687`, LLTV 86 percent. Create transaction `0x0866f5c85d478b4f2e1c7c0c569b8a4c40345bc860a1d8dc6fb9e918023c6d7a`.
 
@@ -22,7 +24,7 @@ Morpho Blue market created by us on the deployed Morpho Blue (`0xBBBBBbbBBb9cC5e
 
 | Contract | Address | Deploy transaction | Source verified |
 |---|---|---|---|
-| QueueReactor | `0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77` | `0xb7b55fb9e29be8e25f32275a5cd62391f409281fbaf34620d6f1774ef466cc2f` | no |
+| QueueReactor | `0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77` | `0xb7b55fb9e29be8e25f32275a5cd62391f409281fbaf34620d6f1774ef466cc2f` | [Sourcify](https://repo.sourcify.dev/5318007/0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77) exact match |
 
 Reactor wired to the callback contract: `0xe65f65571fc24078cfc5935c07d84ce04209d49eea6e020f8799f677edbd6bf9`.
 

@@ -1,0 +1,17 @@
+{
+  "name": "spillway-video",
+  "private": true,
+  "type": "module",
+  "description": "Builds the Spillway demo video: live screen captures, rendered scenes, Kokoro voice-over, captions, ffmpeg cut.",
+  "scripts": {
+    "record": "node record.mjs",
+    "scenes": "node render-scenes.mjs",
+    "voice": "node voice.mjs",
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "playwright": "1.61.1",
+    "viem": "2.57.20"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

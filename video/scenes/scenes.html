@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spillway video scenes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Martian+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+  :root {
+    --ground: #f3f0e8; --surface: #fbf9f3; --ink: #17160f; --ink-2: #4b483d; --ink-3: #6b6759; --line: #d9d4c5;
+    --accent: #1d4f8f; --accent-soft: #dbe5f2; --negative: #a23b2a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); color: var(--ink); font-family: "Public Sans", sans-serif; }
+  .scene { position: absolute; inset: 0; padding: 120px 160px 200px; display: none; }
+  .scene.on { display: block; }
+  .label { font-family: "Martian Mono", monospace; font-size: 22px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); display: flex; align-items: center; gap: 14px; }
+  .label::before { content: ""; width: 12px; height: 12px; background: var(--accent); display: inline-block; }
+  h1 { font-family: "Fraunces", serif; font-weight: 400; font-size: 128px; line-height: 1.0; letter-spacing: -0.03em; margin-top: 36px; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lead { font-size: 34px; line-height: 1.45; color: var(--ink-2); max-width: 1100px; margin-top: 30px; }
+  .mono { font-family: "Martian Mono", monospace; }
+  .card { background: var(--surface); border: 2px solid var(--line); border-radius: 4px; padding: 36px 40px; }
+  .stat { font-family: "Fraunces", serif; font-size: 150px; line-height: 1; letter-spacing: -0.03em; }
+  .stat-label { font-family: "Martian Mono", monospace; font-size: 22px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-top: 14px; }
+  .fade { opacity: 0; will-change: opacity, transform; }
+
+  /* problem */
+  #problem .bar { position: absolute; left: 160px; right: 160px; top: 700px; height: 96px; border: 2px solid var(--ink); background: var(--surface); }
+  #problem .bar .lent { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); }
+  #problem .bar-labels { position: absolute; left: 160px; right: 160px; top: 816px; display: flex; justify-content: space-between; font-family: "Martian Mono", monospace; font-size: 24px; color: var(--ink-2); }
+  #problem .bar-labels b { color: var(--negative); font-weight: 500; }
+  #problem .fail { position: absolute; right: 160px; top: 120px; width: 660px; }
+  #problem .fail .x { color: var(--negative); font-family: "Martian Mono", monospace; font-size: 24px; letter-spacing: .06em; }
+  #problem .fail .t { font-size: 34px; margin-top: 12px; }
+  #problem .event { position: absolute; right: 160px; top: 340px; width: 660px; border-left: 6px solid var(--negative); padding-top: 28px; padding-bottom: 28px; }
+  #problem .event .big { font-family: "Fraunces", serif; font-size: 56px; line-height: 1.05; }
+  #problem .event .small { font-size: 26px; color: var(--ink-2); margin-top: 10px; line-height: 1.4; }
+
+  /* data */
+  #data .row { display: flex; gap: 140px; margin-top: 50px; }
+  #data .axis { position: absolute; left: 160px; right: 160px; top: 640px; height: 200px; }
+  #data .axis .line { position: absolute; left: 0; right: 0; top: 120px; height: 2px; background: var(--ink); }
+  #data .axis .tick { position: absolute; top: 132px; font-family: "Martian Mono", monospace; font-size: 22px; color: var(--ink-3); transform: translateX(-50%); }
+  #data .axis .tick::before { content: ""; position: absolute; left: 50%; top: -18px; width: 2px; height: 12px; background: var(--ink); }
+  #data .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--ink); margin: -9px 0 0 -9px; }
+  #data .dot.never { background: var(--surface); border: 2px solid var(--ink); }
+  #data .marker { position: absolute; top: -110px; height: 250px; width: 4px; background: var(--accent); }
+  #data .marker span { position: absolute; left: 16px; top: -4px; white-space: nowrap; font-family: "Martian Mono", monospace; font-size: 22px; color: var(--accent); }
+
+  /* intro */
+  #intro { display: none; text-align: left; }
+  #intro.on { display: flex; flex-direction: column; justify-content: center; }
+  #intro .brand { display: flex; align-items: center; gap: 36px; }
+  #intro .brand svg { width: 150px; height: 150px; }
+  #intro .brand .name { font-family: "Fraunces", serif; font-size: 170px; letter-spacing: -0.035em; line-height: 1; }
+  #intro .chips { display: flex; gap: 18px; margin-top: 56px; }
+  #intro .chip { font-family: "Martian Mono", monospace; font-size: 24px; padding: 14px 22px; border: 2px solid var(--ink); border-radius: 2px; }
+
+  /* how */
+  #how .flow { position: absolute; left: 160px; right: 160px; top: 330px; height: 300px; }
+  #how .node { position: absolute; top: 0; width: 330px; height: 220px; padding: 26px 28px; background: var(--surface); border: 2px solid var(--line); border-radius: 4px; }
+  #how .node.lit { border-color: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+  #how .node .chain { font-family: "Martian Mono", monospace; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+  #how .node .title { font-family: "Fraunces", serif; font-size: 40px; margin-top: 12px; line-height: 1.05; }
+  #how .node .what { font-size: 22px; color: var(--ink-2); margin-top: 12px; line-height: 1.35; }
+  #how .arrow { position: absolute; top: 108px; height: 4px; background: var(--line); }
+  #how .arrow .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+  #how .pulse { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); margin: -9px 0 0 -11px; top: 110px; box-shadow: 0 0 0 8px var(--accent-soft); }
+  #how .queue { position: absolute; left: 160px; top: 690px; display: flex; gap: 16px; align-items: center; }
+  #how .queue .slot { width: 170px; height: 76px; border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; font-family: "Martian Mono", monospace; font-size: 22px; background: var(--surface); }
+  #how .queue .slot.paid { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+  #how .queue .cap { font-family: "Martian Mono", monospace; font-size: 22px; color: var(--ink-3); margin-right: 18px; }
+  #how .measured { position: absolute; right: 160px; top: 700px; text-align: right; }
+
+  /* hostile */
+  #hostile .term { margin-top: 44px; background: var(--ink); color: #e9e5d8; border-radius: 6px; padding: 40px 48px; font-family: "Martian Mono", monospace; font-size: 25px; line-height: 1.55; height: 640px; overflow: hidden; }
+  #hostile .term .c { color: #9fb8db; }
+  #hostile .term .r { color: #f08f7a; }
+  #hostile .term .ok { color: #9fd3a0; }
+  #hostile .term .note { color: #a8a395; }
+
+  /* close */
+  #close .url { font-family: "Fraunces", serif; font-size: 112px; letter-spacing: -0.03em; margin-top: 60px; color: var(--accent); }
+  #close .dare { font-family: "Fraunces", serif; font-style: italic; font-size: 72px; margin-top: 18px; }
+  #close .limits { display: flex; gap: 18px; margin-top: 40px; flex-wrap: wrap; }
+  #close .limits span { font-family: "Martian Mono", monospace; font-size: 22px; padding: 12px 18px; border: 2px solid var(--line); background: var(--surface); }
+  #close .repo { font-family: "Martian Mono", monospace; font-size: 24px; color: var(--ink-3); margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<section class="scene" id="problem">
+  <p class="label fade" data-in="0">The problem</p>
+  <h1 class="fade" data-in="0.3">Your withdrawal<br>is <em>stuck</em>.</h1>
+  <div class="card fail fade" data-cue="1"><p class="x">WITHDRAW 10,000 USDC · FAILED</p><p class="t">Insufficient liquidity. The vault has lent out everything.</p></div>
+  <div class="card event fade" data-cue="2"><p class="big">&lt; 1% withdrawable,<br>about 6 hours</p><p class="small">Two Gauntlet vaults on Morpho, 4 November 2025, after the Stream Finance collapse.</p></div>
+  <div class="bar"><div class="lent"></div></div>
+  <div class="bar-labels"><span>VAULT DEPOSITS</span><span>LENT OUT <span class="mono" id="lentPct">0%</span> · WITHDRAWABLE <b id="freePct">100%</b></span></div>
+</section>
+
+<section class="scene" id="data">
+  <p class="label fade" data-in="0">Today, without a queue · Base mainnet, last 12 months</p>
+  <p class="never-label mono fade" data-cue="2" style="position:absolute;right:160px;top:845px;font-size:22px;color:var(--ink-3);text-align:right">○ 25 never taken within a day</p>
+  <div class="row">
+    <div class="fade" data-cue="1"><p class="stat" id="count135">0</p><p class="stat-label">repayments into a dry market</p></div>
+    <div class="fade" data-cue="2"><p class="stat" id="median">1.6 h</p><p class="stat-label">median until someone took the cash</p></div>
+  </div>
+  <div class="axis">
+    <div class="line"></div>
+    <div id="ticks"></div>
+    <div id="dots"></div>
+    <div class="marker fade" data-cue="2" data-shift="0" id="marker"><span>Spillway pays the queue here · ~1.5 s</span></div>
+  </div>
+</section>
+
+<section class="scene" id="intro">
+  <p class="label fade" data-in="0" style="position:absolute;top:120px;left:160px">Reactive Omni Buildathon · Every Second Counts</p>
+  <div class="brand fade" data-in="0.1">
+    <svg viewBox="0 0 28 28"><rect width="28" height="28" rx="3" fill="#17160f"/><path d="M5 10H11.5C17 10 15.5 20.5 23 20.5V23H5Z" fill="#1d4f8f"/><path d="M5 10H11.5C17 10 15.5 20.5 23 20.5" fill="none" stroke="#f3f0e8" stroke-width="2.25" stroke-linecap="square"/></svg>
+    <span class="name">Spillway</span>
+  </div>
+  <p class="lead fade" data-in="0.6" style="font-size:52px;max-width:1500px;color:var(--ink);font-family:Fraunces,serif;line-height:1.15">A withdrawal queue that <em style="color:var(--accent)">pays itself</em> the moment a borrower repays.</p>
+  <div class="chips fade" data-cue="1"><span class="chip">Morpho Blue</span><span class="chip">Reactive Network</span><span class="chip">Base</span></div>
+</section>
+
+<section class="scene" id="how">
+  <p class="label fade" data-in="0">How it works</p>
+  <div class="flow">
+    <div class="node fade" data-cue="1" id="n1" style="left:0"><p class="chain">Base Sepolia</p><p class="title">Borrower repays</p><p class="what">Morpho Blue emits Repay</p></div>
+    <div class="arrow" style="left:330px;width:72px"><div class="fill" id="a1"></div></div>
+    <div class="node fade" data-cue="1" data-shift="0.5" id="n2" style="left:402px"><p class="chain">Reactive Lasna</p><p class="title">QueueReactor</p><p class="what">Approved borrower, own loan, our market only</p></div>
+    <div class="arrow" style="left:732px;width:72px"><div class="fill" id="a2"></div></div>
+    <div class="node fade" data-cue="2" id="n3" style="left:804px"><p class="chain">Base Sepolia</p><p class="title">Callback proxy</p><p class="what">Delivers only for our reactor</p></div>
+    <div class="arrow" style="left:1134px;width:72px"><div class="fill" id="a3"></div></div>
+    <div class="node fade" data-cue="2" data-shift="0.6" id="n4" style="left:1206px"><p class="chain">Base Sepolia</p><p class="title">QueueVault</p><p class="what">Pays the queue in order; stamps the time in ms</p></div>
+    <div class="pulse" id="pulse" style="opacity:0"></div>
+  </div>
+  <div class="queue fade" data-cue="2" data-shift="1.2"><span class="cap">THE QUEUE</span><div class="slot" id="q1">#1 · 500</div><div class="slot" id="q2">#2 · 1,200</div><div class="slot" id="q3">#3 · 300</div><div class="slot" id="q4">#4 · 2,000</div></div>
+  <div class="measured fade" data-cue="2" data-shift="2.4"><p class="stat" style="font-size:96px">1.4 s</p><p class="stat-label">median, repayment to payout, measured on chain</p></div>
+</section>
+
+<section class="scene" id="hostile">
+  <p class="label fade" data-in="0">Try to abuse it · live contracts, as a stranger</p>
+  <div class="term" id="term"></div>
+</section>
+
+<section class="scene" id="close">
+  <p class="label fade" data-in="0">Honest limits</p>
+  <div class="limits fade" data-in="0.3"><span>Base Sepolia + Reactive Lasna testnets</span><span>Test funds only</span><span>Our own Morpho market</span><span>Not audited by a third party</span></div>
+  <p class="lead fade" data-in="0.8" style="font-family:Fraunces,serif;font-size:56px;color:var(--ink);margin-top:44px">Next: a real market, with a curator.</p>
+  <p class="url fade" data-cue="1">spillway-phi.vercel.app</p>
+  <p class="dare fade" data-cue="1" data-shift="1.8">Try to break it.</p>
+  <p class="repo fade" data-cue="1" data-shift="0.8">github.com/whatsgood200/spillway</p>
+</section>
+
+<script>
+  const P = new URLSearchParams(location.search);
+  const DATA = window.SCENE_DATA || {};
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const ease = (x) => { x = clamp(x); return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  const out = (x) => 1 - Math.pow(1 - clamp(x), 3);
+
+  let scene, cues, duration;
+  function show(id, cueTimes, dur) {
+    document.querySelectorAll(".scene").forEach((s) => s.classList.toggle("on", s.id === id));
+    scene = document.getElementById(id); cues = cueTimes; duration = dur;
+    if (id === "data") buildData();
+    if (id === "hostile") buildTerm();
+  }
+  function startOf(el) {
+    if (el.dataset.in !== undefined) return +el.dataset.in;
+    return (cues[+el.dataset.cue] ?? 0) + (+el.dataset.shift || 0);
+  }
+  function fades(t) {
+    scene.querySelectorAll(".fade").forEach((el) => {
+      const k = out((t - startOf(el)) / 0.6);
+      el.style.opacity = k;
+      el.style.transform = `translateY(${(1 - k) * 24}px)`;
+    });
+  }
+
+  // problem: the vault fills with loans until almost nothing is withdrawable.
+  function problem(t) {
+    const k = ease((t - 0.6) / 3.2);
+    const lent = 99.4 * k;
+    scene.querySelector(".lent").style.width = lent + "%";
+    document.getElementById("lentPct").textContent = lent.toFixed(1) + "%";
+    document.getElementById("freePct").textContent = (100 - lent).toFixed(1) + "%";
+  }
+
+  // data: 110 repayments, each placed at how long its freed cash waited; 25 never taken within a day.
+  const TICKS = [[1, "1 s"], [10, "10 s"], [60, "1 min"], [600, "10 min"], [3600, "1 h"], [36000, "10 h"], [86400, "1 day"]];
+  const xOf = (s) => (Math.log10(Math.max(1, s)) / Math.log10(86400)) * 1440;
+  let dotEls = [];
+  function buildData() {
+    const ticks = document.getElementById("ticks"); ticks.innerHTML = "";
+    for (const [s, label] of TICKS) { const d = document.createElement("div"); d.className = "tick"; d.style.left = xOf(s) + "px"; d.textContent = label; ticks.appendChild(d); }
+    const dots = document.getElementById("dots"); dots.innerHTML = ""; dotEls = [];
+    const stack = {};
+    const items = [...(DATA.taken || []).map((ms) => ({ s: ms / 1000 })), ...Array.from({ length: DATA.never || 0 }, () => ({ s: 172800, never: true }))];
+    items.sort((a, b) => a.s - b.s);
+    let neverIndex = 0;
+    for (const item of items) {
+      const d = document.createElement("div"); d.className = "dot" + (item.never ? " never" : "");
+      if (item.never) {
+        // Never taken: a small block of five columns at the far right.
+        const col = neverIndex % 5, row = Math.floor(neverIndex / 5); neverIndex++;
+        d.style.left = 1520 + col * 20 + "px"; d.style.top = 120 - 14 - row * 20 + "px";
+      } else {
+        const x = xOf(item.s); const col = Math.round(x / 20); const level = (stack[col] = (stack[col] || 0) + 1);
+        d.style.left = x + "px"; d.style.top = 120 - 14 - (level - 1) * 20 + "px";
+      }
+      dots.appendChild(d); dotEls.push(d);
+    }
+    document.getElementById("marker").style.left = xOf(1.5) + "px";
+  }
+  function data(t) {
+    const c1 = cues[1] ?? 0;
+    const n = Math.round(135 * out((t - c1) / 1.8));
+    document.getElementById("count135").textContent = n;
+    dotEls.forEach((d, i) => { const k = out((t - c1 - 0.2 - i * 0.012) / 0.4); d.style.opacity = k; d.style.transform = `scale(${0.4 + 0.6 * k})`; });
+  }
+
+  // how: a pulse travels from the repayment to the vault, then the queue is paid from the front.
+  function how(t) {
+    const c1 = cues[1] ?? 1, c2 = cues[2] ?? 4;
+    const p1 = ease((t - c1 - 1.0) / 1.2), p2 = ease((t - c2 - 0.2) / 1.0), p3 = ease((t - c2 - 1.0) / 1.0);
+    document.getElementById("a1").style.width = p1 * 100 + "%";
+    document.getElementById("a2").style.width = p2 * 100 + "%";
+    document.getElementById("a3").style.width = p3 * 100 + "%";
+    const pulse = document.getElementById("pulse");
+    let x = null;
+    if (t > c1 + 1.0 && t < c1 + 2.2) x = 330 + 72 * p1;
+    else if (t > c2 + 0.2 && t < c2 + 1.2) x = 732 + 72 * p2;
+    else if (t > c2 + 1.0 && t < c2 + 2.0) x = 1134 + 72 * p3;
+    pulse.style.opacity = x === null ? 0 : 1; if (x !== null) pulse.style.left = x + "px";
+    document.getElementById("n2").classList.toggle("lit", t > c1 + 2.0 && t < c2 + 0.6);
+    document.getElementById("n4").classList.toggle("lit", t > c2 + 1.8);
+    ["q1", "q2", "q3"].forEach((id, i) => document.getElementById(id).classList.toggle("paid", t > c2 + 2.6 + i * 0.7));
+  }
+
+  // hostile: real outputs from the live contracts, typed out line by line.
+  let termLines = [];
+  function buildTerm() {
+    termLines = [];
+    for (const h of DATA.hostile || []) {
+      termLines.push({ cls: "note", text: `# ${h.what}` });
+      termLines.push({ cls: "c", text: `$ ${h.command}` });
+      termLines.push({ cls: "r", text: `  execution reverted: ${h.decoded}` });
+      termLines.push({ cls: "", text: "" });
+    }
+    termLines.push({ cls: "c", text: "$ forge test" });
+    termLines.push({ cls: "ok", text: "  77 tests passed, 0 failed · every threat-model finding has an attack test" });
+  }
+  function hostile(t) {
+    const c1 = cues[1] ?? 1, c2 = cues[2] ?? 6;
+    const shownBefore = (i) => (i < termLines.length - 2 ? c1 + 0.2 + i * ((c2 - c1 - 0.6) / (termLines.length - 2)) : c2 + (i - (termLines.length - 2)) * 0.7);
+    const term = document.getElementById("term");
+    term.innerHTML = termLines.map((l, i) => {
+      if (t < shownBefore(i)) return "";
+      const typed = l.cls === "c" ? l.text.slice(0, Math.floor((t - shownBefore(i)) * 70)) : l.text;
+      return `<div class="${l.cls}">${typed.replace(/&/g, "&amp;").replace(/</g, "&lt;") || "&nbsp;"}</div>`;
+    }).join("");
+  }
+
+  window.renderAt = (id, t, cueTimes, dur) => {
+    if (!scene || scene.id !== id) show(id, cueTimes, dur);
+    fades(t);
+    ({ problem, data, how, hostile })[id]?.(t);
+  };
+  if (P.get("scene")) window.renderAt(P.get("scene"), +(P.get("t") || 30), [0, 3, 8], 20);
+</script>
+</body>
+</html>

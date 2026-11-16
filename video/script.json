@@ -1,0 +1,220 @@
+{
+  "voice": "af_heart",
+  "speed": 1.0,
+  "segments": [
+    {
+      "id": "problem",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "Lending vaults lend out almost everything you deposit.",
+          "caption": "Lending vaults lend out almost everything you deposit."
+        },
+        {
+          "say": "When borrowing is heavy, the vault runs dry, and your withdrawal simply fails.",
+          "caption": "When borrowing is heavy, the vault runs dry, and your withdrawal simply fails."
+        },
+        {
+          "say": "In November twenty twenty-five, two Gauntlet vaults on Morpho stayed under one percent withdrawable, for about six hours.",
+          "caption": "In November 2025, two Gauntlet vaults on Morpho stayed under 1% withdrawable, for about six hours."
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "What happens when a borrower finally repays? We measured it, on Base mainnet.",
+          "caption": "What happens when a borrower finally repays? We measured it, on Base mainnet."
+        },
+        {
+          "say": "Over the last year, borrowers repaid into a dry Morpho market one hundred and thirty-five times.",
+          "caption": "Over the last year, borrowers repaid into a dry Morpho market 135 times."
+        },
+        {
+          "say": "Nobody was in line for that cash. It was taken a median of one point six hours later, first come, first served.",
+          "caption": "Nobody was in line for that cash. It was taken a median of 1.6 hours later, first come, first served."
+        }
+      ]
+    },
+    {
+      "id": "intro",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "Spillway puts lenders in line, and the line pays itself.",
+          "caption": "Spillway puts lenders in line, and the line pays itself."
+        },
+        {
+          "say": "The moment a borrower repays, a Reactive contract pays everyone waiting, in order, in about one and a half seconds.",
+          "caption": "The moment a borrower repays, a Reactive contract pays everyone waiting, in order, in about 1.5 seconds."
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "type": "clip",
+      "clip": "demo",
+      "in": 0.8,
+      "out": 30.6,
+      "lines": [
+        {
+          "at": -1.4,
+          "say": "This is the live app, on Base Sepolia. No wallet needed.",
+          "caption": "This is the live app, on Base Sepolia. No wallet needed."
+        },
+        {
+          "at": "queueClicked",
+          "say": "I queue a two dollar withdrawal. The vault is fully lent out, so it waits in line.",
+          "caption": "I queue a 2 USDC withdrawal. The vault is fully lent out, so it waits in line."
+        },
+        {
+          "at": "repayClicked",
+          "say": "Now the borrower repays. That's all. Nobody touches the vault.",
+          "caption": "Now the borrower repays. That's all. Nobody touches the vault."
+        },
+        {
+          "at": "claimOpened",
+          "say": "Open the request. Paid, one point six seconds after the repayment landed.",
+          "caption": "Open the request. Paid, 1.6 seconds after the repayment landed."
+        },
+        {
+          "at": "+0.6",
+          "say": "Three transactions: the repayment on Base, the reactive transaction on Reactive Lasna, and the payout, back on Base.",
+          "caption": "Three transactions: the repayment on Base, the reactive transaction on Reactive Lasna, and the payout, back on Base."
+        }
+      ],
+      "holdStart": 2.4,
+      "speed": [
+        {
+          "from": "queued+1.2",
+          "to": "repayClicked+-0.8",
+          "x": 2,
+          "why": "nothing happens here"
+        }
+      ]
+    },
+    {
+      "id": "lasna",
+      "type": "clip",
+      "clip": "lasna",
+      "in": 0.3,
+      "out": 5.8,
+      "lines": [
+        {
+          "at": 0.4,
+          "say": "On the Reactive explorer, you can see the callback it sent to Base, confirmed.",
+          "caption": "On the Reactive explorer, you can see the callback it sent to Base, confirmed."
+        }
+      ]
+    },
+    {
+      "id": "wallet",
+      "type": "clip",
+      "clip": "wallet",
+      "in": 0.6,
+      "out": "cashedOut+2.2",
+      "lines": [
+        {
+          "at": 0.7,
+          "say": "Rather not wait at all? Sell your place to the pool.",
+          "caption": "Rather not wait at all? Sell your place to the pool."
+        },
+        {
+          "at": "quoteShown",
+          "say": "Before you sign, you see what you give up, what comes back right away, the fee, and the most you can lose.",
+          "caption": "Before you sign, you see what you give up, what comes back right away, the fee, and the most you can lose."
+        },
+        {
+          "at": "cashOutClicked",
+          "say": "One click. The wallet signs an approval, then the sale.",
+          "caption": "One click. The wallet signs an approval, then the sale."
+        },
+        {
+          "at": "cashedOut",
+          "say": "And the cash is already in your wallet.",
+          "caption": "And the cash is already in your wallet."
+        }
+      ],
+      "speed": [
+        {
+          "from": "connected+0.2",
+          "to": "quoteShown+-0.2",
+          "x": 4,
+          "why": "typing and loading"
+        },
+        {
+          "from": "cashOutClicked+2.0",
+          "to": "cashedOut+-0.3",
+          "x": 4,
+          "why": "waiting for Base Sepolia"
+        }
+      ]
+    },
+    {
+      "id": "how",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "Here's how it works.",
+          "caption": "Here's how it works."
+        },
+        {
+          "say": "On Reactive Lasna, our reactor listens for one thing: an approved borrower repaying its own loan, in our Morpho market.",
+          "caption": "On Reactive Lasna, our reactor listens for one thing: an approved borrower repaying its own loan, in our Morpho market."
+        },
+        {
+          "say": "It calls back through Reactive's proxy to Base, where our contract pays the queue, first in, first out, and records the time in milliseconds.",
+          "caption": "It calls back through Reactive's proxy to Base, where our contract pays the queue, first in, first out, and records the time in milliseconds."
+        }
+      ]
+    },
+    {
+      "id": "hostile",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "And it's built to resist abuse.",
+          "caption": "And it's built to resist abuse."
+        },
+        {
+          "say": "A stranger can't call the callback, can't mint collateral to borrow, and can't feed the reactor a fake event. Each call is refused, on chain.",
+          "caption": "A stranger can't call the callback, can't mint collateral to borrow, and can't feed the reactor a fake event. Each is refused on chain."
+        },
+        {
+          "say": "Seventy-seven tests attack every finding in our threat model.",
+          "caption": "77 tests attack every finding in our threat model."
+        }
+      ]
+    },
+    {
+      "id": "latency",
+      "type": "clip",
+      "clip": "latency",
+      "in": 1.2,
+      "out": 8.0,
+      "lines": [
+        {
+          "at": 1.3,
+          "say": "Every loop is timed on chain. On the current contracts, the median is one point four seconds.",
+          "caption": "Every loop is timed on chain. On the current contracts, the median is 1.4 seconds."
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "type": "scene",
+      "lines": [
+        {
+          "say": "Spillway runs on testnets today, with test funds and our own Morpho market. Next is a real market, with a curator.",
+          "caption": "Spillway runs on testnets today, with test funds and our own Morpho market. Next: a real market, with a curator."
+        },
+        {
+          "say": "Try it at spillway dash phi dot vercel dot app. And try to break it.",
+          "caption": "Try it at spillway-phi.vercel.app. And try to break it."
+        }
+      ]
+    }
+  ]
+}

@@ -2,17 +2,17 @@ import { parseAbi } from "viem";
 
 /** Deployed addresses, recorded in deployments.md. Base Sepolia unless noted. */
 export const ADDRESSES = {
-  vault: "0x0CD16Bb4d327e2bA0947deE279073cEc2E0DA265",
-  pool: "0xD8f888161FAcB6529e9389B2b1b9E3Df2636957e",
-  callback: "0x2C0aecdBef8B4CB99461C53a17811B104D2F17C5",
+  vault: "0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0",
+  pool: "0x15d5F39A464875634349a88c5E9F48D84f603207",
+  callback: "0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20",
   usdc: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
   morpho: "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
-  collateral: "0xd7F44463230e95f6b490Da29b8bc475De25C98AB",
+  collateral: "0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806",
   /** Reactive Lasna */
-  reactor: "0x45805145536767435185c991097D8193A8518581",
+  reactor: "0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77",
 } as const;
 
-export const MARKET_ID = "0x521b1156d589a7aa2e41ef70a44a075b46c81605a4b00e8b036de52fe9344d9b" as const;
+export const MARKET_ID = "0x29c415df812658c358fbd137cb13745f337bdec8c043cb7f3247274a80115631" as const;
 
 export const BASE_SEPOLIA_ID = 84532;
 export const BASE_SEPOLIA_RPC = process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC ?? "https://sepolia.base.org";
@@ -20,8 +20,8 @@ export const LASNA_RPC = "https://lasna-rpc.rnk.dev/";
 export const BLOCKSCOUT_API = "https://base-sepolia.blockscout.com/api";
 
 /** First blocks worth scanning: just before our deployments. */
-export const BASE_DEPLOY_BLOCK = 59_298_900;
-export const LASNA_DEPLOY_BLOCK = 8_442_400;
+export const BASE_DEPLOY_BLOCK = 59_465_700;
+export const LASNA_DEPLOY_BLOCK = 8_473_490;
 
 export const EXPLORER = {
   "base-sepolia": "https://sepolia.basescan.org/tx/",

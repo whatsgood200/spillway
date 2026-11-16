@@ -22,7 +22,7 @@ abstract contract LiveBase is Script {
     IERC20 internal constant USDC = IERC20(0x036CbD53842c5426634e7929541eC2318f3dCF7e);
 
     function _vault() internal view returns (QueueVault) {
-        return QueueVault(vm.envOr("VAULT", address(0x0CD16Bb4d327e2bA0947deE279073cEc2E0DA265)));
+        return QueueVault(vm.envOr("VAULT", address(0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0)));
     }
 
     function _amount() internal view returns (uint256) {

@@ -89,3 +89,33 @@ The two queue losses in the middle band (competitor at 1.8 s and 2.4 s) were tri
 node scripts/race.mjs 5                    # 5 trials per delay, writes race-<date>.jsonl
 node scripts/race-report.mjs 2026-11-16    # summary, and the file the latency page reads
 ```
+
+## Real data: Base mainnet
+
+What happens today, without a queue, when a borrower repays into a fully lent-out market. File: [`morpho-base-2026-11-16.json`](morpho-base-2026-11-16.json). Script: [`web/scripts/morpho-crunch.mjs`](../web/scripts/morpho-crunch.mjs).
+
+```bash
+cd web && END_TIME=1794860728 node scripts/morpho-crunch.mjs
+```
+
+**Data.** Every Supply, Withdraw, Borrow, Repay and Liquidation from 2025-11-16 to 2026-11-16 in the 11 listed Morpho Blue markets on Base (over 1M USD supplied) whose hourly utilization reached 99.5 percent for at least 5 hours: 470,335 transactions from the public Morpho API (`blue-api.morpho.org`). Each time window is fetched in one page and checked against the API's own count.
+
+**Rebuild.** Liquidity (supply minus borrow) changes only through those five actions; interest and bad debt move supply and borrow equally. Liquidity after every transaction is rebuilt backwards from the market's current liquidity. Checked against Morpho's hourly liquidity figures: the 95th percentile error is 0.000 percent of supply in all 11 markets. Two sample events were also checked by decoding their Morpho logs from a Base RPC.
+
+**Timing.** Base mainnet made a block every 2 s until block 53,556,127 (timestamp 1793901601) and every 200 ms after it, so block times are exact.
+
+**Definitions.** A repayment is into a dry market when liquidity just before it is at most 0.5 percent of total supply (repayments under 0.01 percent of supply are ignored). The freed cash is taken when liquidity falls back to within 10 percent of the freed amount above where it was. Who took it is the sum of Withdraw (split into Morpho vaults and direct lenders) and Borrow amounts until then.
+
+| Result | Value |
+|---|---|
+| Repayments into a dry market | 135 |
+| Freed cash taken by another transaction | 110 |
+| Not taken within 24 hours | 25 |
+| Taken within 2 s / 10 s / 60 s / 1 h | 0 / 7 / 19 / 45 of 110 |
+| Time until taken, median (p25 to p75) | 1.6 h (15 min to 3.3 h) |
+| Fastest | 4 s, a vault reallocation in the WETH/weETH market |
+| Who took it | lenders withdrawing directly 69 %, borrowers 27 %, vaults 4 % |
+
+**What it shows.** Freed cash is not grabbed in milliseconds today; it waits until someone notices, and then goes to whoever acts first, mostly lenders withdrawing on their own. A queue that settles on the repayment itself pays the lenders already waiting, in order, before any taker seen here.
+
+**What it does not show.** Whether the lenders who withdrew had been waiting, and how fast takers will become now that Base makes a block every 200 ms (the change is under a month old). Ethereum markets are not included.

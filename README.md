@@ -31,7 +31,7 @@ On the demo page, press **Queue a 2 USDC withdrawal**, then **Repay 2 USDC**, th
 
 ## The problem
 
-Curated lending vaults lend out most of what they hold. When borrowing is heavy, utilization reaches 100 percent and withdrawals cannot be paid. On 4 November 2025, after the Stream Finance collapse, Gauntlet reported withdrawable liquidity in two of its Morpho vaults below 1 percent for about six hours. When cash does come back, the lender with the fastest bot gets it; everyone else keeps refreshing.
+Curated lending vaults lend out most of what they hold. When borrowing is heavy, utilization reaches 100 percent and withdrawals cannot be paid. On 4 November 2025, after the Stream Finance collapse, Gauntlet reported withdrawable liquidity in two of its Morpho vaults below 1 percent for about six hours. When cash does come back, nobody is in line for it. We measured this on Base mainnet: over the last year, in the 11 listed Morpho Blue markets that ran out of cash, a borrower repaid into a market with 0.5 percent or less of its cash left 135 times. The freed cash was taken a median 1.6 hours later, first come first served, 69 percent of it by lenders withdrawing directly; the fastest anyone took it was 4 seconds ([how](measurements/README.md#real-data-base-mainnet)).
 
 ## What it does
 
@@ -49,6 +49,7 @@ From [measurements/README.md](measurements/README.md), all on chain:
 | Repayment to payout, earlier contracts (v2), 204 loops | median 1.6 s, p90 2.4 s, p99 4.0 s, 1.0 s to 6.6 s |
 | Competitor landing 1.6 to 2.6 s after a repayment (v2) | queue got the cash 12 of 14 times |
 | Competitor landing 3.2 s or later (v2) | queue got the cash 10 of 10 times |
+| Base mainnet, real Morpho Blue markets, last year: repayments into a market with 0.5 % or less cash left | 135; the cash was taken a median 1.6 h later, never within 2 s, fastest 4 s |
 
 **Why this needs Reactive Omni.** Cash that a borrower repays is contested. A person, a keeper polling on a schedule, or a bot that waits a few blocks now loses it to the queue, because the loop closes in about 1.5 seconds. On the previous Reactive Network, with blocks about 7 s apart, the loop alone took longer than that (an estimate from block times, not measured).
 

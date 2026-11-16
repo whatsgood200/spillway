@@ -1,0 +1,2855 @@
+{
+ "source": "https://blue-api.morpho.org/graphql",
+ "chainId": 8453,
+ "generatedAt": "2026-11-16T21:16:53.337Z",
+ "window": {
+  "from": "2025-11-16T20:25:28.000Z",
+  "to": "2026-11-16T20:25:28.000Z"
+ },
+ "method": {
+  "DRY_SHARE": 0.005,
+  "MIN_REPAY_SHARE": 0.0001,
+  "TAKEN_SHARE": 0.9,
+  "FAST_BLOCKS_FROM": 53556127,
+  "HORIZON_S": 86400,
+  "MIN_FULL_HOURS": 5,
+  "duplicateRowsDropped": 0
+ },
+ "summary": {
+  "repaymentsIntoDryMarket": 135,
+  "takenBackInTheSameTransaction": 0,
+  "takenByAnotherTransaction": 110,
+  "notTakenWithin24h": 25,
+  "medianMs": 5782000,
+  "p25Ms": 900000,
+  "p75Ms": 11898000,
+  "p90Ms": 45058000,
+  "takenWithin": {
+   "1s": 0,
+   "2s": 0,
+   "10s": 0.06363636363636363,
+   "60s": 0.17272727272727273,
+   "10min": 0.20909090909090908,
+   "1h": 0.4090909090909091
+  },
+  "takenByShare": {
+   "vaults": 0.04146169033077634,
+   "directLenders": 0.6911563284233784,
+   "borrowers": 0.2673819812458451
+  }
+ },
+ "markets": [
+  {
+   "name": "USDC/cbETH",
+   "marketId": "0x0ca10126f6c94cbd9cf0a48cc9516ae5e3dec5aa68303e6d988ee37c5149bf0d",
+   "fullHours": 99,
+   "transactions": 79924,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 0
+  },
+  {
+   "name": "USDC/SOL",
+   "marketId": "0x7dc02ff6c536b1d49d7fba770438d79f5bd1f1c78884629b7d1aaee19675782b",
+   "fullHours": 111,
+   "transactions": 53890,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 1
+  },
+  {
+   "name": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "fullHours": 21,
+   "transactions": 41388,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 18
+  },
+  {
+   "name": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "fullHours": 20,
+   "transactions": 41831,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 12
+  },
+  {
+   "name": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "fullHours": 61,
+   "transactions": 115824,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 55
+  },
+  {
+   "name": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "fullHours": 70,
+   "transactions": 33223,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 5
+  },
+  {
+   "name": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "fullHours": 45,
+   "transactions": 13679,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 20
+  },
+  {
+   "name": "USDC/cbADA",
+   "marketId": "0xd7520ad198b497b6eb75bc690268f4597630dbc12e305e9d4105843bab36e41d",
+   "fullHours": 5,
+   "transactions": 40366,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 1
+  },
+  {
+   "name": "USDC/cbXRP",
+   "marketId": "0xfdfecf85a4dd90a7637ae2aaf28b35061166f0e62bfc714c565eed9f7e959783",
+   "fullHours": 6,
+   "transactions": 10456,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 0
+  },
+  {
+   "name": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "fullHours": 136,
+   "transactions": 4089,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 21
+  },
+  {
+   "name": "EURC/wstETH",
+   "marketId": "0xf7e40290f8ca1d5848b3c129502599aa0f0602eb5f5235218797a34242719561",
+   "fullHours": 18,
+   "transactions": 35665,
+   "negativeLiquidityRows": 0,
+   "hourlyCheckP95ErrorShareOfSupply": 0,
+   "included": true,
+   "repaymentsIntoDryMarket": 2
+  }
+ ],
+ "events": [
+  {
+   "market": "USDC/SOL",
+   "marketId": "0x7dc02ff6c536b1d49d7fba770438d79f5bd1f1c78884629b7d1aaee19675782b",
+   "block": 43537012,
+   "time": "2026-03-18T19:49:31.000Z",
+   "tx": "0x0c8eda11ac1d6ceb0392059f00359c4ddd60b195f5664367f67166c54c68eebd",
+   "kind": "Repay",
+   "freed": 0.11,
+   "liquidityBefore": 0.002,
+   "supply": 1.004671,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 42672489,
+   "time": "2026-02-26T19:32:05.000Z",
+   "tx": "0x4396dfb504f2900f62f313aefe0c6db5e5b3ddd53e3fbcafced51de82b6733f8",
+   "kind": "Repay",
+   "freed": 130,
+   "liquidityBefore": 3.1839358315744573,
+   "supply": 816.5410526205513,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 1846.1458888101697,
+    "lender": 0,
+    "borrower": 7.568425060241784
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 44946600,
+   "time": "2026-04-20T10:55:47.000Z",
+   "tx": "0xd29ab360fa6797ddc1e878c5a42a96af1efe29b15b12b5a3e8ffdbb7fa0841ab",
+   "kind": "Repay",
+   "freed": 8.776552088313508,
+   "liquidityBefore": 0.8175188308423758,
+   "supply": 636.4566000954978,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 526000,
+   "takenBy": {
+    "vault": 9.593972560436411,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x452b3ae39e98c9ef62591182cc4304b1c962392b4347ecb26d8166c876b0d4e2"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 44947229,
+   "time": "2026-04-20T11:16:45.000Z",
+   "tx": "0x24dcab67bfb506456b5b1816f79a8dddcc323864b183cca5b31a924db4145efe",
+   "kind": "Repay",
+   "freed": 37.526230786237335,
+   "liquidityBefore": 0.000100349488089254,
+   "supply": 636.4629543805474,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 16.95232648264643,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46191511,
+   "time": "2026-05-19T06:32:49.000Z",
+   "tx": "0x41f0221a611b403b5efd840b1010d4a5043cd7d24d5e2de40c81fd3f3eb53d29",
+   "kind": "Repay",
+   "freed": 7.973220767062339,
+   "liquidityBefore": 8.030402925294961,
+   "supply": 2367.75039982889,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 302000,
+   "takenBy": {
+    "vault": 83.10972546015822,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x4365edfa97790a0c5423eea55f01d779a75452affc0a10a31c8f2325acb923f5"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46191754,
+   "time": "2026-05-19T06:40:55.000Z",
+   "tx": "0x73c298403d37c19e793f98eeff209437d5f0c6300941dbdc2f0bdae9e9112dd2",
+   "kind": "Repay",
+   "freed": 540.3820368116554,
+   "liquidityBefore": 5.590568735458596,
+   "supply": 2367.75039982889,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 57524000,
+   "takenBy": {
+    "vault": 816.8146220724664,
+    "lender": 3.2122475110845685,
+    "borrower": 158.25762651179068
+   },
+   "takenTx": "0xced22140c903291cec6a35b2dac4da89af2b25566383b0803169e947585dcc97"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46347761,
+   "time": "2026-05-22T21:21:09.000Z",
+   "tx": "0x63923852c2a6b8a442eb2b6ef52730189c4faf2bcb113dd2dd04c314285657a5",
+   "kind": "Repay",
+   "freed": 250.56076947987734,
+   "liquidityBefore": 2.37419962033e-7,
+   "supply": 1678.157055732271,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 32000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 250.31020894758,
+    "borrower": 0
+   },
+   "takenTx": "0x1204eaf385cd76d90f339f470ab0eac291a76e3886ca0a79cdda973b2fe56df9"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46347811,
+   "time": "2026-05-22T21:22:49.000Z",
+   "tx": "0x0b136e1659f08bd983bb275d4b3e3c09beb4ec70ee33f15b26e6afc36ad9d975",
+   "kind": "Repay",
+   "freed": 85.66557542267148,
+   "liquidityBefore": 0.000250560769717298,
+   "supply": 1678.157055732271,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 32000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 85.58016015745775,
+    "borrower": 0
+   },
+   "takenTx": "0x95d6fe7f6ee572c621dfeb43d50325d0d2413a016ab7233f31a5534cc3a6aa5b"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46382036,
+   "time": "2026-05-23T16:23:39.000Z",
+   "tx": "0x484f9450a4899e2a6519c4263abc670e56f8af0407e916cea7b53879d98368e4",
+   "kind": "Repay",
+   "freed": 67.70853102630993,
+   "liquidityBefore": 0.000391969630086814,
+   "supply": 1241.5678520967776,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 14000,
+   "takenBy": {
+    "vault": 67.37038013301311,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x6d019a98b0d673a01f1b541047a29b1c57d327d1cd2080e62e1f7951f8d10e00"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46382260,
+   "time": "2026-05-23T16:31:07.000Z",
+   "tx": "0x4c83573835626480b228ef86fa677cbc07208fe03c3bbdf9be64a2a551e9fa19",
+   "kind": "Repay",
+   "freed": 139.93422954366469,
+   "liquidityBefore": 0.000007090987762721,
+   "supply": 1241.5678520967776,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 143.87737133477648,
+    "lender": 40.813957481118635,
+    "borrower": 192.11963825380232
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 46455753,
+   "time": "2026-05-25T09:20:53.000Z",
+   "tx": "0xd3c3691fa8dcec2607dc1e72dc791fad7e3ba9287c15f2ee0bf3cf7fc2f0201f",
+   "kind": "Repay",
+   "freed": 102.83430878361935,
+   "liquidityBefore": 0.4159317869743294,
+   "supply": 981.6433138380397,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 132.4070623066575,
+    "lender": 80.94823079645967,
+    "borrower": 531.6628085176508
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48105478,
+   "time": "2026-07-02T13:51:43.000Z",
+   "tx": "0x43825b679c290bd6ec8e481e51f969f0601ab5cc7f7f41204ad6e1dfd0c02b67",
+   "kind": "Repay",
+   "freed": 76.74482814485208,
+   "liquidityBefore": 2.677614293896648,
+   "supply": 1000.2201250548756,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 11330000,
+   "takenBy": {
+    "vault": 0.9867698712046165,
+    "lender": 140.79590246979242,
+    "borrower": 105.55724099729295
+   },
+   "takenTx": "0x20060760686fb883799a47be1b532a7a88e6d834647cf1e510e45f9a10b5d3be"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48618213,
+   "time": "2026-07-14T10:42:53.000Z",
+   "tx": "0x420bb778dcfe900177ff16d59c94ca4112368b3a2704d4c980b52d4fc46cd6d2",
+   "kind": "Repay",
+   "freed": 0.9844756748958016,
+   "liquidityBefore": 5.145543844789838,
+   "supply": 1117.3299770357191,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 369.40206200434466,
+    "lender": 314.57852653616175,
+    "borrower": 497.8736567935795
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48668310,
+   "time": "2026-07-15T14:32:47.000Z",
+   "tx": "0xc8e5f05ee0b2553c3a8a040d855a157988e8bc59c315964698f51d4ac677fb79",
+   "kind": "Repay",
+   "freed": 106.40000946427652,
+   "liquidityBefore": 5.706521014967545,
+   "supply": 1457.201768165928,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6946000,
+   "takenBy": {
+    "vault": 81.34297591845196,
+    "lender": 153.44678566685943,
+    "borrower": 197.0536051534572
+   },
+   "takenTx": "0x5b121de13078467399de18c39ff750812198cb1507ef478c9a891bcb9e441397"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48695305,
+   "time": "2026-07-16T05:32:37.000Z",
+   "tx": "0xd30cd3e5fc8436eee9993edfa7b7f178f5fac895a12ae24cc83e11d1ad0138ed",
+   "kind": "Repay",
+   "freed": 109.52467370556938,
+   "liquidityBefore": 7.492636418458869,
+   "supply": 1509.6318345299264,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6930000,
+   "takenBy": {
+    "vault": 94.07774221581806,
+    "lender": 212.74545228056786,
+    "borrower": 111.61680352591306
+   },
+   "takenTx": "0x885aedea7e0d058c0b6bf137497aff18c53b67a78f4c3858a510fba736a32250"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48698910,
+   "time": "2026-07-16T07:32:47.000Z",
+   "tx": "0x095716a38508e45a529362f844812e021e8f91b1a8359671914833fbdb1c022c",
+   "kind": "Repay",
+   "freed": 114.36048251659,
+   "liquidityBefore": 6.166497883986036,
+   "supply": 1496.3752150552716,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6916000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 149.43862508142251,
+    "borrower": 239.8533310866589
+   },
+   "takenTx": "0x541bad88da001c93e709749aa7372e3d7d2b0006c5b05c1533be5894bfb169d8"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48932863,
+   "time": "2026-07-21T17:31:13.000Z",
+   "tx": "0x9f5eb7888efabd00a2c92f63a80619161d2e9d7f0ff1f81d06500f9ec0f1ff62",
+   "kind": "Repay",
+   "freed": 110.86599086582166,
+   "liquidityBefore": 1.3211056962330914,
+   "supply": 1450.3740308939277,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 7030000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 145.07154298218862,
+    "borrower": 177.0874914868403
+   },
+   "takenTx": "0x90a95c48250a73efafa92304688d4e6a9aa4b83b590566934345b9b9ce911e76"
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 48989310,
+   "time": "2026-07-23T00:52:47.000Z",
+   "tx": "0x26f11cd5cb0d408b465d7d6355a76befcbb26f5a14a84c027126a541dc9c8dc4",
+   "kind": "Repay",
+   "freed": 102.70413711238352,
+   "liquidityBefore": 0.34478253930163816,
+   "supply": 1280.529828182445,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 48.34016681704435,
+    "lender": 222.33168771134302,
+    "borrower": 232.46590770244967
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/cbETH",
+   "marketId": "0x84662b4f95b85d6b082b68d32cf71bb565b3f22f216a65509cc2ede7dccdfe8c",
+   "block": 53278662,
+   "time": "2026-10-30T07:51:11.000Z",
+   "tx": "0xeaf53149bda8fd2e71202ea190d9220a3febd779d81f11f27ba752163664625d",
+   "kind": "Repay",
+   "freed": 5.002215518497243,
+   "liquidityBefore": 0,
+   "supply": 3616.941986312599,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2072000,
+   "takenBy": {
+    "vault": 48.50833297635662,
+    "lender": 8.75644529723365,
+    "borrower": 101.5841122649193
+   },
+   "takenTx": "0x09b0c4084ba0683d51e86ab275fe61961e83f442d83c388736d96079e3afc0e6"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48325085,
+   "time": "2026-07-07T15:51:57.000Z",
+   "tx": "0xebf4faf404feff220bd9043788ac8d2723f395e3cceaad72eb96b811f6d097ce",
+   "kind": "Repay",
+   "freed": 35352.90498,
+   "liquidityBefore": 19224.421517,
+   "supply": 4238955.754938,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 60598000,
+   "takenBy": {
+    "vault": 32523.768247,
+    "lender": 225927.5919,
+    "borrower": 91.25
+   },
+   "takenTx": "0xa5a45d1e8bd00f8847ea283f27ed7eec41642b940cf26c50a3535600f9a9271a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48370807,
+   "time": "2026-07-08T17:16:01.000Z",
+   "tx": "0xdd437d04b7c3643ad5418191c254a9e24c37bbec607221017961010dad74f7d1",
+   "kind": "Repay",
+   "freed": 3782.91095,
+   "liquidityBefore": 7109.634968,
+   "supply": 3959464.481116,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 49626000,
+   "takenBy": {
+    "vault": 12544.596228,
+    "lender": 254992.375015,
+    "borrower": 284.972348
+   },
+   "takenTx": "0x4409194612229088116808d297d171942e8f502785bbf2065d7137a873594879"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48371268,
+   "time": "2026-07-08T17:31:23.000Z",
+   "tx": "0xa073716a0f22c3435c899eccb8230b2994cbb33a1b9fff39b02c286b8af35143",
+   "kind": "Repay",
+   "freed": 5309.021521,
+   "liquidityBefore": 9824.269342,
+   "supply": 3959464.481116,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 48704000,
+   "takenBy": {
+    "vault": 12436.213785,
+    "lender": 254032.480882,
+    "borrower": 284.972348
+   },
+   "takenTx": "0x4409194612229088116808d297d171942e8f502785bbf2065d7137a873594879"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48372921,
+   "time": "2026-07-08T18:26:29.000Z",
+   "tx": "0x3ddb4421729c83dd5f9943cf22556b4b38f329ee15f0cd20e858e125765b4274",
+   "kind": "Repay",
+   "freed": 220384.875411,
+   "liquidityBefore": 16826.272391,
+   "supply": 3959935.732516,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 45058000,
+   "takenBy": {
+    "vault": 10664.301808,
+    "lender": 250242.957132,
+    "borrower": 284.972348
+   },
+   "takenTx": "0x482eea310ce4d407933d166165c57cd5e4eb416eff953ca16c392178adbab18e"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48399666,
+   "time": "2026-07-09T09:17:59.000Z",
+   "tx": "0x8a6334763c4a3a046a4081654db56750eccd01330bc99af50f27474a664aed56",
+   "kind": "Repay",
+   "freed": 1121.908823,
+   "liquidityBefore": 2306.494756,
+   "supply": 3711377.526203,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 790000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 4600,
+    "borrower": 0
+   },
+   "takenTx": "0x5fa26b2e537d68160f270d57a15a4f86c0f54a5745a86f9450e99612a26b20d8"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48404329,
+   "time": "2026-07-09T11:53:25.000Z",
+   "tx": "0x09ddbddbc3b13d1bdef1d58fdd8f7e6ea1a540a7013e19545a03fb827c54bcd8",
+   "kind": "Repay",
+   "freed": 702.391782,
+   "liquidityBefore": 5596.025259,
+   "supply": 3719867.157162,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8252000,
+   "takenBy": {
+    "vault": 65752.550766,
+    "lender": 292723.319005,
+    "borrower": 0
+   },
+   "takenTx": "0x353b3067685d89fe73d780d54e6b8ef047438527181ae94718c88e0d46e9621a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48404796,
+   "time": "2026-07-09T12:08:59.000Z",
+   "tx": "0xa58dde781c6033dbdfee97bb46640e374aa99445befbdb7df38540e10a6dfddc",
+   "kind": "Repay",
+   "freed": 2000,
+   "liquidityBefore": 6696.912651,
+   "supply": 3714124.738783,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 7318000,
+   "takenBy": {
+    "vault": 65752.550766,
+    "lender": 292723.319005,
+    "borrower": 0
+   },
+   "takenTx": "0x353b3067685d89fe73d780d54e6b8ef047438527181ae94718c88e0d46e9621a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48404941,
+   "time": "2026-07-09T12:13:49.000Z",
+   "tx": "0x4f562b3a09b30388940ad328f914076b1e3875b8b198713eee2704a784a1667a",
+   "kind": "Repay",
+   "freed": 1500,
+   "liquidityBefore": 8696.912651,
+   "supply": 3714124.738783,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 7028000,
+   "takenBy": {
+    "vault": 65752.550766,
+    "lender": 292723.319005,
+    "borrower": 0
+   },
+   "takenTx": "0x353b3067685d89fe73d780d54e6b8ef047438527181ae94718c88e0d46e9621a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48405744,
+   "time": "2026-07-09T12:40:35.000Z",
+   "tx": "0x4540089cc47cb5b00e05e7a338486509f14b270e40dd0fc018bb45014e238dbd",
+   "kind": "Repay",
+   "freed": 49975.019455,
+   "liquidityBefore": 9069.795667,
+   "supply": 3714124.738783,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5422000,
+   "takenBy": {
+    "vault": 65752.550766,
+    "lender": 291596.202021,
+    "borrower": 0
+   },
+   "takenTx": "0x353b3067685d89fe73d780d54e6b8ef047438527181ae94718c88e0d46e9621a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48449147,
+   "time": "2026-07-10T12:47:21.000Z",
+   "tx": "0x28c199a14d1a33d5299d4e9cb52c0f1708426845900c2aa249c80325e342bbd9",
+   "kind": "Repay",
+   "freed": 950,
+   "liquidityBefore": 5569.500539,
+   "supply": 3441784.556373,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10048000,
+   "takenBy": {
+    "vault": 3448.461943,
+    "lender": 31726.36134,
+    "borrower": 0
+   },
+   "takenTx": "0xb750568a1a87aa6581af622f0f0a5c144347c63f18ac4e2d55d3a793c0118f8a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48449225,
+   "time": "2026-07-10T12:49:57.000Z",
+   "tx": "0x0bf8f9acf485d52fedaf43db81c67b3cc19adf2524fb902b17510ee589fd1f8c",
+   "kind": "Repay",
+   "freed": 10050.542086,
+   "liquidityBefore": 6519.500539,
+   "supply": 3441784.556373,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 9892000,
+   "takenBy": {
+    "vault": 3448.461943,
+    "lender": 31726.36134,
+    "borrower": 0
+   },
+   "takenTx": "0xb750568a1a87aa6581af622f0f0a5c144347c63f18ac4e2d55d3a793c0118f8a"
+  },
+  {
+   "market": "EURC/cbBTC",
+   "marketId": "0x67ebd84b2fb39e3bc5a13d97e4c07abe1ea617e40654826e9abce252e95f049e",
+   "block": 48449259,
+   "time": "2026-07-10T12:51:05.000Z",
+   "tx": "0xdd28b3e2a72306940754cfab6b2ed5272e9bebf0956ef8689d60044d75c44aad",
+   "kind": "Repay",
+   "freed": 2000,
+   "liquidityBefore": 16570.052625,
+   "supply": 3441784.556373,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 9824000,
+   "takenBy": {
+    "vault": 3448.461943,
+    "lender": 31726.36134,
+    "borrower": 0
+   },
+   "takenTx": "0xb750568a1a87aa6581af622f0f0a5c144347c63f18ac4e2d55d3a793c0118f8a"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44665635,
+   "time": "2026-04-13T22:50:17.000Z",
+   "tx": "0xbf7fc1225f32b58bb3e96895a5db0bccd0372721ddfa157212ab756633bbc440",
+   "kind": "Repay",
+   "freed": 476.98881888387467,
+   "liquidityBefore": 0.000068915483118004,
+   "supply": 6212.234640111614,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 5783.394834609652,
+    "lender": 0.22630824459548782,
+    "borrower": 3698.0918502169184
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44890486,
+   "time": "2026-04-19T03:45:19.000Z",
+   "tx": "0xca3134a896edeca513e10086c0c7b60892e94f1d33d2a15f52547f59cff43855",
+   "kind": "Repay",
+   "freed": 12.835553794163644,
+   "liquidityBefore": 3,
+   "supply": 5049.001218669774,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2560000,
+   "takenBy": {
+    "vault": 15.835553794163644,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xac1b63567238e96ea1931726faecb55ca0168ca9c4ebdf7fcf68b2233d23a2a0"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44908138,
+   "time": "2026-04-19T13:33:43.000Z",
+   "tx": "0xf137de30b2cb4b519faf699590c9934f736440e177f022e16a44d12e56aab164",
+   "kind": "Repay",
+   "freed": 1,
+   "liquidityBefore": 0,
+   "supply": 5027.225366841387,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 17710000,
+   "takenBy": {
+    "vault": 38.58167292281643,
+    "lender": 0,
+    "borrower": 433.1747126021581
+   },
+   "takenTx": "0x628e5197e538dd13fa735b331197c2e76a5461a545eb344f84b777e3510136ff"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44908423,
+   "time": "2026-04-19T13:43:13.000Z",
+   "tx": "0xd3e2a335503e226dd9c0baa4b2dfcfdcc4daf9b75a7d87fe1ceb3aa2d6796dca",
+   "kind": "Repay",
+   "freed": 1,
+   "liquidityBefore": 0.7463624089102403,
+   "supply": 5027.225366841387,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 16676000,
+   "takenBy": {
+    "vault": 38.048390816589276,
+    "lender": 0,
+    "borrower": 433.1747126021581
+   },
+   "takenTx": "0xa1e74ea2519ac0c06ac3fda181dad89a2b6ff39bfdcaf75c40542b0c0000603e"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44908439,
+   "time": "2026-04-19T13:43:45.000Z",
+   "tx": "0x2a08c0a6114b21b75185f32ccd5ac3bed34482cab373e72d88049cae0a1a6b30",
+   "kind": "Repay",
+   "freed": 2,
+   "liquidityBefore": 1.7463624089102403,
+   "supply": 5027.225366841387,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 16644000,
+   "takenBy": {
+    "vault": 38.048390816589276,
+    "lender": 0,
+    "borrower": 433.1747126021581
+   },
+   "takenTx": "0xa1e74ea2519ac0c06ac3fda181dad89a2b6ff39bfdcaf75c40542b0c0000603e"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44908484,
+   "time": "2026-04-19T13:45:15.000Z",
+   "tx": "0x35aedc69f293432ebc8946870aa2ab28bdc373ba2452c35911aeeed41994ec93",
+   "kind": "Repay",
+   "freed": 2,
+   "liquidityBefore": 3.287469489382314,
+   "supply": 5027.225366841387,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 16554000,
+   "takenBy": {
+    "vault": 37.58949789706135,
+    "lender": 0,
+    "borrower": 433.1747126021581
+   },
+   "takenTx": "0xa1e74ea2519ac0c06ac3fda181dad89a2b6ff39bfdcaf75c40542b0c0000603e"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44910697,
+   "time": "2026-04-19T14:59:01.000Z",
+   "tx": "0x50bdabb33f474fdff0d3e43a739f274e1d08d62f78f49919f54f11a032148ef7",
+   "kind": "Repay",
+   "freed": 54.116478398632786,
+   "liquidityBefore": 20.395199472150452,
+   "supply": 5045.903546791147,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 764000,
+   "takenBy": {
+    "vault": 0.000025621709121978,
+    "lender": 0,
+    "borrower": 54.11478789812682
+   },
+   "takenTx": "0x8d155372939c274a410c57dd750ae218633c34ee40d0f77fbb71a9b23798351c"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44911426,
+   "time": "2026-04-19T15:23:19.000Z",
+   "tx": "0x85825ba968d05bdd7d4c03f61e32a4d5f860b8245d3c1b907d84c5c60461c63e",
+   "kind": "Repay",
+   "freed": 54.114347856675096,
+   "liquidityBefore": 22.792113343265992,
+   "supply": 5040.768218616105,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 962000,
+   "takenBy": {
+    "vault": 12.093469449531916,
+    "lender": 0,
+    "borrower": 54.11275624665072
+   },
+   "takenTx": "0x05c51651c831be62e2ed01861ed12b187d6697a3c8122f995556afdcc13185ec"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44912313,
+   "time": "2026-04-19T15:52:53.000Z",
+   "tx": "0x9dcd6d82480f9dbe8d8cef09b231a1b563342c4381da528d704554c60b0206fb",
+   "kind": "Repay",
+   "freed": 54.11219406337276,
+   "liquidityBefore": 10.700235503758455,
+   "supply": 5040.768218616105,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 926000,
+   "takenBy": {
+    "vault": 0.08806837735124921,
+    "lender": 0,
+    "borrower": 54.11053888385293
+   },
+   "takenTx": "0xa5ae61a104397749a3f4aaa61578affe5a185fe5c7635260ea77b3f8c5ff9066"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44913332,
+   "time": "2026-04-19T16:26:51.000Z",
+   "tx": "0x59819b59987b0fe554154b004fb489d50fdeac6aa570bc2fc64e15ccc787ae84",
+   "kind": "Repay",
+   "freed": 54.11000876564239,
+   "liquidityBefore": 10.613825684695648,
+   "supply": 5031.091319678493,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 686000,
+   "takenBy": {
+    "vault": 0.00005047315701341,
+    "lender": 0,
+    "borrower": 54.10826434091442
+   },
+   "takenTx": "0x3d5eb2083aa2116783fb247cd12acbd00d997fbbb5e04e2664079566f5c00f9f"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44914123,
+   "time": "2026-04-19T16:53:13.000Z",
+   "tx": "0x8683871b117e8d06a33cf0957890a215d5f3870d6b2da6b66bf0ed512857b758",
+   "kind": "Repay",
+   "freed": 54.10789580968658,
+   "liquidityBefore": 10.615519636266617,
+   "supply": 5031.091319678493,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 900000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 54.106212504818245
+   },
+   "takenTx": "0x99b731e3e2d69aac569a4d889cba80187d7034b6f8e05d086f6e1bcbf0d4288f"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44915046,
+   "time": "2026-04-19T17:23:59.000Z",
+   "tx": "0x55af4e5d5ddf2092ec9bd18c0e9a29dabf0f747d9c0d05567027cc23e2adfa61",
+   "kind": "Repay",
+   "freed": 54.105706530311664,
+   "liquidityBefore": 10.487202941134962,
+   "supply": 5031.075884548636,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 832000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 54.104003752217565
+   },
+   "takenTx": "0xe7ae8aa37868f4ca342c820beef4f67361b6552d95be78e2ef84fcf772bb2bc1"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44915904,
+   "time": "2026-04-19T17:52:35.000Z",
+   "tx": "0xfdbed098fe611e064f4918e842afc7cd5122b51fb9c7ec91b766367faa5bd7fb",
+   "kind": "Repay",
+   "freed": 54.10354224742033,
+   "liquidityBefore": 10.488905719229063,
+   "supply": 5031.075884548636,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 1714000,
+   "takenBy": {
+    "vault": 12.731293424573094,
+    "lender": 0,
+    "borrower": 54.10100129903399
+   },
+   "takenTx": "0xa1e74ea2519ac0c06ac3fda181dad89a2b6ff39bfdcaf75c40542b0c0000603e"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44920539,
+   "time": "2026-04-19T20:27:05.000Z",
+   "tx": "0x6269cdbfef674d132f0b80db48bd57c2695175f6ea8428b4d69a5f8c8a36b2ea",
+   "kind": "Repay",
+   "freed": 14.795262533147117,
+   "liquidityBefore": 0,
+   "supply": 5022.440978684083,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2488000,
+   "takenBy": {
+    "vault": 12.599262533147117,
+    "lender": 0,
+    "borrower": 2.7
+   },
+   "takenTx": "0xf08c82a8708036fb819461ce6101efd2732b905d977aba6376231a030d407092"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44927093,
+   "time": "2026-04-20T00:05:33.000Z",
+   "tx": "0x07b7f4bb2573fd55b12559cec25935757fdfbf1050d20d37d0802b73ade1b2b3",
+   "kind": "Repay",
+   "freed": 22,
+   "liquidityBefore": 0,
+   "supply": 5009.0495112949875,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 3156000,
+   "takenBy": {
+    "vault": 239.36543067464993,
+    "lender": 0,
+    "borrower": 41.91868384348439
+   },
+   "takenTx": "0x1c73204ea5d8129d583e07783d9c765629be8d38ce8e6740070640a4058f349c"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44927225,
+   "time": "2026-04-20T00:09:57.000Z",
+   "tx": "0xc6cb9ad621f0ae63da09abebd3bf34a1ae13aefe33aa575dd413dda30570390e",
+   "kind": "Repay",
+   "freed": 22,
+   "liquidityBefore": 22,
+   "supply": 5009.0495112949875,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2866000,
+   "takenBy": {
+    "vault": 229.1851960188157,
+    "lender": 0,
+    "borrower": 41.91868384348439
+   },
+   "takenTx": "0xb6b6eb9bb057bab2f4e70dd36fab9c472a26f0768d63397ff75ab66ba1da6241"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44928708,
+   "time": "2026-04-20T00:59:23.000Z",
+   "tx": "0x78b0bd55bc20f008410eee1435b32b6448e5b7a0cbd4eb38e1ad1d188713a2be",
+   "kind": "Repay",
+   "freed": 24.5,
+   "liquidityBefore": 0.01032661454283851,
+   "supply": 5009.0495112949875,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2616000,
+   "takenBy": {
+    "vault": 186.13659107446375,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xfdd23a10d4cfad662edd7ecf0889fedb510f9faade117e4864e50c7702653a95"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44987752,
+   "time": "2026-04-21T09:47:31.000Z",
+   "tx": "0x1149146874134c00f42d252118c5eebdb04443681488412fd04f5e0aa4ba20f9",
+   "kind": "Repay",
+   "freed": 10,
+   "liquidityBefore": 0,
+   "supply": 4629.527163232079,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 1532000,
+   "takenBy": {
+    "vault": 0.8988755299412405,
+    "lender": 9.1,
+    "borrower": 0
+   },
+   "takenTx": "0x0c5dde61e8f1a7b0a82e948410fc10a231a4e8cbdd65bbd7ce4e1b7bde11ee67"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44994951,
+   "time": "2026-04-21T13:47:29.000Z",
+   "tx": "0x245f0717bf8915cd50ef6c55d529fd04a9a246c7a9844bc65f23f5275bbef201",
+   "kind": "Repay",
+   "freed": 7,
+   "liquidityBefore": 0.21044867508209164,
+   "supply": 4620.0905246060975,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 13714000,
+   "takenBy": {
+    "vault": 205.44230783728727,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44995774,
+   "time": "2026-04-21T14:14:55.000Z",
+   "tx": "0xf1b0ab5b157f5d98c37abcbf06dd290fde24521bcf8cf3bcf0bd670cd43e32d2",
+   "kind": "Repay",
+   "freed": 1.472217297108933,
+   "liquidityBefore": 7.224251677352512,
+   "supply": 4620.028582698841,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 12068000,
+   "takenBy": {
+    "vault": 205.44198473093059,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44995859,
+   "time": "2026-04-21T14:17:45.000Z",
+   "tx": "0x6b725d429f850ec6cdf6387c4dd83a4b2d71cd3cb9a9f2d43eeab7acb1f0f0b7",
+   "kind": "Repay",
+   "freed": 1.4722181837569106,
+   "liquidityBefore": 8.696468974461444,
+   "supply": 4620.028582698841,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 11898000,
+   "takenBy": {
+    "vault": 205.44198473093059,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997299,
+   "time": "2026-04-21T15:05:45.000Z",
+   "tx": "0xd5cbcfa1bbe5e38e1ca9e64f1fc7222eabfa1d26f89921a58e82fe8f2e51a349",
+   "kind": "Repay",
+   "freed": 1.4722332028013398,
+   "liquidityBefore": 10.479391077603239,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 9018000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997396,
+   "time": "2026-04-21T15:08:59.000Z",
+   "tx": "0x4a401f8e91a78f8228867efb7e367c5eede454d2b59f64aa9ef0e5ae3e8945ee",
+   "kind": "Repay",
+   "freed": 1.4722342140014428,
+   "liquidityBefore": 11.95162428040458,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8824000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997419,
+   "time": "2026-04-21T15:09:45.000Z",
+   "tx": "0x17fc938af7b42259e54e376f9ff2843bc2a309e264a0f263c18ae0cc6aec8f40",
+   "kind": "Repay",
+   "freed": 1.4722344532306175,
+   "liquidityBefore": 13.423858494406023,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8778000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997458,
+   "time": "2026-04-21T15:11:03.000Z",
+   "tx": "0x9edb666a635d9cfedc08bd61ab7df44aaee97d21cb70ae65843b837c7f733630",
+   "kind": "Repay",
+   "freed": 1.4722348579277151,
+   "liquidityBefore": 14.89609294763664,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8700000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997487,
+   "time": "2026-04-21T15:12:01.000Z",
+   "tx": "0xb2259a5ba36f767a4bbd875d9f80b77fc4d4a709aaca6936a9cf3c3f17d9a2fc",
+   "kind": "Repay",
+   "freed": 1.4722351581507054,
+   "liquidityBefore": 16.368327805564356,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8642000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997509,
+   "time": "2026-04-21T15:12:45.000Z",
+   "tx": "0xb06e85356a68a61475ab1f49b9db2fd325900e13da0c0ace63275f4a0e30a2ff",
+   "kind": "Repay",
+   "freed": 1.4722353853646735,
+   "liquidityBefore": 17.84056296371506,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8598000,
+   "takenBy": {
+    "vault": 205.43268865031547,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997538,
+   "time": "2026-04-21T15:13:43.000Z",
+   "tx": "0xb9a2d1e15028b85df5ec5c97d848b5f1255d8b4bee3a721a0f274c85caabae96",
+   "kind": "Repay",
+   "freed": 2.9444713683202504,
+   "liquidityBefore": 19.31279834907973,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 3562000,
+   "takenBy": {
+    "vault": 62.66826493925676,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x350d84f75615f80a430f8ee972817e97784dee0a9fc9ede16e6875f55c761f27"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44997590,
+   "time": "2026-04-21T15:15:27.000Z",
+   "tx": "0x74755cbec19a2d7a1a6fa61180d51d454d832d2e41829c405a6157b4c3edd3c3",
+   "kind": "Repay",
+   "freed": 1.4722362173531374,
+   "liquidityBefore": 22.257269717399986,
+   "supply": 4620.398099019973,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 3458000,
+   "takenBy": {
+    "vault": 62.66826493925676,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x350d84f75615f80a430f8ee972817e97784dee0a9fc9ede16e6875f55c761f27"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44999361,
+   "time": "2026-04-21T16:14:29.000Z",
+   "tx": "0x4361c95955f29b5cee49a3d8f9aa25a15d5732cd4524120e7ae3a5516cbeb1f3",
+   "kind": "Repay",
+   "freed": 1.4722535304826414,
+   "liquidityBefore": 18.05759202831008,
+   "supply": 4621.439910769044,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 4894000,
+   "takenBy": {
+    "vault": 142.7644237110587,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 44999395,
+   "time": "2026-04-21T16:15:37.000Z",
+   "tx": "0x434c6be38acf9ba94975c2cb1b60b4911fbd09fcef7f76456f764ff492ee9083",
+   "kind": "Repay",
+   "freed": 1.472253882379542,
+   "liquidityBefore": 19.52984555879272,
+   "supply": 4621.439910769044,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 4826000,
+   "takenBy": {
+    "vault": 142.7644237110587,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x183db6f86889e659ecb3a0790dde6cc4aa1f9fccbd4577c78a43044aa0071acf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45001882,
+   "time": "2026-04-21T17:38:31.000Z",
+   "tx": "0x54d29453dcabe992310b5765d8248b3bdf5bb992f785c6dfd9d93b6e71ec697e",
+   "kind": "Repay",
+   "freed": 1.4722775058440647,
+   "liquidityBefore": 0.08883089852110851,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6906000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002154,
+   "time": "2026-04-21T17:47:35.000Z",
+   "tx": "0x7be0941fd3e83e5132fb9255aee3532056fd9fe6f43fe88a9a27e759498f0128",
+   "kind": "Repay",
+   "freed": 1.4722804276301562,
+   "liquidityBefore": 1.5611084043651733,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6362000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002251,
+   "time": "2026-04-21T17:50:49.000Z",
+   "tx": "0x0b81a1fe9778c2b1aed57a8e1226a9338ea3ec8b981db10e15c4396e420188ae",
+   "kind": "Repay",
+   "freed": 1.4722814676382605,
+   "liquidityBefore": 3.0333888319953295,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 6168000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002337,
+   "time": "2026-04-21T17:53:41.000Z",
+   "tx": "0x9e684775c429bdc6e93865ebac927a9f31fdf27d4f125c4eadbb06c7e8c45d58",
+   "kind": "Repay",
+   "freed": 1.4722823877021534,
+   "liquidityBefore": 4.505670299633589,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5996000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002367,
+   "time": "2026-04-21T17:54:41.000Z",
+   "tx": "0x0b6062d88262b593ffd00fb90d179eda192e62fbaef65c4a4aefc4acd084a60f",
+   "kind": "Repay",
+   "freed": 1.472282707920806,
+   "liquidityBefore": 5.977952687335743,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5936000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002392,
+   "time": "2026-04-21T17:55:31.000Z",
+   "tx": "0xdd503754099681b53aaae7a77bb358d302c972e0701cf1921b9eb31ac20b27c2",
+   "kind": "Repay",
+   "freed": 1.4722829741322765,
+   "liquidityBefore": 7.450235395256549,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5886000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002420,
+   "time": "2026-04-21T17:56:27.000Z",
+   "tx": "0xd72ef0a7dfed10782ab95b38d60cb6b6b547a7630c877ee9096d98158a14187d",
+   "kind": "Repay",
+   "freed": 1.4722832715740837,
+   "liquidityBefore": 8.922518369388827,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5830000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002444,
+   "time": "2026-04-21T17:57:15.000Z",
+   "tx": "0xcb14a17ee320a092f1bf5b977d40412de0c5d630b02bd735b82ae22ce412a031",
+   "kind": "Repay",
+   "freed": 1.472283525910749,
+   "liquidityBefore": 10.39480164096291,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5782000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002478,
+   "time": "2026-04-21T17:58:23.000Z",
+   "tx": "0x31f3a635bab74d02a9287f1d72baa9a8de9409ccc4c61b015f05d08e224b3330",
+   "kind": "Repay",
+   "freed": 1.472283885355053,
+   "liquidityBefore": 11.86708516687366,
+   "supply": 4579.607674879417,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5714000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002603,
+   "time": "2026-04-21T18:02:33.000Z",
+   "tx": "0xdd143134a6755bb7080cd6c3d8b3d1198ad195fa8a3f0d4ea18501cb1cd05366",
+   "kind": "Repay",
+   "freed": 1.4722852038621987,
+   "liquidityBefore": 13.339369052228712,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5464000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002665,
+   "time": "2026-04-21T18:04:37.000Z",
+   "tx": "0x20c8a7d5b1e4346008caa5008e52032caae84cdfb17898084ac9b51968bdf718",
+   "kind": "Repay",
+   "freed": 1.472285856391112,
+   "liquidityBefore": 14.811654256090911,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5340000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002708,
+   "time": "2026-04-21T18:06:03.000Z",
+   "tx": "0x9dab7dea7a4eaaba030138cfa2cc982f3bb4a31aad6b0403351d6d599651ade0",
+   "kind": "Repay",
+   "freed": 1.4722863078874875,
+   "liquidityBefore": 16.283940112482025,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5254000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002731,
+   "time": "2026-04-21T18:06:49.000Z",
+   "tx": "0x6e4c4d4edb388721e82d465fed0e59642dc5c15e9787aa7547e173c35b770e83",
+   "kind": "Repay",
+   "freed": 1.472286548801743,
+   "liquidityBefore": 17.75622642036951,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5208000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002758,
+   "time": "2026-04-21T18:07:43.000Z",
+   "tx": "0x4f46cc5e0aa04bc87e57b5b7a051a16bd0cc309b26681814dda58064b4f71dbf",
+   "kind": "Repay",
+   "freed": 1.4722868309216572,
+   "liquidityBefore": 19.228512969171252,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5154000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002796,
+   "time": "2026-04-21T18:08:59.000Z",
+   "tx": "0xa22d18c99de69a02053f5fe0abfd7730f4db9a4119638340553be8bd6d69888e",
+   "kind": "Repay",
+   "freed": 1.4722872270134877,
+   "liquidityBefore": 20.70079980009291,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 5078000,
+   "takenBy": {
+    "vault": 147.82197065114516,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xef8f82935c0daf5782a438b055aff4f437ca5bd73939d75acba22d34e446cb25"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45002828,
+   "time": "2026-04-21T18:10:03.000Z",
+   "tx": "0x613443e11725fcb457fae9c8d0e41311f927844112ce2b36948893e05dff90c6",
+   "kind": "Repay",
+   "freed": 1.4722875597534322,
+   "liquidityBefore": 22.173087027106398,
+   "supply": 4507.113553065607,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 2580000,
+   "takenBy": {
+    "vault": 53.001044796358606,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xae95f0b1952ec6a9a2e8fc119870be6f4c5783d3b696f9a4eb5e2497ed246fbf"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45006509,
+   "time": "2026-04-21T20:12:45.000Z",
+   "tx": "0x6a175b227c8557ff8ccb35007e5b9e8d605f409fb2ab3852a6c8d6c3fc482d84",
+   "kind": "Repay",
+   "freed": 41.9397795098531,
+   "liquidityBefore": 5.030942649761378,
+   "supply": 4435.497329056634,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 17918000,
+   "takenBy": {
+    "vault": 1047.1689105677299,
+    "lender": 0,
+    "borrower": 0.125496
+   },
+   "takenTx": "0xcbf099713c46534dae2fdf1cbd548f5b7c8aa71de3d8fbe3d07225dfa76f7830"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45017985,
+   "time": "2026-04-22T02:35:17.000Z",
+   "tx": "0x348cd1d98bb55412d85a11ad8c6b81292ca564229477d8b3bc8987de6112e6c0",
+   "kind": "Repay",
+   "freed": 53.03149652673337,
+   "liquidityBefore": 0,
+   "supply": 4393.980055182066,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 224.9544313478536,
+    "lender": 90.19253038206092,
+    "borrower": 44.99436076199931
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45082339,
+   "time": "2026-04-23T14:20:25.000Z",
+   "tx": "0x029c920c98021a4c2f2f54611d70036845f06c879e6240a7cbd779ef35cd4e07",
+   "kind": "Repay",
+   "freed": 9.361175772949146,
+   "liquidityBefore": 0.04550947384018204,
+   "supply": 4368.45514044421,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 52000,
+   "takenBy": {
+    "vault": 9.40051252306862,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x1c0079c6309056eb33b0beab69892a9f1ab9310cd6705db5ff6f522afbc3cd89"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45086374,
+   "time": "2026-04-23T16:34:55.000Z",
+   "tx": "0x6ff71801ca17372dffbeaab7deaf82430cebdc90c7adc9da10c3eb7eb6a3b519",
+   "kind": "Repay",
+   "freed": 5.911072635256759,
+   "liquidityBefore": 4.6636083992845965,
+   "supply": 4038.739858285211,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 930000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 9.952038867224713
+   },
+   "takenTx": "0x1961709970637e27dbbfe4066dc50f17bdd4ff721c05d780ee711487744fd28a"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45087859,
+   "time": "2026-04-23T17:24:25.000Z",
+   "tx": "0x25fc192266949e9b515590645e45c8fd149a12493638ccfbf0766eae64eb5135",
+   "kind": "Repay",
+   "freed": 1.311717930774223,
+   "liquidityBefore": 0,
+   "supply": 4039.672984932418,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 19718000,
+   "takenBy": {
+    "vault": 25.910728399885254,
+    "lender": 0,
+    "borrower": 6.180596177125406
+   },
+   "takenTx": "0x5a012ffcc0c49a3015162d0e9b44d41045dc24d2a3aa7152e1425d32fa3fdf8c"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45088324,
+   "time": "2026-04-23T17:39:55.000Z",
+   "tx": "0x7f50a459373d8aa80ee545c68e609444018d7242b3097381571b87c2aaf19a90",
+   "kind": "Repay",
+   "freed": 2,
+   "liquidityBefore": 1.2176847253139023,
+   "supply": 4039.672984932418,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 18788000,
+   "takenBy": {
+    "vault": 25.816695194424934,
+    "lender": 0,
+    "borrower": 6.180596177125406
+   },
+   "takenTx": "0x5a012ffcc0c49a3015162d0e9b44d41045dc24d2a3aa7152e1425d32fa3fdf8c"
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 45104213,
+   "time": "2026-04-24T02:29:33.000Z",
+   "tx": "0x5df3ed0744fb5b8863495c491fc7d5c05dd95c9a1b7538e68f3f6c7715e95ba7",
+   "kind": "Repay",
+   "freed": 61.5,
+   "liquidityBefore": 16.721064979625016,
+   "supply": 4118.8353124225105,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 492.6538041074866,
+    "lender": 97.36752358673347,
+    "borrower": 13.265276827658731
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/wstETH",
+   "marketId": "0x3a4048c64ba1b375330d376b1ce40e4047d03b47ab4d48af484edec9fec801ba",
+   "block": 50520135,
+   "time": "2026-08-27T11:20:17.000Z",
+   "tx": "0x41d3832aaf7fc03361dbe880df0a633e44fe89f1b9f75c26c5f784396e15a9d9",
+   "kind": "Repay",
+   "freed": 326.3151712206792,
+   "liquidityBefore": 0,
+   "supply": 3594.4479295474157,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 67.93261533594364,
+    "lender": 81.6066811970643,
+    "borrower": 102.75716521982737
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "block": 46642076,
+   "time": "2026-05-29T16:51:39.000Z",
+   "tx": "0xd71d6be93eaa5c7f78d5fbc40dfa6af2d1dd5feb239db3296b0f4152bc99000f",
+   "kind": "Repay",
+   "freed": 2.31199,
+   "liquidityBefore": 0.027774,
+   "supply": 6.019701,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 11344000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0.027477,
+    "borrower": 5.355
+   },
+   "takenTx": "0xf46d0f8d0f69f0ec2ddc2fcc0e891535b28c2e9ff1140336d0fefea5f87f8d89"
+  },
+  {
+   "market": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "block": 46942132,
+   "time": "2026-06-05T15:33:31.000Z",
+   "tx": "0xccbb0c42f02cef6458b272a6ea1bc8eadff2741e21839b935f8d115d2e2cc107",
+   "kind": "Repay",
+   "freed": 15.300246,
+   "liquidityBefore": 0.06012,
+   "supply": 20.343279,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 66000,
+   "takenBy": {
+    "vault": 15.295088,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x18f3368254efabc940e479928628ca0d615e3d9f1dabbd5d79cbf4216ede531d"
+  },
+  {
+   "market": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "block": 46942379,
+   "time": "2026-06-05T15:41:45.000Z",
+   "tx": "0x93e85eec0de326555a43bfa5c3f6e80b688d4c6b0411be18054b84635accac36",
+   "kind": "Repay",
+   "freed": 1.020028,
+   "liquidityBefore": 0.065278,
+   "supply": 20.343279,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 100000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 1.02
+   },
+   "takenTx": "0x57dd04b2bdeeeb9fb0a729ac2ff465538a186aece5d899b56fe631287e333026"
+  },
+  {
+   "market": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "block": 46942435,
+   "time": "2026-06-05T15:43:37.000Z",
+   "tx": "0xafcbf93b882d0716185a0a66e2b5dc8090eeb0911e3036d500d75e02cfe86c94",
+   "kind": "Repay",
+   "freed": 11.220008,
+   "liquidityBefore": 0.065306,
+   "supply": 20.343279,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 1236000,
+   "takenBy": {
+    "vault": 11.220008,
+    "lender": 0.044687,
+    "borrower": 0
+   },
+   "takenTx": "0xed805256295e4135e2e2b2f5934a3a6ec01ae4df5b2e22de207c7c316608aa93"
+  },
+  {
+   "market": "USDC/JitoSOL",
+   "marketId": "0x09276541cfecb6920a80679a1deced4dde3ae64bf5fc2c9c1f9c21e0c152e1a5",
+   "block": 46944385,
+   "time": "2026-06-05T16:48:37.000Z",
+   "tx": "0x96830767520a02ced1d42e1ad751bb7552c16b9687e71f40526de588c788022a",
+   "kind": "Repay",
+   "freed": 1.020007,
+   "liquidityBefore": 0.020619,
+   "supply": 16.223619,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51348175,
+   "time": "2026-09-15T15:21:37.000Z",
+   "tx": "0x811b9e9203fedc71de217f6bf0e7e5f1bf68dafd79f9014dfe297d78702737f5",
+   "kind": "Repay",
+   "freed": 10000,
+   "liquidityBefore": 0,
+   "supply": 112486.125405,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 57664.281654,
+    "borrower": 1465000
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51555363,
+   "time": "2026-09-20T10:27:53.000Z",
+   "tx": "0xab4b949cad24505f949a0702f4baae592b40748be3f8f46b936e240b59326a68",
+   "kind": "Repay",
+   "freed": 210000,
+   "liquidityBefore": 485.16007,
+   "supply": 2664573.677385,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 736139.179918,
+    "borrower": 115000
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51606412,
+   "time": "2026-09-21T14:49:31.000Z",
+   "tx": "0x6109ae3fff99b9a333b21f068e156380831cd410ee9e8f09f7d648d0d2a5cc00",
+   "kind": "Repay",
+   "freed": 115000,
+   "liquidityBefore": 10502.625355,
+   "supply": 2569486.588402,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 57094000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 241386.27006,
+    "borrower": 302010
+   },
+   "takenTx": "0x7e250eb6cefec59d4b74e0a4ba01fadd0be156edceca40eec8ecd4fd2d4ff6d9"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51637341,
+   "time": "2026-09-22T08:00:29.000Z",
+   "tx": "0x4051226723bdfbcbe898c7853a50238fc1c7118c5773ab653222380885318aed",
+   "kind": "Repay",
+   "freed": 137500,
+   "liquidityBefore": 0.986109,
+   "supply": 2756800.880816,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 22846000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 200846.987302,
+    "borrower": 514284.025431
+   },
+   "takenTx": "0x169cbd9c6750773e984c6818894ff8fe76c6d0e3547d451129ab4d2de1cbfa1f"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51651211,
+   "time": "2026-09-22T15:42:49.000Z",
+   "tx": "0x3b563bc3be348b228642ef3ee1cf35941eb9388c5fde55d5976c7bc04d78512c",
+   "kind": "Repay",
+   "freed": 157000,
+   "liquidityBefore": 4.034621,
+   "supply": 3133724.816128,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 242000.95961,
+    "borrower": 0
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51723079,
+   "time": "2026-09-24T07:38:25.000Z",
+   "tx": "0x7de3d79acdef88dbef83991ee443bd2c8d416ec50c5ce05ab33f952b0870826d",
+   "kind": "Repay",
+   "freed": 147250.783562,
+   "liquidityBefore": 51.628678,
+   "supply": 3182997.832785,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 161446.496528,
+    "borrower": 338352.926265
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51941967,
+   "time": "2026-09-29T09:14:41.000Z",
+   "tx": "0xc18e7626d61249808b17f8b32373383d4613148bd28ebe2f095416189ea65654",
+   "kind": "Repay",
+   "freed": 199980,
+   "liquidityBefore": 3778.857629,
+   "supply": 3361728.532142,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 306539.754456,
+    "borrower": 193668.362029
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 51987337,
+   "time": "2026-09-30T10:27:01.000Z",
+   "tx": "0xb73bb755653ed9d32a9fdad37ebcc5a802caf15abf79409a5a0aadd7fbf57d87",
+   "kind": "Repay",
+   "freed": 62972.785744,
+   "liquidityBefore": 272.956524,
+   "supply": 3772737.933484,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 1366000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 58209.945357,
+    "borrower": 0
+   },
+   "takenTx": "0x27073d94255a8addc0e18fbad015c87b9c4372165e4441a7b35dc63e8b9ff654"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52023082,
+   "time": "2026-10-01T06:18:31.000Z",
+   "tx": "0x6f20310f20da45b2ee71dec43e34ea376e5582bf310544f52b76ee032fc70134",
+   "kind": "Repay",
+   "freed": 63168.196503,
+   "liquidityBefore": 694.877143,
+   "supply": 3095098.960001,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 48132000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 440866.664732,
+    "borrower": 178079.180359
+   },
+   "takenTx": "0xe2700a421e07c19929923aada0c5d9949d3371da7d23c53bab578ec98489e58c"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52048424,
+   "time": "2026-10-01T20:23:15.000Z",
+   "tx": "0x2bdd678a21562a11d85e28a1be0ca3a0b082f4f495b35b00e9f21bced67a5374",
+   "kind": "Repay",
+   "freed": 277902.735345,
+   "liquidityBefore": 18.619015,
+   "supply": 2993056.272681,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 76654000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 482716.304807,
+    "borrower": 189052.847439
+   },
+   "takenTx": "0x60f040b730a58ff5de7e84e251e124a133319bcb7bcf432082348adb4a8b650c"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52213849,
+   "time": "2026-10-05T16:17:25.000Z",
+   "tx": "0x89232c59d0d77006336dd957335b423ac885e866af58349a614c1c6347432c3e",
+   "kind": "Repay",
+   "freed": 360000,
+   "liquidityBefore": 490.15762,
+   "supply": 3885600.18081,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 54634000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 568009.416968,
+    "borrower": 213816.171031
+   },
+   "takenTx": "0xa70e01e3148321196abc34b12f6decf1b96e6e1033d93160edfcf48ee8686e5d"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52241254,
+   "time": "2026-10-06T07:30:55.000Z",
+   "tx": "0x57ec3ab60f7f96e048262bb2e900dd00c083a13376241c12e280ec97c90ea653",
+   "kind": "Repay",
+   "freed": 267402.925519,
+   "liquidityBefore": 17686.23151,
+   "supply": 4087744.193639,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 35180000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 705787.167795,
+    "borrower": 364129.520283
+   },
+   "takenTx": "0xd5ec4552d60a0d075c8eb44ee423141ccf2c80b1e34bfe25080162e01e3190bd"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52264470,
+   "time": "2026-10-06T20:24:47.000Z",
+   "tx": "0xec46bbd70287afc762d1eefef70dfcbfa4d4cd1421a856802c18316d0750681c",
+   "kind": "Repay",
+   "freed": 198978.359949,
+   "liquidityBefore": 14.818859,
+   "supply": 3651765.673445,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 42732000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 431917.79849,
+    "borrower": 58145.966706
+   },
+   "takenTx": "0x7f23c2db3fb43ff10cf82bade7fe7c60828a1314f536675e118049a7fdb88b8b"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52287870,
+   "time": "2026-10-07T09:24:47.000Z",
+   "tx": "0xce7e01f63f4b50deca9d0b80122068c675d5cd3f0440347decfd56e98034c08c",
+   "kind": "Repay",
+   "freed": 206563.232132,
+   "liquidityBefore": 3.807931,
+   "supply": 3511246.5986,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 479948.854567,
+    "borrower": 201863.830629
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52504989,
+   "time": "2026-10-12T10:02:05.000Z",
+   "tx": "0xb1f9eacce34b716afd5ab2cc9557ee22790045c04df7d586557d6dad29d4bea3",
+   "kind": "Repay",
+   "freed": 199583.956098,
+   "liquidityBefore": 11933.18367,
+   "supply": 3231066.386078,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 625633.430033,
+    "borrower": 204512.989107
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52602939,
+   "time": "2026-10-14T16:27:05.000Z",
+   "tx": "0x7d0249733814a76e68060be36134319ccf5e9f347d9bb761d174489bd735b744",
+   "kind": "Repay",
+   "freed": 72965.678312,
+   "liquidityBefore": 0.000722,
+   "supply": 2943268.225735,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 676763.6841,
+    "borrower": 587019.054639
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 52953756,
+   "time": "2026-10-22T19:20:59.000Z",
+   "tx": "0x8ec5616b12bc7b28c9740cde066393eb2d6c34ed2a20f9460d2f1d06f6f79ad4",
+   "kind": "Repay",
+   "freed": 131776.559687,
+   "liquidityBefore": 17994.928795,
+   "supply": 4046927.396703,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 283279.741156,
+    "borrower": 459894.918306
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 53003730,
+   "time": "2026-10-23T23:06:47.000Z",
+   "tx": "0xf659855fc99e00053e882ff87076793cc01de826697fe1e82392b741ef8a9341",
+   "kind": "Repay",
+   "freed": 213143.198743,
+   "liquidityBefore": 125.91069,
+   "supply": 3755007.66728,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 38828000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 558275.510936,
+    "borrower": 378761.140852
+   },
+   "takenTx": "0x966f24c09892338d37cb328eeb9f4f929f6dfdffa78df3a9f6925fc2150c3521"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 53023152,
+   "time": "2026-10-24T09:54:11.000Z",
+   "tx": "0xa647cc5afb04c35996fc73006c797ac41592a58baf26c77eb1c2ca1887db7d53",
+   "kind": "Repay",
+   "freed": 196307.024707,
+   "liquidityBefore": 14703.637096,
+   "supply": 4318895.468244,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 23562000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 439936.464944,
+    "borrower": 278757.382922
+   },
+   "takenTx": "0xbcf951b5987164d1efd6edcd96c0b35b59270cc4d3ec89b1dffbced66eed8dd2"
+  },
+  {
+   "market": "USDC/sUSN",
+   "marketId": "0x2e26ecfe44dd56f2e6b0257e421e69474e838397b7194e2c934195c6d975af62",
+   "block": 53278746,
+   "time": "2026-10-30T07:53:59.000Z",
+   "tx": "0x3741c2bb3807abd9e627f6b97dc15320be4f16976d428ac78d5e0ba00466fca2",
+   "kind": "Repay",
+   "freed": 370099.858206,
+   "liquidityBefore": 5.279903,
+   "supply": 3701015.1519,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 1036381.490636,
+    "borrower": 0
+   },
+   "takenTx": null
+  },
+  {
+   "market": "USDC/cbADA",
+   "marketId": "0xd7520ad198b497b6eb75bc690268f4597630dbc12e305e9d4105843bab36e41d",
+   "block": 53486155,
+   "time": "2026-11-04T03:07:37.000Z",
+   "tx": "0x47aabd7296abb4fbc60466a89a9cb6b259962aca5ad4c9aa37053b45cc7cd4af",
+   "kind": "Repay",
+   "freed": 1500,
+   "liquidityBefore": 0.24637,
+   "supply": 2551438.6803,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 42000,
+   "takenBy": {
+    "vault": 0,
+    "lender": 1498.746123,
+    "borrower": 0
+   },
+   "takenTx": "0xcc5e13ef8e2efb93564ce3549db887f3cab1d3b84b962f73f5801487c074a051"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 41719999,
+   "time": "2026-02-04T18:22:25.000Z",
+   "tx": "0x666d74478534208f18c52a8432cd886ec440d6485bcb198d6561cb6ce47177a1",
+   "kind": "Repay",
+   "freed": 232.74892803200902,
+   "liquidityBefore": 0.4259552037867657,
+   "supply": 2221.1750356648818,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 1938000,
+   "takenBy": {
+    "vault": 224.734043013488,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x7974c597400ccad202f333ed50fcf015937481d50348436cdb62744259663350"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 42234454,
+   "time": "2026-02-16T16:10:55.000Z",
+   "tx": "0xda588037db8923ea60c2a21e5a2d159ef60ef1b7204c5efd0440e3434d195a3c",
+   "kind": "Repay",
+   "freed": 28.486,
+   "liquidityBefore": 0.8110172855044798,
+   "supply": 1730.9417431697623,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 5.852317304425733
+   },
+   "takenTx": null
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44659388,
+   "time": "2026-04-13T19:22:03.000Z",
+   "tx": "0xb5782598c2cabbe446c3044bbea9d80739999e57ccc396ee7a78af1256ea8430",
+   "kind": "Repay",
+   "freed": 10,
+   "liquidityBefore": 0.000666044713780981,
+   "supply": 1504.165161067507,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10000,
+   "takenBy": {
+    "vault": 9.950683943968725,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x12308e7d4cb2d123a16e7569ed9a9d337b2a3bc67606125527cf3bbdd7384413"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44662346,
+   "time": "2026-04-13T21:00:39.000Z",
+   "tx": "0x9aaba555bf342c857ee57251d63da5a26b4e9cdb7637375b04f6f37c7700a909",
+   "kind": "Repay",
+   "freed": 400.022822345745,
+   "liquidityBefore": 0.000481165551349053,
+   "supply": 1494.1833499646257,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 18000,
+   "takenBy": {
+    "vault": 398.0231927692006,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x02a4f685cb74dca46f904f35d45be441ffedf45f900180f2632261c485903745"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669039,
+   "time": "2026-04-14T00:43:45.000Z",
+   "tx": "0x98c9a689a8d42e568e7b3e046a9d47843fc04798ef1777a6e5229a675d40b7bb",
+   "kind": "Repay",
+   "freed": 2.880000016354539,
+   "liquidityBefore": 0.001076775556627808,
+   "supply": 1094.1837635739894,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10000,
+   "takenBy": {
+    "vault": 2.8666795809227206,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xd2b44f21884ed7b2c3766108c1a9a1a5183a4ed9e5fb9e4d3d44ec41b189facc"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669168,
+   "time": "2026-04-14T00:48:03.000Z",
+   "tx": "0x134920c77401c005994883ae4eedebcbcf6a2518ad2b302b63ac3914ba50608a",
+   "kind": "Repay",
+   "freed": 70.004,
+   "liquidityBefore": 0.000060357206324111,
+   "supply": 1094.1837635739894,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 14000,
+   "takenBy": {
+    "vault": 69.65404570516611,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x384aef861ed1dfc861db5775a88f96341237092164ab4815c2c4150bcc471843"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669322,
+   "time": "2026-04-14T00:53:11.000Z",
+   "tx": "0x7188fab72a3db0213f4ec9f50c1d3cb41f30b415e54c80bcf09412b26867d337",
+   "kind": "Repay",
+   "freed": 2.8600000023544294,
+   "liquidityBefore": 0.000541595821478122,
+   "supply": 1094.1837635739894,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 12000,
+   "takenBy": {
+    "vault": 2.846246659889965,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xc85dd105ef2e15e59f23190e6069694f866e786218d2ef5954fef524b6f5e781"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669443,
+   "time": "2026-04-14T00:57:13.000Z",
+   "tx": "0xbfbc4b8b8e5d818df96bd8a236c8dcd0482bab2ecc8320b906bfd65a4c10c886",
+   "kind": "Repay",
+   "freed": 2.885,
+   "liquidityBefore": 0.000062263532482959,
+   "supply": 1094.1837635739894,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 4000,
+   "takenBy": {
+    "vault": 2.870639521884905,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x676b51e2251e2e7231df956d6deab9bb63424799f94137226a17f562c389d78f"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669570,
+   "time": "2026-04-14T01:01:27.000Z",
+   "tx": "0xfc4bbc960231e339079ded6560036a0bdab9960f3ddc2bc303504c4ada5c9dfd",
+   "kind": "Repay",
+   "freed": 2.899000012167504,
+   "liquidityBefore": 0.000062973248710192,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 14000,
+   "takenBy": {
+    "vault": 2.884576593973091,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x9b4fc55bdabbb6874667eba73e4f9ff8bfe42bf4bbc62170041971b53148af0e"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669746,
+   "time": "2026-04-14T01:07:19.000Z",
+   "tx": "0xd76f99f9a7243f941bde24ef7efb5b2be781591ed8394953e996e4da61833c8c",
+   "kind": "Repay",
+   "freed": 1.0011227354626335,
+   "liquidityBefore": 0.000063362179498272,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8000,
+   "takenBy": {
+    "vault": 0.9961853095163515,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x56cf3c04b70dc913cca428258258c4816d9a87cd352d07928c01408965dd6dff"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669770,
+   "time": "2026-04-14T01:08:07.000Z",
+   "tx": "0x5e46a2f9588246351f03db9162cbdf37271c792f4eb446e003ac77c7976ffd0d",
+   "kind": "Repay",
+   "freed": 2.907591826966523,
+   "liquidityBefore": 0.000015954446960238,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 16000,
+   "takenBy": {
+    "vault": 2.893079833699795,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xb306d0e6b06e953a61b162c6d9dd716ee97bdf885295317a7b753603ae4e6a00"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44669898,
+   "time": "2026-04-14T01:12:23.000Z",
+   "tx": "0x1abfe26f686bbb285d2c57a86ddd6d8f942f937a50420ec9f1d3f1c625d2bc75",
+   "kind": "Repay",
+   "freed": 2.914852530779044,
+   "liquidityBefore": 0.000062382533941196,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10000,
+   "takenBy": {
+    "vault": 2.9003465952994505,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x8717174142b4e43492bb26343b303221ea111bc4c2339a74c248b4ac0d1acce2"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44670016,
+   "time": "2026-04-14T01:16:19.000Z",
+   "tx": "0xbc52e17feda5fb0d0d944615766aef76f33d5b5be21d9d052f1e559f309f437d",
+   "kind": "Repay",
+   "freed": 2.922138650345363,
+   "liquidityBefore": 0.000063937982717784,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 8000,
+   "takenBy": {
+    "vault": 2.9075965400029964,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x35ef4ff936c29ef60051805b2111bd4b25f81739db9f8249f7e7b5a2a5fa1a4c"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44670188,
+   "time": "2026-04-14T01:22:03.000Z",
+   "tx": "0x09000039ba26020d18672ba2be49a4314ab819efb3c1fd13bf83e865cbaa05b6",
+   "kind": "Repay",
+   "freed": 2.929445051991827,
+   "liquidityBefore": 0.22346627762403443,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10000,
+   "takenBy": {
+    "vault": 3.1371521207622064,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x4bf3dc3511fe9cd183d8703511e027b47f19aad1f4b41fbad7886543df8660d6"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44670428,
+   "time": "2026-04-14T01:30:03.000Z",
+   "tx": "0x9ef70a9e4b1c2b67dcb689ff1a8622a8d025627011eae90bd7fa1b1427c534ab",
+   "kind": "Repay",
+   "freed": 2.936763015930971,
+   "liquidityBefore": 0.000071185870473436,
+   "supply": 1015.5595442673103,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 16000,
+   "takenBy": {
+    "vault": 2.9221585186077066,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x2095659e1402be2b5eb509693490a2eb53526483d66e2f9aade2ae9428fbd202"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44673923,
+   "time": "2026-04-14T03:26:33.000Z",
+   "tx": "0xb29bed60d5875d15ed95f861bafa2870a615db9e61be6f233aaaf76ec2f309e0",
+   "kind": "Repay",
+   "freed": 6.842247119315709,
+   "liquidityBefore": 0.000723045579165846,
+   "supply": 997.0623655386813,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 12000,
+   "takenBy": {
+    "vault": 6.80875945080067,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x88611eac135b2b13790bf1ac9ee1e8ca36055fd4f4fbe1cdcc6bd7e894356e53"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44887076,
+   "time": "2026-04-19T01:51:39.000Z",
+   "tx": "0x4dd315af00932674632cb10c3a0d793d1598afa653c7a62b5861f8903a00faf0",
+   "kind": "Repay",
+   "freed": 25.91442746149121,
+   "liquidityBefore": 0.007147763342087563,
+   "supply": 964.3904625879151,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 10168000,
+   "takenBy": {
+    "vault": 25.0171569623932,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0x150ab5c6d802b967eaaac0a92de6ed8ac16298762f1906e4ad2a5a64a3b4db38"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44901682,
+   "time": "2026-04-19T09:58:31.000Z",
+   "tx": "0xfa91e7e4415c590b0eca9eed06b93f25ab5a3ecc078a51b75d4d7243c745d1b1",
+   "kind": "Repay",
+   "freed": 0.86,
+   "liquidityBefore": 0.003624489132763613,
+   "supply": 938.5298206000083,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 54034000,
+   "takenBy": {
+    "vault": 2.7507958975805935,
+    "lender": 0.501086506953154,
+    "borrower": 0
+   },
+   "takenTx": "0xa78bebc1052acca55402777b49504f0f834aea163b810d0c7fe32f92cae4efb9"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44915802,
+   "time": "2026-04-19T17:49:11.000Z",
+   "tx": "0xb98e58a850f930159a21dbe8cb495514b4e7027e9836c12ebb176f71f284a1bd",
+   "kind": "Repay",
+   "freed": 0.1,
+   "liquidityBefore": 0.3625379821796096,
+   "supply": 938.0927449559268,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 25794000,
+   "takenBy": {
+    "vault": 2.7507958975805935,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xa78bebc1052acca55402777b49504f0f834aea163b810d0c7fe32f92cae4efb9"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 44915914,
+   "time": "2026-04-19T17:52:55.000Z",
+   "tx": "0x75ecc14fca17d21a5e0eb0ba3083b733e93645e53f347ee775a6702db5d8da3c",
+   "kind": "Repay",
+   "freed": 2.3203794625835834,
+   "liquidityBefore": 0.4625379821796096,
+   "supply": 938.0927449559268,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 25570000,
+   "takenBy": {
+    "vault": 2.7507958975805935,
+    "lender": 0,
+    "borrower": 0
+   },
+   "takenTx": "0xa78bebc1052acca55402777b49504f0f834aea163b810d0c7fe32f92cae4efb9"
+  },
+  {
+   "market": "WETH/weETH",
+   "marketId": "0xfd0895ba253889c243bf59bc4b96fd1e06d68631241383947b04d1c293a0cfea",
+   "block": 49415681,
+   "time": "2026-08-01T21:45:09.000Z",
+   "tx": "0xe20eb91f1979c890dbad35eddc60fbcb8b462883c220cadc24b53566d8666605",
+   "kind": "Repay",
+   "freed": 0.2,
+   "liquidityBefore": 0,
+   "supply": 531.2882770228442,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 0,
+    "lender": 0,
+    "borrower": 6.47127177
+   },
+   "takenTx": null
+  },
+  {
+   "market": "EURC/wstETH",
+   "marketId": "0xf7e40290f8ca1d5848b3c129502599aa0f0602eb5f5235218797a34242719561",
+   "block": 48371625,
+   "time": "2026-07-08T17:43:17.000Z",
+   "tx": "0xb75ac9451801d658b9a7475f8d047ee8f1699c7d8e43003ea423f625e9f3d975",
+   "kind": "Repay",
+   "freed": 5019.966859,
+   "liquidityBefore": 1889.614969,
+   "supply": 1143514.791113,
+   "taken": true,
+   "sameTx": false,
+   "takenAfterMs": 50764000,
+   "takenBy": {
+    "vault": 34741.707698,
+    "lender": 28567.968537,
+    "borrower": 0
+   },
+   "takenTx": "0x4583158a0816856750ae8ae3e64b9b6b9b8458bb08230ad2ed5ba57bcb912e79"
+  },
+  {
+   "market": "EURC/wstETH",
+   "marketId": "0xf7e40290f8ca1d5848b3c129502599aa0f0602eb5f5235218797a34242719561",
+   "block": 48404294,
+   "time": "2026-07-09T11:52:15.000Z",
+   "tx": "0xa9df7bcfb5ed111fbb3512acf223c421a34cb56d291995bf923e9812718b600f",
+   "kind": "Repay",
+   "freed": 450.78662,
+   "liquidityBefore": 2.608522,
+   "supply": 1140416.796782,
+   "taken": false,
+   "sameTx": false,
+   "takenAfterMs": null,
+   "takenBy": {
+    "vault": 77410.570872,
+    "lender": 309577.526491,
+    "borrower": 900
+   },
+   "takenTx": null
+  }
+ ]
+}

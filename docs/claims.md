@@ -56,6 +56,7 @@ The same suite runs on every push in [GitHub Actions](https://github.com/whatsgo
 | Repayment to payout, v3: median 1.4 s, p90 2.0 s over 20 loops, none failed | [`loops-v3-2026-11-16.jsonl`](../measurements/loops-v3-2026-11-16.jsonl), method in [measurements/README.md](../measurements/README.md) |
 | Repayment to payout, v2: median 1.6 s over 204 loops | [`loops-2026-11-16.jsonl`](../measurements/loops-2026-11-16.jsonl) |
 | A competitor landing 1.6 to 2.6 s after a repayment lost the cash to the queue 12 of 14 times, and 10 of 10 from 3.2 s on | [`race-2026-11-16.jsonl`](../measurements/race-2026-11-16.jsonl) |
+| Today, without a queue: on Base mainnet over the last year, 135 repayments landed in a listed Morpho Blue market with 0.5 percent or less of its cash left; the freed cash was taken a median 1.6 h later, never within 2 s (fastest 4 s), 69 percent by lenders withdrawing directly | [`morpho-base-2026-11-16.json`](../measurements/morpho-base-2026-11-16.json), method in [measurements/README.md](../measurements/README.md#real-data-base-mainnet), script `web/scripts/morpho-crunch.mjs` |
 | How latency is computed: the start is the repayment block time in milliseconds (Base Sepolia blocks are 200 ms apart), the end is the time `SpillwayCallback` stored | [`history.ts:211-221`](https://github.com/whatsgood200/spillway/blob/main/web/src/lib/server/history.ts#L211-L221) |
 
 ## One lifecycle through the web app, with a wallet (2026-11-16)

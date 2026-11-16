@@ -4,6 +4,10 @@ import { getChain } from "@/lib/chain";
 import { TxLink } from "@/components/TxLink";
 import { formatMs, formatUsdc } from "@/lib/format";
 import { useChainQuery } from "@/lib/useChain";
+import morpho from "@/data/morpho.json";
+
+const percent = (share: number) => `${Math.round(share * 100)} %`;
+const hours = (ms: number) => `${(ms / 3_600_000).toFixed(1)} h`;
 
 export default function LatencyPage() {
   const stats = useChainQuery((chain) => chain.getLatencyStats(), "stats");
@@ -120,6 +124,49 @@ export default function LatencyPage() {
           </section>
         </div>
       )}
+
+      <section className="panel" style={{ marginTop: "var(--space-5)" }} aria-label="Real data from Base mainnet">
+        <h2 className="label">The same moment on Base mainnet · one year of real data</h2>
+        <p className="empty">
+          In the {morpho.markets} listed Morpho Blue markets on Base that ran out of cash in the last year, a borrower repaid while the market had 0.5 % or less of its cash left{" "}
+          {morpho.repaymentsIntoDryMarket} times. Nobody was queued to receive that cash.
+        </p>
+        <dl className="stats">
+          <div>
+            <dd>{hours(morpho.medianMs)}</dd>
+            <dt>Median time until someone took it</dt>
+          </div>
+          <div>
+            <dd>{morpho.takenWithin2s} of {morpho.taken}</dd>
+            <dt>Taken within 2 s</dt>
+          </div>
+          <div>
+            <dd>{morpho.fastestMs / 1000} s</dd>
+            <dt>Fastest anyone took it</dt>
+          </div>
+          <div>
+            <dd>{percent(morpho.takenByShare.directLenders)}</dd>
+            <dt>Of what was taken, went to lenders withdrawing directly</dt>
+          </div>
+        </dl>
+        <p className="muted">
+          A lender who wanted out had to notice the cash and act before anyone else; {percent(morpho.takenByShare.borrowers)} of it went back to borrowers and{" "}
+          {morpho.notTakenWithin24h} repayments sat untouched for a day. Spillway pays the people already waiting, in order, about 1.5 s after the repayment, faster than
+          any taker seen here. Base mainnet made a block every 2 s for most of this year and moved to 200 ms in November 2026, so takers may get faster.
+        </p>
+        <p className="muted">
+          {morpho.transactions.toLocaleString("en-US")} transactions from the public Morpho API, {morpho.window.from} to {morpho.window.to}, liquidity rebuilt exactly and checked
+          against Morpho&apos;s hourly figures. Source:{" "}
+          <a href={`https://github.com/whatsgood200/spillway/blob/main/${morpho.source}`} target="_blank" rel="noreferrer">
+            {morpho.source}
+          </a>
+          , method in{" "}
+          <a href="https://github.com/whatsgood200/spillway/blob/main/web/scripts/morpho-crunch.mjs" target="_blank" rel="noreferrer">
+            morpho-crunch.mjs
+          </a>
+          .
+        </p>
+      </section>
 
       {loops.data && loops.data.length > 0 && (
         <section className="panel" style={{ marginTop: "var(--space-5)" }} aria-label="Raw loops">

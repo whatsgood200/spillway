@@ -6,15 +6,15 @@ import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 
 export const A = {
-  vault: "0xa24C70baa119B2430CbC2Fe770874fd3A10db1b0",
-  callback: "0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20",
+  vault: "0x8a430D6472Fbf703233BA5083e134B490d2f60F6",
+  callback: "0x6C78012f837B5A4602c9098D68e95F070018823D",
   usdc: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
   morpho: "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
-  collateral: "0x9bdbfc3eC8659b3cB947162fa2a58a7837e4F806",
-  reactor: "0x5adeA92852259009Fd5664F12aC13aBC74f9Fb77",
+  collateral: "0x5Cab8749ec7F208e19211381FD185dC6e448D857",
+  reactor: "0x943d4252c759249D24D375E855B0a3caf13DB874",
   system: "0x8888888888888888888888888888888888888888",
 };
-export const MARKET = "0x29c415df812658c358fbd137cb13745f337bdec8c043cb7f3247274a80115631";
+export const MARKET = "0xf292f6924b2a0311cd8530d19d6d0edd9b7447a5bab1c1bd1663d49a14d6000c";
 const MIN_REACTOR_BALANCE = 400000000000000000n; // 0.4 lREACT: below this, scripts pause for a top-up.
 
 const env = readFileSync(new URL("../../.env.local", import.meta.url), "utf8");
@@ -32,7 +32,7 @@ export const abi = parseAbi([
   "function withdrawable() view returns (uint256)",
   "function queueLength() view returns (uint256)",
   "function nextRequestId() view returns (uint256)",
-  "struct Request { address owner; address requester; uint256 assets; uint64 queuedAtMs; uint64 queuedBlock; uint64 settledAtMs; uint64 settledBlock; }",
+  "struct Request { address owner; address requester; uint256 assets; uint256 paid; uint64 queuedAtMs; uint64 queuedBlock; uint64 settledAtMs; uint64 settledBlock; }",
   "function requestsSlice(uint256,uint256) view returns (Request[])",
   "function loopCount() view returns (uint256)",
   "struct Loop { uint256 originTxHash; uint64 originBlock; uint64 payoutBlock; uint64 paidAtMs; uint32 settled; uint256 assets; }",
@@ -143,5 +143,6 @@ export function measurementFile(prefix) {
   const day = new Date().toISOString().slice(0, 10);
   const dir = new URL("../../../measurements/", import.meta.url);
   mkdirSync(dir, { recursive: true });
-  return new URL(`${prefix}-${day}.jsonl`, dir);
+  // Deployment label keeps measurements from different contract versions in separate files.
+  return new URL(`${prefix}-v3-${day}.jsonl`, dir);
 }

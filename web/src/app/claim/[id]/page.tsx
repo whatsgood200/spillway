@@ -68,10 +68,15 @@ function Headline({ claim, now, subject }: { claim: Claim; now: number; subject:
   return (
     <>
       <p className="headline-stat">
-        Place {claim.position} in line. {formatUsdc(claim.aheadAssets)} USDC ahead.
+        {claim.paidSoFar > 0n
+          ? `Paid ${formatUsdc(claim.paidSoFar)} of ${formatUsdc(claim.assets)} USDC so far.`
+          : `Place ${claim.position} in line. ${formatUsdc(claim.aheadAssets)} USDC ahead.`}
       </p>
       <p className="lead">
-        Waiting {formatMs(Math.max(0, now - queuedAt))}. {who.name === "You" ? "You will" : `${who.name} will`} be paid automatically once repayments cover the requests ahead and this one.
+        Waiting {formatMs(Math.max(0, now - queuedAt))}.{" "}
+        {claim.paidSoFar > 0n
+          ? "This request is at the front, so each repayment pays it down until it is complete."
+          : `${who.name === "You" ? "You will" : `${who.name} will`} be paid automatically as repayments come back, strictly in order.`}
         {demoNote}
       </p>
     </>

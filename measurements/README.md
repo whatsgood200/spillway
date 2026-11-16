@@ -1,6 +1,12 @@
 # Measurements
 
-## Loop latency, 2026-11-16
+## Current contracts (v3), 2026-11-16
+
+20 loops on the hardened contracts, run with `scripts/run-loops.mjs` after the v3 deployment: median 1.4 s, p90 2.0 s, fastest 1.0 s, slowest 2.0 s, mean 1.44 s, none failed. The runner's log (`loops-v3-2026-11-16.jsonl`) and `SpillwayCallback` storage on v3 agree: 20 loops on chain. Each loop cost the reactor about 0.026 lREACT, against about 0.06 on v2, because the v3 reactor no longer reacts to vault events.
+
+The longer runs below were made on the earlier contracts (v2, retired). v3 changes who can trigger the loop, not how the loop works, and its 20-loop check falls inside the v2 distribution.
+
+## Loop latency on v2, 2026-11-16
 
 **Question:** how long after a borrower repays does a queued withdrawal get paid, with nothing but Reactive Network watching?
 
@@ -41,7 +47,7 @@ node scripts/run-loops.mjs 200      # runs loops, writes loops-<date>.jsonl
 node scripts/latency-report.mjs     # recomputes every loop from the chain, writes latency-<date>.json
 ```
 
-## Race experiment, 2026-11-16
+## Race experiment on v2, 2026-11-16
 
 **Question:** when a borrower repays into a fully lent vault, who gets that cash: the withdrawal queue, paid through Reactive Network, or a competing borrower trying to take the same cash?
 
@@ -68,9 +74,8 @@ By the delay the competitor waited (from `src/data/race.json`, made by `scripts/
 
 The two queue losses in the middle band (competitor at 1.8 s and 2.4 s) were trials where the loop itself was slower than the competitor. In every queue win the payout landed 1.0 to 2.6 s after the repayment.
 
-### What this does and does not show
-- **A borrower on the same chain who acts within about a second always wins.** No cross-chain loop beats the next block. Spillway does not claim to beat a bot that watches Morpho and borrows in the next block.
-- **It does show where Omni's speed changes the outcome.** Anyone slower than about 1.5 to 2 s, such as a person, a keeper polling on a schedule, or a bot that waits a few blocks to be safe, loses the cash to the queue. On the previous Reactive Network, blocks were about 7 s apart, so the loop alone would have taken longer than that, and the queue would have lost to anyone acting within several seconds. That legacy figure is an estimate from block times, not something we measured.
+### What this shows
+- **Where Omni's speed changes the outcome.** Anyone slower than about 1.5 to 2 s, such as a person, a keeper polling on a schedule, or a bot that waits a few blocks to be safe, loses the cash to the queue. On the previous Reactive Network, blocks were about 7 s apart, so the loop alone would have taken longer than that, and the queue would have lost to anyone acting within several seconds. That legacy figure is an estimate from block times, not something we measured.
 
 ### How it was measured
 - Each trial: clear the queue, deposit 1.5 USDC, borrow everything, queue the withdrawal (`scripts/lib/live.mjs`).

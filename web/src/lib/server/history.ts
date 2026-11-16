@@ -26,6 +26,8 @@ export interface HistoryRequest {
   owner: string;
   requester: string;
   assets: string;
+  /** Paid so far. Equals `assets` once the request is complete; between zero and `assets` while part paid. */
+  paid: string;
   queuedAtMs: number;
   queuedBlock: number;
   settledAtMs: number | null;
@@ -145,6 +147,7 @@ async function refreshRequests(): Promise<HistoryRequest[]> {
         owner: raw.owner,
         requester: raw.requester,
         assets: raw.assets.toString(),
+        paid: raw.paid.toString(),
         queuedAtMs: Number(raw.queuedAtMs),
         queuedBlock: Number(raw.queuedBlock),
         settledAtMs: raw.settledAtMs === 0n ? null : Number(raw.settledAtMs),

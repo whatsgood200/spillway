@@ -56,6 +56,8 @@ export interface Claim {
   aheadAssets: bigint;
   received: bigint | null;
   fee: bigint | null;
+  /** Paid to the request so far, while it is still waiting: the front request can be paid in parts. */
+  paidSoFar: bigint;
   latencyMs: number | null;
   events: ClaimEvent[];
 }

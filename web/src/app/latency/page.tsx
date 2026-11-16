@@ -68,6 +68,15 @@ export default function LatencyPage() {
                   ))}
                 </ol>
                 <p className="muted">Seconds from repayment to payout. Base Sepolia makes a block every 200 ms, so times fall in 200 ms steps.</p>
+                {!getChain().isMock && (
+                  <p className="muted">
+                    These are the current contracts (v3). The earlier contracts (v2) ran 204 loops: median 1.6 s, p90 2.4 s, p99 4.0 s. Both runs are in{" "}
+                    <a href="https://github.com/whatsgood200/spillway/tree/main/measurements" target="_blank" rel="noreferrer">
+                      measurements
+                    </a>
+                    .
+                  </p>
+                )}
               </>
             )}
           </section>
@@ -105,8 +114,8 @@ export default function LatencyPage() {
             )}
             {data?.raceSource && <p className="muted">Source: {data.raceSource}. The competitor is our own demo account.</p>}
             <p className="muted">
-              A borrower on the same chain that acts within about a second will always be first: no cross-chain loop is faster than the next block. On the previous Reactive Network, with blocks about 7 s apart, the loop
-              alone took longer than that, so the queue lost to anyone acting within several seconds (an estimate from block times, not measured).
+              On the previous Reactive Network, with blocks about 7 s apart, the loop alone took longer than any of these delays (an estimate from block times, not
+              measured).
             </p>
           </section>
         </div>

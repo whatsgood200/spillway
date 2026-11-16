@@ -1,35 +1,22 @@
-# Security review and limits
+# Security review
 
-Reviewed 2026-11-16 by reading every external function of the four contracts and the three API routes, and against the test suite. Not an audit by a third party. Testnet only; do not send real funds.
+Current contracts (v3), reviewed 2026-11-16. The full abuse review, with every actor, every entry point and the attack test for each finding, is in [threat-model.md](threat-model.md). Scope: Base Sepolia and Reactive Lasna testnets, test funds only, not audited by a third party.
 
 ## What was checked and holds
 
 | Area | Result | Evidence |
 |---|---|---|
-| Who can call what | Every function that moves money or changes wiring is guarded. `QueueReactor.react` only from Reactive's system contract; `SpillwayCallback.settle` only from the Base Sepolia callback proxy acting for our reactor; wiring and gas withdrawals only by the deployer. | `test_onlyTheSystemContractCanCallReact`, `test_callbackRejectsAnyoneButTheProxyAndTheReactor`, `test_callbackWiringIsSetOnceByTheDeployer`, `test_gasFundsGoBackOnlyToTheDeployer` |
+| Who can call what | Every function that moves money or changes wiring is guarded. `QueueReactor.react` only from Reactive's system contract; `SpillwayCallback.settle` only from the Base Sepolia callback proxy acting for our reactor; pausing, borrower changes, wiring and gas withdrawals only by the deployer. | `test_onlyTheSystemContractCanCallReact`, `test_callbackRejectsAnyoneButTheProxyAndTheReactor`, `test_onlyTheDeployerCanPauseOrChangeBorrowers`, `test_callbackWiringIsSetOnceByTheDeployer`, `test_gasFundsGoBackOnlyToTheDeployer` |
+| Nobody else can make us pay gas | The reactor reacts only to an approved borrower repaying its own loan or being liquidated. A stranger's supply, deposit, withdrawal request or 1 wei repayment reaches nothing. | `test_strangerRepayingOnOurBorrowersBehalfTriggersNothing`, `test_strangerSupplyTriggersNothing`, `test_strangerCyclingDepositsAndRequestsTriggersNothing`, `test_fork_reactorFiltersMatchRealMorphoLogs` |
+| Nobody else can borrow the market's cash | Only approved accounts can mint or hold the collateral; on the real Morpho Blue a stranger's mint, transfer and borrow are refused. | `test_fork_strangerCannotBorrowFromTheMarket` |
 | `QueueVault.settle` open to anyone | Safe by design: it can only pay people already in the queue, in order. | `test_anyoneCanSettleAndOnlyOwnersArePaid` |
-| Queue order | Strict first in, first out; nobody skips ahead, even when they would fit. | `test_nobodyJumpsTheLine`, `testFuzz_partialRepaymentPaysOnlyAPrefix` |
-| Accounting | What the vault owes always equals the queue, every dollar is accounted for, the queue is always backed by the Morpho position. | six invariants in `contracts/test/Invariants.t.sol`, 64 runs of 80 random calls |
+| Queue order | Strictly first in, first out; the front request may be paid in parts and nobody behind it is paid until it is complete. | `testFuzz_partialRepaymentPaysStrictlyInOrder`, `test_aLargeRequestAtTheFrontIsPaidDownNotStuck`, invariant in `contracts/test/Invariants.t.sol` |
+| Accounting | What the vault owes always equals what is still owed to the queue; every dollar is accounted for; the queue is always backed by the Morpho position. | six invariants, 64 runs of 80 random calls |
+| Pool pricing | Fee grows with pool drain and with the line ahead, never above 5 percent; a held place is priced on what it is still owed. | `testFuzz_feeRisesWithTheLineAhead`, `testFuzz_feeStaysWithinBounds`, `test_buyClaimPricesWhatIsStillOwed` |
+| Pool fairness | New deposits are locked for an hour, and the lock follows transferred shares, so nobody can join just before a sale and leave just after. | `test_depositLockStopsAJustInTimeProvider`, `test_theLockTravelsWithTransferredShares` |
 | A payout that fails | A blocked receiver cannot stall the queue; the money is held for them to collect. | `test_blockedReceiverDoesNotStallTheQueue` |
-| Reentrancy | Every state-changing vault and pool function is `nonReentrant`; USDC has no transfer hooks. | `contracts/src/QueueVault.sol`, `contracts/src/InstantPool.sol` |
-| Share price inflation | Both ERC-4626 contracts use a decimals offset of 6, matching Morpho's virtual shares. | `_decimalsOffset` in both contracts |
-| Seller protection | `cashOut` and `buyClaim` revert if the seller would get less than `minReceive`; the app sets it 0.5 percent under the quote. | `test_minReceiveProtectsTheSeller` |
-| Web secrets | The demo key is a server-only environment variable; checked absent from all public pages, scripts and API responses on the live site. | 2026-11-16 scan of 18 files |
+| Lost or overlapping callbacks | One callback in flight; a repayment that lands meanwhile is paid when it reports back; a lost callback is given up after 60 s. | `test_aRepaymentDuringAFlightIsPaidWhenTheFlightReportsBack`, `test_aLostCallbackIsGivenUpAfterTheTimeout` |
+| Reentrancy, share inflation, seller protection | `nonReentrant` on every state change; decimals offset of 6 on both ERC-4626 contracts; `minReceive` on every sale. | contracts, `test_minReceiveProtectsTheSeller` |
+| Web secrets | The demo key is a server-only environment variable; checked absent from every public page, script and API response on the live site. | scan of the live site, 2026-11-16 |
 | Web dependencies | `pnpm audit --prod`: no known vulnerabilities. | 2026-11-16 |
-| Web API | Input validated and size capped; rate limited (history 30 per 10 s, demo 5 per minute per IP); demo amounts 1 to 5 USDC; 80 demo actions a day. Security headers: CSP, HSTS, no framing. | `web/src/app/api/*`, `web/next.config.ts` |
-
-## Known limits
-
-**Design**
-- **A bot on the same chain that acts within about a second beats the queue** to cash a borrower repays. Measured in `measurements/README.md`.
-- **Strict first in, first out.** One request too large for the cash that came back blocks smaller ones behind it until enough is repaid. That is the fairness promise, and the reason the pool exists.
-- **A queued request is fixed in USDC** when made and earns nothing while it waits.
-- **The pool's fee depends only on how drained the pool is, not on how long a place will wait.** A place at the back of a long queue costs the seller the same as one at the front. Pricing by expected wait is the obvious next step.
-- **The pool values queue places at full value,** so its providers carry the risk that a place is never paid (for example, bad debt in the Morpho market).
-
-**This deployment**
-- **The demo market is ours and permissive.** Its collateral token (sdCOL) can be minted by anyone and its oracle price is fixed, so anyone can borrow all of the market's cash and never repay. That would take the testnet USDC sitting in the vault, not the loop itself: every demo loop brings its own cash. A production vault would lend on a curated market with a real oracle.
-- **Anyone can make the reactor spend gas.** Reactive subscriptions match exact values only, so any supply or repayment on our market, however small, triggers a reactive transaction paid from the reactor's lREACT (about 0.015 to 0.03 each). Someone could drain it on purpose; the reactor would then stop until topped up. The demo endpoint is capped so visitors alone cannot.
-- **Rate limits live in each server instance's memory.** Enough for a testnet demo, not for production.
-- **Liquidations were not exercised live.** The reactor subscribes to `Liquidate`, and the topic is tested, but no live liquidation has happened on our market.
-- **No third-party audit.**
+| Web API | Input validated and size capped; rate limited per IP; demo amounts 1 to 5 USDC; daily demo caps counted from contract storage, so they hold across every server instance; a demo repayment is refused when nobody is waiting. Security headers: CSP, HSTS, no framing. | `web/src/app/api/*`, `web/src/lib/server/demo.ts`, `web/next.config.ts` |

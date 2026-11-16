@@ -3,7 +3,7 @@ import { createPublicClient, createWalletClient, decodeEventLog, maxUint256, typ
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 import { serverTransport } from "./rpc";
-import { ADDRESSES, MARKET_ID, erc20Abi, morphoAbi, vaultAbi } from "../chain/config";
+import { ADDRESSES, MARKET_ID, callbackAbi, erc20Abi, morphoAbi, vaultAbi } from "../chain/config";
 
 /**
  * The labelled demo account. It is a throwaway testnet wallet held by the server so a judge can cause a full
@@ -22,15 +22,15 @@ export class DemoError extends Error {
 
 export const MIN_DEMO_AMOUNT = 1_000_000n;
 export const MAX_DEMO_AMOUNT = 5_000_000n;
-// Each queue and repay pair is one loop, and every loop costs the reactor about 0.06 lREACT (measured 2026-11-16).
-// 80 actions a day is at most 40 loops, about 2.4 lREACT, so a visitor cannot drain the reactor in a day.
-const DAILY_ACTION_CAP = 80;
+// Daily caps, counted from the contracts' own storage so every server instance sees the same numbers.
+// Each repayment by the demo account is one reaction on Reactive (about 0.06 lREACT with its callback), so
+// 80 repayments a day is at most about 5 lREACT, and the reactor's pause switch remains the backstop.
+const DAILY_QUEUE_CAP = 40;
+const DAILY_REPAY_CAP = 80;
 const COLLATERAL_TOP_UP = 10n * 10n ** 18n;
 
 const publicClient = createPublicClient({ chain: baseSepolia, transport: serverTransport() });
 
-let day = "";
-let actionsToday = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
 function wallet() {
@@ -48,14 +48,49 @@ export function demoAddress(): string | null {
   }
 }
 
-function spendDailyBudget() {
-  const today = new Date().toISOString().slice(0, 10);
-  if (today !== day) {
-    day = today;
-    actionsToday = 0;
-  }
-  if (++actionsToday > DAILY_ACTION_CAP) throw new DemoError("The demo account has reached its daily limit. Try again tomorrow.", 429);
+function utcMidnightMs(): number {
+  const now = new Date();
+  return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
 }
+
+/** Requests the demo account made since midnight UTC, read from QueueVault storage, newest first. */
+async function queuedToday(): Promise<number> {
+  const { account } = wallet();
+  const next = Number(await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "nextRequestId" }));
+  const since = utcMidnightMs();
+  let count = 0;
+  for (let end = next; end > 1; end -= 100) {
+    const first = Math.max(1, end - 100);
+    const page = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "requestsSlice", args: [BigInt(first), BigInt(end - first)] });
+    for (const request of page) {
+      if (Number(request.queuedAtMs) >= since && request.requester.toLowerCase() === account.address.toLowerCase()) count++;
+    }
+    if (page.length && Number(page[0].queuedAtMs) < since) break;
+  }
+  return count;
+}
+
+/** Loops paid since midnight UTC, read from SpillwayCallback storage, newest first. Every allowed demo repayment
+ * pays someone (see `demoRepay`), so this counts them. */
+async function loopsToday(): Promise<number> {
+  const count = Number(await publicClient.readContract({ address: ADDRESSES.callback, abi: callbackAbi, functionName: "loopCount" }));
+  const since = utcMidnightMs();
+  let today = 0;
+  for (let end = count; end > 0; end -= 100) {
+    const first = Math.max(0, end - 100);
+    const page = await publicClient.readContract({ address: ADDRESSES.callback, abi: callbackAbi, functionName: "loopsSlice", args: [BigInt(first), BigInt(end - first)] });
+    for (const loop of page) if (Number(loop.paidAtMs) >= since) today++;
+    if (page.length && Number(page[0].paidAtMs) < since) break;
+  }
+  return today;
+}
+
+async function checkCap(kind: "queue" | "repay") {
+  const used = kind === "queue" ? await queuedToday() : await loopsToday();
+  const cap = kind === "queue" ? DAILY_QUEUE_CAP : DAILY_REPAY_CAP;
+  if (used >= cap) throw new DemoError("The demo account has reached its daily limit. Try again after midnight UTC.", 429);
+}
+
 
 /** One demo action at a time, so the account's transactions never race each other for a nonce. */
 function serial<T>(task: () => Promise<T>): Promise<T> {
@@ -67,8 +102,11 @@ function serial<T>(task: () => Promise<T>): Promise<T> {
 type Write = Parameters<ReturnType<typeof wallet>["client"]["writeContract"]>[0];
 
 async function send(request: Write): Promise<{ hash: Hex; logs: { address: string; data: Hex; topics: Hex[] }[] }> {
-  const { client } = wallet();
-  const hash = await client.writeContract(request);
+  const { client, account } = wallet();
+  // The public RPC sits behind several nodes, and an estimate from a node a block behind can be too low for the
+  // path the transaction actually takes (seen as OutOfGas on requestRedeem). Give every estimate headroom.
+  const estimate = await publicClient.estimateContractGas({ ...request, account } as never);
+  const hash = await client.writeContract({ ...request, gas: (estimate * 3n) / 2n + 60_000n } as never);
   const receipt = await publicClient.waitForTransactionReceipt({ hash, timeout: 60_000 });
   if (receipt.status !== "success") throw new DemoError(`A demo transaction reverted (${hash}).`, 502);
   return { hash, logs: receipt.logs as unknown as { address: string; data: Hex; topics: Hex[] }[] };
@@ -114,7 +152,7 @@ function checkAmount(amount: bigint) {
 export function demoQueueWithdrawal(amount: bigint) {
   checkAmount(amount);
   return serial(async () => {
-    spendDailyBudget();
+    await checkCap("queue");
     const { account } = wallet();
     const balance = await publicClient.readContract({ address: ADDRESSES.usdc, abi: erc20Abi, functionName: "balanceOf", args: [account.address] });
     if (balance < amount) throw new DemoError("The demo account is out of test USDC. It needs a top-up.", 503);
@@ -143,7 +181,10 @@ export function demoQueueWithdrawal(amount: bigint) {
 export function demoRepay(amount: bigint) {
   checkAmount(amount);
   return serial(async () => {
-    spendDailyBudget();
+    await checkCap("repay");
+    // Refuse a repayment when nobody waits: it would cost a reaction and pay no one.
+    const waiting = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queueLength" });
+    if (waiting === 0n) throw new DemoError("Nobody is waiting, so a repayment would not pay anyone. Queue a withdrawal first.", 409);
     const { account } = wallet();
     const params = await marketParams();
     const [, , borrowAssets, borrowShares] = await publicClient.readContract({ address: ADDRESSES.morpho, abi: morphoAbi, functionName: "market", args: [MARKET_ID] });
@@ -163,7 +204,6 @@ export function demoRepay(amount: bigint) {
 
 export function demoBorrowIdle() {
   return serial(async () => {
-    spendDailyBudget();
     const borrowTx = await borrowAll();
     if (!borrowTx) throw new DemoError("The vault is already fully lent out.", 409);
     return { borrowTx };

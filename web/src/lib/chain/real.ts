@@ -129,8 +129,10 @@ export function createRealAdapter(): ChainAdapter {
       const { address, write } = await signer();
       // Simulate first so a doomed transaction is refused before the wallet opens.
       await publicClient.simulateContract({ ...request, account: address } as never);
+      // Headroom over the estimate: a node a block behind can estimate too low for the path the transaction takes.
+      const estimate = await publicClient.estimateContractGas({ ...request, account: address } as never);
       options?.onPhase?.("wallet");
-      const hash = await write.writeContract({ ...request, account: address, chain: baseSepolia } as never);
+      const hash = await write.writeContract({ ...request, account: address, chain: baseSepolia, gas: (estimate * 3n) / 2n + 60_000n } as never);
       options?.onPhase?.("pending");
       const receipt = await publicClient.waitForTransactionReceipt({ hash, timeout: 90_000 });
       if (receipt.status !== "success") throw new ChainError("reverted", "The transaction reverted on Base Sepolia. Your balances are unchanged.");
@@ -205,6 +207,7 @@ export function createRealAdapter(): ChainAdapter {
       aheadAssets: index >= 0 ? queue.amounts.slice(0, index).reduce((sum, amount) => sum + amount, 0n) : 0n,
       received: sale ? BigInt(sale.paid) : settled ? assets : null,
       fee: sale ? BigInt(sale.fee) : settled ? 0n : null,
+      paidSoFar: BigInt(request.paid),
       // Paid by Reactive when a loop record matches; paid by a direct settle call otherwise.
       latencyMs: loop?.latencyMs ?? null,
       events: timeline,
@@ -334,7 +337,7 @@ export function createRealAdapter(): ChainAdapter {
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "totalAssets" }),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "idle" }),
         publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "pendingAssets", args: [ADDRESSES.pool] }),
-        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "feeBps", args: [0n] }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quote", args: [1_000_000n] }).then(([, , bps]) => bps),
         readQueue(),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "feesCharged" }),
       ]);
@@ -421,7 +424,7 @@ export function createRealAdapter(): ChainAdapter {
         histogram: [...buckets.entries()].sort((a, b) => a[0] - b[0]).map(([fromMs, count]) => ({ fromMs, count })),
         // Recorded by scripts/race.mjs and summarised by scripts/race-report.mjs; each trial is on chain.
         race: race.rows,
-        raceSource: race.rows.length ? `${race.trials} trials on Base Sepolia, ${race.source}` : null,
+        raceSource: race.rows.length ? `${race.trials} trials on Base Sepolia on the earlier contracts (v2), ${race.source}` : null,
       };
     },
 
@@ -468,7 +471,7 @@ export function createRealAdapter(): ChainAdapter {
       const queue = await readQueue();
       const index = queue.ids.findIndex((id) => Number(id) === requestId);
       if (index < 0 || !same(queue.owners[index], address)) throw new ChainError("unavailable", "This place in the queue is no longer yours to sell.");
-      const [quoted] = await publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quote", args: [queue.amounts[index]] });
+      const [quoted] = await publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quoteClaim", args: [BigInt(requestId)] });
       const minReceive = (quoted * (10_000n - SLIPPAGE_BPS)) / 10_000n;
       await send(options, { address: ADDRESSES.vault, abi: vaultAbi, functionName: "approveClaim", args: [BigInt(requestId), ADDRESSES.pool] });
       const logs = await send(options, { address: ADDRESSES.pool, abi: poolAbi, functionName: "buyClaim", args: [BigInt(requestId), minReceive, address] });

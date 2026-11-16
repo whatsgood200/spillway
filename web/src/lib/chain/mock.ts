@@ -390,6 +390,7 @@ export function createMockAdapter(): ChainAdapter {
         const claim: Claim = {
           requestId,
           requester: null,
+          paidSoFar: 0n,
           assets,
           status: paidAtOnce ? "paid" : "queued",
           position: null,

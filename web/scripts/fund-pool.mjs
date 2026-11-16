@@ -3,7 +3,7 @@
 import { maxUint256, parseAbi } from "viem";
 import { A, account, pub, read, send } from "./lib/live.mjs";
 
-const POOL = "0x15d5F39A464875634349a88c5E9F48D84f603207";
+const POOL = "0x13d683F223E908A7BA615e4498fa5b4E392D3334";
 const poolAbi = parseAbi([
   "function deposit(uint256,address) returns (uint256)",
   "function idle() view returns (uint256)",

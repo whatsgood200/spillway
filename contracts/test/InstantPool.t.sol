@@ -69,7 +69,7 @@ contract InstantPoolTest is BaseTest {
         vm.stopPrank();
 
         assertEq(usdc.balanceOf(ana), received);
-        (address owner,,,,,,) = vault.requests(id);
+        (address owner,,,,,,,) = vault.requests(id);
         assertEq(owner, address(pool));
         (address seller, uint256 assets, uint256 paid, uint256 fee, uint64 atMs, uint64 atBlock) = pool.sales(id);
         assertEq(seller, ana);
@@ -121,10 +121,10 @@ contract InstantPoolTest is BaseTest {
 
     function test_feeRisesAsThePoolDrains() public {
         _fundPool(10_000 * USDC);
-        uint256 small = pool.feeBps(100 * USDC);
-        uint256 large = pool.feeBps(9_000 * USDC);
+        uint256 small = pool.feeBps(100 * USDC, 0);
+        uint256 large = pool.feeBps(9_000 * USDC, 0);
         assertLt(small, large);
-        assertEq(pool.feeBps(10_000 * USDC), pool.MAX_FEE_BPS());
+        assertEq(pool.feeBps(10_000 * USDC, 0), pool.MAX_DRAIN_BPS(), "an empty line adds nothing to a full drain");
     }
 
     function test_providersCanOnlyTakeOutCash() public {
@@ -133,6 +133,7 @@ contract InstantPoolTest is BaseTest {
         _borrowAll();
         _cashOut(ana, shares, 0);
 
+        skip(pool.DEPOSIT_LOCK());
         uint256 cash = pool.idle();
         assertEq(pool.maxWithdraw(lp), cash);
         vm.startPrank(lp);
@@ -166,5 +167,86 @@ contract InstantPoolTest is BaseTest {
         assertGe(pool.totalAssets(), before);
         assertLe(received, exitAmount);
         assertEq(usdc.balanceOf(ana), received);
+    }
+
+    // ------------------------------------------------- v3: wait-priced fee and deposit lock
+
+    /// While shares are locked the pool reports nothing withdrawable, so ERC-4626 refuses before the lock check.
+    bytes4 internal constant EXCEEDED_MAX_WITHDRAW = bytes4(keccak256("ERC4626ExceededMaxWithdraw(address,uint256,uint256)"));
+
+    /// F3: a place behind a long line costs more than one behind a short line, all else equal.
+    function testFuzz_feeRisesWithTheLineAhead(uint96 poolSize, uint96 shortLine, uint96 longLine) public {
+        uint256 poolAmount = bound(poolSize, 100 * USDC, 1e12);
+        uint256 shortAhead = bound(shortLine, 0, 1e12);
+        uint256 longAhead = bound(longLine, shortAhead + USDC, 1e13);
+        _fundPool(poolAmount);
+        uint256 assets = poolAmount / 10;
+        assertLe(pool.feeBps(assets, shortAhead), pool.feeBps(assets, longAhead));
+        assertLe(pool.feeBps(assets, longAhead), pool.MAX_FEE_BPS(), "the whole fee stays under its cap");
+    }
+
+    function test_feeForANewPlaceCountsEveryoneQueued() public {
+        _fundPool(10_000 * USDC);
+        (,, uint256 emptyLineBps,) = pool.quote(500 * USDC);
+        uint256 a = _deposit(ana, 4_000 * USDC);
+        _borrowAll();
+        _request(ana, a);
+        (,, uint256 longLineBps,) = pool.quote(500 * USDC);
+        assertGt(longLineBps, emptyLineBps, "4,000 USDC queued ahead makes the place dearer");
+    }
+
+    function test_buyClaimPricesWhatIsStillOwed() public {
+        _fundPool(10_000 * USDC);
+        uint256 shares = _deposit(ana, 1_000 * USDC);
+        _borrowAll();
+        (uint256 id,,) = _request(ana, shares);
+        _repay(400 * USDC);
+        vault.settle(5);
+
+        (uint256 quoted, uint256 fee,,) = pool.quoteClaim(id);
+        assertEq(quoted + fee, 600 * USDC, "only the 600 still owed is for sale");
+        vm.startPrank(ana);
+        vault.approveClaim(id, address(pool));
+        uint256 received = pool.buyClaim(id, quoted, ana);
+        vm.stopPrank();
+        assertEq(received, quoted);
+        assertEq(vault.pendingAssets(address(pool)), 600 * USDC);
+    }
+
+    /// F6: joining just before a sale and leaving just after is blocked by the deposit lock.
+    function test_depositLockStopsAJustInTimeProvider() public {
+        _fundPool(10_000 * USDC);
+        address jit = makeAddr("jit");
+        usdc.mint(jit, 10_000 * USDC);
+        vm.startPrank(jit);
+        usdc.approve(address(pool), type(uint256).max);
+        pool.deposit(10_000 * USDC, jit);
+        vm.stopPrank();
+
+        uint256 shares = _deposit(ana, 1_000 * USDC);
+        _borrowAll();
+        _cashOut(ana, shares, 0);
+
+        assertEq(pool.maxWithdraw(jit), 0, "locked right after depositing");
+        vm.prank(jit);
+        vm.expectPartialRevert(EXCEEDED_MAX_WITHDRAW);
+        pool.withdraw(1 * USDC, jit, jit);
+
+        skip(pool.DEPOSIT_LOCK());
+        vm.prank(jit);
+        pool.withdraw(1 * USDC, jit, jit);
+    }
+
+    /// F6: moving fresh shares to another address does not dodge the lock.
+    function test_theLockTravelsWithTransferredShares() public {
+        _fundPool(1_000 * USDC);
+        address fresh = makeAddr("fresh");
+        uint256 lpShares = pool.balanceOf(lp);
+        vm.prank(lp);
+        pool.transfer(fresh, lpShares);
+        assertEq(pool.maxWithdraw(fresh), 0);
+        vm.prank(fresh);
+        vm.expectPartialRevert(EXCEEDED_MAX_WITHDRAW);
+        pool.withdraw(1 * USDC, fresh, fresh);
     }
 }

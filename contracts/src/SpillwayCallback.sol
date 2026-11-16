@@ -15,7 +15,7 @@ contract SpillwayCallback is AbstractCallback {
     QueueVault public immutable VAULT;
     address public immutable DEPLOYER;
 
-    /// @dev One record per callback that paid someone. The origin block's own timestamp is not available on
+    /// @dev One record per callback that paid someone (in full or in part). The origin block's own timestamp is not available on
     /// chain here; latency is `paidAtMs` minus the origin block's millisecond timestamp, read from the RPC.
     struct Loop {
         uint256 originTxHash;
@@ -32,7 +32,7 @@ contract SpillwayCallback is AbstractCallback {
 
     /// @param originTxHash The transaction on the origin chain whose event started this loop.
     /// @param originBlock The origin block number, used with its millisecond timestamp to measure latency.
-    /// @param settled Requests paid by this callback.
+    /// @param settled Requests completed by this callback.
     /// @param paidAtMs Millisecond timestamp of this callback's block.
     /// @param more True when the next request could also be paid; the reactive contract asks again.
     event LoopClosed(uint256 indexed originTxHash, uint256 originBlock, uint256 settled, uint256 paidAtMs, bool more);
@@ -62,10 +62,10 @@ contract SpillwayCallback is AbstractCallback {
         onlyServiceProvider
         onlyCallbackSender(reactive_)
     {
-        uint256 owedBefore = VAULT.queuedAssets();
-        (uint256 settled, bool more) = VAULT.settle(maxItems);
+        (uint256 settled, bool more, uint256 paid) = VAULT.settle(maxItems);
         uint256 paidAtMs = MsClock.nowMs();
-        if (settled > 0) {
+        // A loop is any callback that paid someone, including a part paid to an incomplete front request.
+        if (paid > 0) {
             loops.push(
                 Loop({
                     originTxHash: originTxHash,
@@ -73,7 +73,7 @@ contract SpillwayCallback is AbstractCallback {
                     payoutBlock: uint64(block.number),
                     paidAtMs: uint64(paidAtMs),
                     settled: uint32(settled),
-                    assets: owedBefore - VAULT.queuedAssets()
+                    assets: paid
                 })
             );
         }

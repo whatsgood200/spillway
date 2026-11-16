@@ -107,7 +107,7 @@ contract Handler is Test {
 
     function settle(uint256 maxItems) external {
         uint256 headBefore = vault.head();
-        (uint256 settled,) = vault.settle(bound(maxItems, 1, 5));
+        (uint256 settled,,) = vault.settle(bound(maxItems, 1, 5));
         settledCount += settled;
         assertEq(vault.head(), headBefore + settled, "settle only ever advances the front of the queue");
         highestHead = vault.head();
@@ -138,14 +138,17 @@ contract InvariantsTest is Test {
         targetContract(address(handler));
     }
 
-    /// The vault's record of what it owes equals the sum of the requests actually in the queue.
+    /// The vault's record of what it owes equals what is still owed to the requests actually in the queue.
+    /// Only the front request may be part paid; everyone behind it is untouched.
     function invariant_queuedAssetsMatchesTheQueue() public view {
         uint256 sum;
         for (uint256 id = vault.head(); id < vault.nextRequestId(); id++) {
-            (address owner,, uint256 assets,,, uint64 settledAtMs,) = vault.requests(id);
+            (address owner,, uint256 assets, uint256 paid,,, uint64 settledAtMs,) = vault.requests(id);
             assertTrue(owner != address(0), "no holes in the queue");
-            assertEq(settledAtMs, 0, "nothing in the queue is marked paid");
-            sum += assets;
+            assertEq(settledAtMs, 0, "nothing in the queue is marked complete");
+            assertLt(paid, assets, "nothing in the queue is fully paid");
+            if (id != vault.head()) assertEq(paid, 0, "nobody behind the front is paid before it");
+            sum += assets - paid;
         }
         assertEq(sum, vault.queuedAssets());
     }
@@ -172,9 +175,10 @@ contract InvariantsTest is Test {
     /// Everything in front of the queue is marked paid, exactly once, and the record of it is kept.
     function invariant_paidRequestsKeepTheirRecord() public view {
         for (uint256 id = 1; id < vault.head(); id++) {
-            (address owner,, uint256 assets, uint64 queuedAtMs,, uint64 settledAtMs,) = vault.requests(id);
+            (address owner,, uint256 assets, uint256 paid, uint64 queuedAtMs,, uint64 settledAtMs,) = vault.requests(id);
             assertTrue(owner != address(0));
             assertGt(assets, 0);
+            assertEq(paid, assets, "a completed request was paid exactly what it was owed");
             assertGe(settledAtMs, queuedAtMs);
             assertGt(settledAtMs, 0);
         }

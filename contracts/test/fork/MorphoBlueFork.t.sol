@@ -2,7 +2,6 @@
 pragma solidity ^0.8.29;
 
 import {Test, Vm} from "forge-std/Test.sol";
-import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IMorpho, MarketParams, Id} from "morpho-blue/interfaces/IMorpho.sol";
 import {IOracle} from "morpho-blue/interfaces/IOracle.sol";
@@ -13,15 +12,8 @@ import {InstantPool} from "../../src/InstantPool.sol";
 import {QueueReactor} from "../../src/QueueReactor.sol";
 import {SpillwayCallback} from "../../src/SpillwayCallback.sol";
 import {MsClock} from "../../src/libraries/MsClock.sol";
+import {RestrictedCollateral} from "../../src/RestrictedCollateral.sol";
 import {MockSystem} from "../mocks/Mocks.sol";
-
-contract ForkCollateral is ERC20 {
-    constructor() ERC20("Spillway Demo Collateral", "sdCOL") {}
-
-    function mint(address to, uint256 amount) external {
-        _mint(to, amount);
-    }
-}
 
 contract ForkOracle is IOracle {
     uint256 public price = 2000 * 1e6 * 1e36 / 1e18;
@@ -42,7 +34,8 @@ contract MorphoBlueForkTest is Test {
     MarketParams internal params;
     QueueVault internal vault;
     InstantPool internal pool;
-    ForkCollateral internal collateral;
+    RestrictedCollateral internal collateral;
+    address internal stranger = makeAddr("stranger");
 
     address internal ana = makeAddr("ana");
     address internal ben = makeAddr("ben");
@@ -57,7 +50,9 @@ contract MorphoBlueForkTest is Test {
         }
         vm.createSelectFork(rpc);
 
-        collateral = new ForkCollateral();
+        address[] memory approved = new address[](1);
+        approved[0] = borrower;
+        collateral = new RestrictedCollateral(address(this), address(MORPHO), approved);
         params = MarketParams({
             loanToken: USDC,
             collateralToken: address(collateral),
@@ -69,6 +64,7 @@ contract MorphoBlueForkTest is Test {
         vault = new QueueVault(IERC20(USDC), MORPHO, params, "Spillway USDC", "spUSDC");
         pool = new InstantPool(vault, "Spillway Pool", "spPOOL");
 
+        vm.prank(borrower);
         collateral.mint(borrower, 1_000e18);
         vm.startPrank(borrower);
         collateral.approve(address(MORPHO), type(uint256).max);
@@ -111,7 +107,7 @@ contract MorphoBlueForkTest is Test {
         (, uint256 benAssets,) = vault.requestRedeem(benShares, ben);
 
         _repay(anaAssets);
-        (uint256 settled, bool more) = vault.settle(10);
+        (uint256 settled, bool more,) = vault.settle(10);
         assertEq(settled, 1);
         assertFalse(more);
         assertEq(IERC20(USDC).balanceOf(ana), anaAssets);
@@ -120,7 +116,7 @@ contract MorphoBlueForkTest is Test {
         // Time passes and real interest accrues before Ben is repaid.
         skip(1 days);
         _repay(benAssets);
-        (settled,) = vault.settle(10);
+        (settled,,) = vault.settle(10);
         assertEq(settled, 1);
         assertEq(IERC20(USDC).balanceOf(ben), benAssets);
         assertEq(vault.queuedAssets(), 0);
@@ -151,28 +147,54 @@ contract MorphoBlueForkTest is Test {
         assertGt(pool.convertToAssets(pool.balanceOf(lp)), 20_000e6);
     }
 
-    function test_fork_reactorTopicsMatchRealMorphoLogs() public {
+    /// The reactor's filters, checked against the logs the real Morpho Blue emits: a borrower repaying its own
+    /// loan puts the borrower in both topic 2 and topic 3; a stranger repaying on its behalf does not.
+    function test_fork_reactorFiltersMatchRealMorphoLogs() public {
         vm.etch(SYSTEM, address(new MockSystem()).code);
-        QueueReactor reactor = new QueueReactor(block.chainid, address(MORPHO), Id.unwrap(params.id()), address(vault), 1_000_000, 5);
+        address[] memory approved = new address[](1);
+        approved[0] = borrower;
+        QueueReactor reactor = new QueueReactor(block.chainid, address(MORPHO), Id.unwrap(params.id()), approved, 1_000_000, 5);
+        uint256 who = uint256(uint160(borrower));
 
-        vm.recordLogs();
         _deposit(ana, 1_000e6);
         _borrowAll();
+        vm.recordLogs();
         _repay(400e6);
+        deal(USDC, stranger, 1);
+        vm.startPrank(stranger);
+        IERC20(USDC).approve(address(MORPHO), 1);
+        MORPHO.repay(params, 1, 0, borrower, "");
+        vm.stopPrank();
         Vm.Log[] memory logs = vm.getRecordedLogs();
 
-        bool sawSupply;
-        bool sawRepay;
+        uint256 matched;
+        uint256 strangers;
         for (uint256 i; i < logs.length; i++) {
-            if (logs[i].emitter != address(MORPHO)) continue;
-            uint256 topic0 = uint256(logs[i].topics[0]);
-            if (topic0 == reactor.SUPPLY_TOPIC() || topic0 == reactor.REPAY_TOPIC()) {
-                assertEq(uint256(logs[i].topics[1]), reactor.MARKET_ID(), "topic 1 carries the market id");
-                if (topic0 == reactor.SUPPLY_TOPIC()) sawSupply = true;
-                if (topic0 == reactor.REPAY_TOPIC()) sawRepay = true;
-            }
+            if (logs[i].emitter != address(MORPHO) || uint256(logs[i].topics[0]) != reactor.REPAY_TOPIC()) continue;
+            assertEq(uint256(logs[i].topics[1]), reactor.MARKET_ID(), "topic 1 carries the market id");
+            assertEq(uint256(logs[i].topics[3]), who, "topic 3 is the borrower repaid");
+            if (uint256(logs[i].topics[2]) == who) matched++;
+            else strangers++;
         }
-        assertTrue(sawSupply && sawRepay, "the reactor's subscriptions match what Morpho really emits");
+        assertEq(matched, 1, "the borrower's own repayment matches the subscription");
+        assertEq(strangers, 1, "the stranger's 1 wei repayment carries the stranger as caller, so it does not match");
+    }
+
+    /// F1 on the real market: a stranger can neither mint the collateral, nor be sent it, nor borrow without it.
+    function test_fork_strangerCannotBorrowFromTheMarket() public {
+        _deposit(ana, 1_000e6);
+
+        vm.prank(stranger);
+        vm.expectRevert(abi.encodeWithSelector(RestrictedCollateral.NotApproved.selector, stranger));
+        collateral.mint(stranger, 1e18);
+
+        vm.prank(borrower);
+        vm.expectRevert(abi.encodeWithSelector(RestrictedCollateral.NotApproved.selector, stranger));
+        collateral.transfer(stranger, 1e18);
+
+        vm.prank(stranger);
+        vm.expectRevert(bytes("insufficient collateral"));
+        MORPHO.borrow(params, 1e6, 0, stranger, stranger);
     }
 
     function test_fork_callbackSettlesThroughTheRealProxyAddress() public {

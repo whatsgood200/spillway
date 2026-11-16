@@ -128,13 +128,17 @@ contract MockMorpho {
     }
 }
 
-/// @notice Stands in for Reactive Network's system contract. Records subscriptions and callback requests.
+/// @notice Stands in for Reactive Network's system contract. Records every subscription with all four topics,
+/// removes it on an exact-match unsubscribe (as the real one does), and records callback requests.
 contract MockSystem {
     struct Subscription {
         uint256 chainId;
         address contractAddress;
         uint256 topic0;
         uint256 topic1;
+        uint256 topic2;
+        uint256 topic3;
+        bool active;
     }
 
     Subscription[] public subscriptions;
@@ -146,8 +150,20 @@ contract MockSystem {
         return 0;
     }
 
-    function subscribe(uint256 chainId, address contractAddress, uint256 topic0, uint256 topic1, uint256, uint256) external {
-        subscriptions.push(Subscription(chainId, contractAddress, topic0, topic1));
+    function subscribe(uint256 chainId, address contractAddress, uint256 topic0, uint256 topic1, uint256 topic2, uint256 topic3) external {
+        subscriptions.push(Subscription(chainId, contractAddress, topic0, topic1, topic2, topic3, true));
+    }
+
+    function unsubscribe(uint256 chainId, address contractAddress, uint256 topic0, uint256 topic1, uint256 topic2, uint256 topic3) external {
+        for (uint256 i; i < subscriptions.length; i++) {
+            Subscription storage s = subscriptions[i];
+            if (
+                s.active && s.chainId == chainId && s.contractAddress == contractAddress && s.topic0 == topic0 && s.topic1 == topic1
+                    && s.topic2 == topic2 && s.topic3 == topic3
+            ) {
+                s.active = false;
+            }
+        }
     }
 
     // forge-lint: disable-next-line(mixed-case-function)
@@ -157,6 +173,12 @@ contract MockSystem {
 
     function subscriptionCount() external view returns (uint256) {
         return subscriptions.length;
+    }
+
+    function activeSubscriptionCount() external view returns (uint256 count) {
+        for (uint256 i; i < subscriptions.length; i++) {
+            if (subscriptions[i].active) count++;
+        }
     }
 
     function callbackCount() external view returns (uint256) {

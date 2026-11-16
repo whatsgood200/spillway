@@ -30,7 +30,18 @@ Checked on chain 2026-11-16: vault lends USDC on the market above; pool and call
 
 ## One full lifecycle on chain (v2)
 
-Not run yet on v2. The v1 loop below proves the mechanism; v2 adds on-chain history.
+First v2 loop, 2026-11-16, started from the web app's demo console (demo account `0x030ACe00e679c850cF01c6eE596bbFbf157fB931`):
+
+| Step | Chain | Transaction |
+|---|---|---|
+| Demo lender deposits 2 USDC | Base Sepolia | `0xc892412527c0a443a66e91b52309cf40772822f72d8ffb272b7664a5d5f55c9b` |
+| Demo borrower borrows all of it (vault 100 percent lent out) | Base Sepolia | `0xaeec8b8232acc2faac525bee6cba6112aa70d90e9c4fa415c6d3a7d0a320d345` |
+| Withdrawal queued as request 1 (block 59470304) | Base Sepolia | `0x1e632f09218f238abefe26e8355792fd8e82dfe0fe2df932c3750b5bb1ee40c2` |
+| Demo borrower repays 2 USDC (origin event, block 59470327, 1794815934200 ms) | Base Sepolia | `0x9a9834231faa36165e83c8342d13240b544421fff6b296fda7188899a71eb3ed` |
+| Reactive contract requests the callback | Reactive Lasna | `0x2707fa2e2431555896fb929d8e79a5011366d1007e664a65cfcaab0725bd4218` |
+| Callback pays request 1 (block 59470337, 1794815936200 ms) | Base Sepolia | `0x41a262da466f549441d053d69e1b98ae17f965378c8d386f0d2d405931b55251` |
+
+Repayment to payout: 2,000 ms (10 Base Sepolia blocks). Recorded in `SpillwayCallback.loops(0)` and `QueueVault.requests(1)`. One loop; the 200 loop measurement is still to run.
 
 These are our own transactions made to show the flow. They are not user traction.
 

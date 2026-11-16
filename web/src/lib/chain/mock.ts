@@ -1,6 +1,7 @@
 import { feeFor, poolFeeBps } from "../fee";
 import { USDC } from "../format";
 import {
+  CashNow,
   ChainError,
   type ChainAdapter,
   type Claim,
@@ -249,7 +250,7 @@ export function createMockAdapter(): ChainAdapter {
       read<WalletState>((s) => {
         if (!s.connected) return { status: "disconnected" };
         if (s.wrongNetwork) return { status: "wrong-network", address: ME };
-        return { status: "connected", address: ME, usdc: s.walletUsdc, vaultBalance: s.myVaultBalance, poolBalance: s.myPoolBalance };
+        return { status: "connected", address: ME, usdc: s.walletUsdc, vaultBalance: s.myVaultBalance, poolBalance: s.myPoolBalance, poolUnlocksAtMs: 0 };
       }),
 
     async connect() {
@@ -325,6 +326,18 @@ export function createMockAdapter(): ChainAdapter {
               ? { available: true, receive, fee, feeBps }
               : { available: false, reason: "The pool does not hold enough cash for this amount right now. Try a smaller amount or wait in line." },
         };
+      }),
+
+    quoteSell: (requestId) =>
+      read<CashNow>((s) => {
+        const item = s.queue.find((q) => q.requestId === requestId && !q.heldByPool);
+        if (!item) return { available: false, reason: "This place in the queue is no longer for sale." };
+        const feeBps = poolFeeBps(s.poolIdle - item.assets, poolTotal(s));
+        const fee = feeFor(item.assets, feeBps);
+        const receive = item.assets - fee;
+        return s.poolIdle >= receive
+          ? { available: true, receive, fee, feeBps }
+          : { available: false, reason: "The pool does not hold enough cash to buy this place right now. Keep waiting, or try again later." };
       }),
 
     getClaim: (requestId) =>

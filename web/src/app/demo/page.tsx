@@ -61,6 +61,11 @@ export default function DemoPage() {
       .catch(() => setDemoAccount(null));
   }, [live]);
 
+
+  async function repay(amount: bigint) {
+    await chain.demoRepay(amount);
+    return `Repaid ${show(amount)} USDC. Reactive Network pays the queue about 1.5 s later, with nobody calling the vault.`;
+  }
   return (
     <>
       <section className="hero">
@@ -108,11 +113,18 @@ export default function DemoPage() {
           <section className="panel" aria-label="Borrower actions">
             <h2 className="label">{live ? "Step 2 · Repay, and do nothing else" : "Demo borrower"}</h2>
             <div className="actions">
-              <DemoButton label={`Repay ${show(small)} USDC`} run={() => chain.demoRepay(small)} />
-              <DemoButton label={`Repay ${show(large)} USDC`} run={() => chain.demoRepay(large)} />
-              <DemoButton label="Borrow all idle cash again" secondary run={() => chain.demoBorrowIdle()} />
+              <DemoButton label={`Repay ${show(small)} USDC`} run={() => repay(small)} />
+              <DemoButton label={`Repay ${show(large)} USDC`} run={() => repay(large)} />
+              <DemoButton
+                label="Borrow all idle cash again"
+                secondary
+                run={async () => {
+                  await chain.demoBorrowIdle();
+                  return "Borrowed every dollar the market could release. The vault is fully lent out again.";
+                }}
+              />
             </div>
-            <p className="muted">A repayment pays the queue from the front for as far as the cash goes. A request too large for what is left waits for the next repayment; nobody behind it jumps ahead.</p>
+            <p className="muted">A repayment pays the queue from the front for as far as the cash goes. If the cash does not cover the front request, that request is paid in part, and nobody behind it is paid until it is complete.</p>
           </section>
 
           {!live && (

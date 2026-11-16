@@ -9,7 +9,7 @@ import { formatUsdc, parseUsdc } from "@/lib/format";
 import { useChainQuery } from "@/lib/useChain";
 
 export default function DepositPage() {
-  const [input, setInput] = useState("500");
+  const [input, setInput] = useState(getChain().isMock ? "500" : "2");
   const [done, setDone] = useState<bigint | null>(null);
   const assets = parseUsdc(input);
   const wallet = useChainQuery((chain) => chain.getWallet(), "wallet");

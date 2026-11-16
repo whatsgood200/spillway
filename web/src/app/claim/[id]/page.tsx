@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { TxButton } from "@/components/TxButton";
 import { TxLink } from "@/components/TxLink";
 import { getChain, type Claim, type ClaimEvent } from "@/lib/chain";
-import { formatBps, formatMs, formatUsdc } from "@/lib/format";
+import { formatBps, formatMs, formatUsdc, formatUsdcExact } from "@/lib/format";
 import { useChainQuery, useNow } from "@/lib/useChain";
 
 /** Who the page is talking about: the visitor, the labelled demo account, or someone else. */
@@ -41,9 +41,9 @@ function Headline({ claim, now, subject }: { claim: Claim; now: number; subject:
   if (claim.status === "sold") {
     return (
       <>
-        <p className="headline-stat">Paid {formatUsdc(claim.received ?? 0n)} USDC now.</p>
+        <p className="headline-stat">Paid {formatUsdcExact(claim.received ?? 0n)} USDC now.</p>
         <p className="lead">
-          {who.name} sold {who.owner} place in the queue to the pool for a fee of {formatUsdc(claim.fee ?? 0n)} USDC. The pool now waits in that place and is repaid when the vault pays this request.
+          {who.name} sold {who.owner} place in the queue to the pool for a fee of {formatUsdcExact(claim.fee ?? 0n)} USDC. The pool now waits in that place and is repaid when the vault pays this request.
           {demoNote}
         </p>
       </>
@@ -53,7 +53,7 @@ function Headline({ claim, now, subject }: { claim: Claim; now: number; subject:
     return (
       <>
         <p className="headline-stat">
-          Paid {formatUsdc(claim.received ?? 0n)} USDC{claim.latencyMs ? `, ${formatMs(claim.latencyMs)} after a repayment landed.` : "."}
+          Paid {formatUsdcExact(claim.received ?? 0n)} USDC{claim.latencyMs ? `, ${formatMs(claim.latencyMs)} after a repayment landed.` : "."}
         </p>
         <p className="lead">
           {claim.latencyMs
@@ -90,10 +90,10 @@ export default function ClaimPage() {
   const wallet = useChainQuery((chain) => chain.getWallet(), "wallet");
   const claim = useChainQuery((chain) => chain.getClaim(requestId), `claim-${requestId}`);
   const quote = useChainQuery(
-    (chain) => (claim.data?.status === "queued" ? chain.quoteWithdraw(claim.data.assets) : Promise.resolve(null)),
+    (chain) => (claim.data?.status === "queued" ? chain.quoteSell(requestId) : Promise.resolve(null)),
     `claim-quote-${requestId}-${claim.data?.status}`,
   );
-  const cash = quote.data?.cashNow;
+  const cash = quote.data;
   const [demoAddress, setDemoAddress] = useState<string | null>(null);
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function ClaimPage() {
   return (
     <>
       <section className="hero">
-        <p className="label">Request {Number.isFinite(requestId) ? requestId : ""} · {claim.data ? `${formatUsdc(claim.data.assets)} USDC` : claim.data === null ? "not found" : "reading"}</p>
+        <p className="label">Request {Number.isFinite(requestId) ? requestId : ""} · {claim.data ? `${formatUsdcExact(claim.data.assets)} USDC` : claim.data === null ? "not found" : "reading"}</p>
         {claim.loading && !claim.data && <p className="headline-stat"><span className="skeleton" /></p>}
         {claim.error && (
           <p className="error" role="alert">
@@ -179,24 +179,24 @@ export default function ClaimPage() {
                     </div>
                     <div>
                       <dt>Back right away</dt>
-                      <dd>{formatUsdc(cash.receive)} USDC</dd>
+                      <dd>{formatUsdcExact(cash.receive)} USDC</dd>
                     </div>
                     <div>
                       <dt>Fee to the pool</dt>
                       <dd>
-                        {formatUsdc(cash.fee)} USDC ({formatBps(cash.feeBps)})
+                        {formatUsdcExact(cash.fee)} USDC ({formatBps(cash.feeBps)})
                       </dd>
                     </div>
                     <div>
                       <dt>Most you can lose</dt>
-                      <dd>{formatUsdc(cash.fee)} USDC</dd>
+                      <dd>{formatUsdcExact(cash.fee)} USDC</dd>
                     </div>
                   </dl>
                 ) : (
                   <p className="empty">{cash ? cash.reason : "Reading the pool's price"}</p>
                 )}
                 <TxButton
-                  label={cash?.available ? `Sell my place for ${formatUsdc(cash.receive)} USDC` : "Sell my place"}
+                  label={cash?.available ? `Sell my place for ${formatUsdcExact(cash.receive)} USDC` : "Sell my place"}
                   wallet={wallet.data}
                   blocked={cash?.available ? null : "Not available right now."}
                   action={async (options) => {
@@ -213,15 +213,15 @@ export default function ClaimPage() {
                 <dl className="rows" style={{ margin: "var(--space-4) 0" }}>
                   <div>
                     <dt>Requested</dt>
-                    <dd>{formatUsdc(claim.data.assets)} USDC</dd>
+                    <dd>{formatUsdcExact(claim.data.assets)} USDC</dd>
                   </div>
                   <div>
                     <dt>{mine ? "You received" : "Received"}</dt>
-                    <dd>{formatUsdc(claim.data.received ?? 0n)} USDC</dd>
+                    <dd>{formatUsdcExact(claim.data.received ?? 0n)} USDC</dd>
                   </div>
                   <div>
                     <dt>Fee</dt>
-                    <dd>{formatUsdc(claim.data.fee ?? 0n)} USDC</dd>
+                    <dd>{formatUsdcExact(claim.data.fee ?? 0n)} USDC</dd>
                   </div>
                   {claim.data.latencyMs !== null && (
                     <div>

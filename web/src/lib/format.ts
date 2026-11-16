@@ -12,6 +12,11 @@ export function formatUsdc(amount: bigint, decimals = 2): string {
   return `${negative ? "-" : ""}${grouped}${decimals > 0 ? "." + fraction : ""}`;
 }
 
+/** Every cent and below: at least two decimals, up to all six, so a 0.0044 USDC fee never shows as 0.00. */
+export function formatUsdcExact(amount: bigint): string {
+  return formatUsdc(amount, 6).replace(/(\.\d\d\d*?)0+$/, "$1");
+}
+
 /** Parses user input such as "1,000.50". Returns null when it is not a positive amount. */
 export function parseUsdc(input: string): bigint | null {
   const cleaned = input.replace(/,/g, "").trim();

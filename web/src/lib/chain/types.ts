@@ -7,7 +7,15 @@ export type Network = "base-sepolia" | "lasna";
 export type WalletState =
   | { status: "disconnected" }
   | { status: "wrong-network"; address: string }
-  | { status: "connected"; address: string; usdc: bigint; vaultBalance: bigint; poolBalance: bigint };
+  | {
+      status: "connected";
+      address: string;
+      usdc: bigint;
+      vaultBalance: bigint;
+      poolBalance: bigint;
+      /** When a new pool deposit can be taken out, in ms; 0 when nothing is locked. Deposits are locked for an hour. */
+      poolUnlocksAtMs: number;
+    };
 
 export interface VaultState {
   totalAssets: bigint;
@@ -33,8 +41,10 @@ export interface WithdrawQuote {
   paidAtOnce: boolean;
   position: number;
   aheadAssets: bigint;
-  cashNow: { available: true; receive: bigint; fee: bigint; feeBps: number } | { available: false; reason: string };
+  cashNow: CashNow;
 }
+
+export type CashNow = { available: true; receive: bigint; fee: bigint; feeBps: number } | { available: false; reason: string };
 
 export type ClaimStatus = "queued" | "sold" | "paid";
 
@@ -140,6 +150,8 @@ export interface ChainAdapter {
   getQueue(): Promise<QueueEntry[]>;
   getPoolState(): Promise<PoolState>;
   quoteWithdraw(assets: bigint): Promise<WithdrawQuote>;
+  /** What the pool pays for a place already held: the same price `sellClaim` executes against. */
+  quoteSell(requestId: number): Promise<CashNow>;
   getClaim(requestId: number): Promise<Claim | null>;
   getMyClaims(): Promise<Claim[]>;
   getLoops(limit: number): Promise<Loop[]>;

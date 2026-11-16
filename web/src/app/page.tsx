@@ -7,7 +7,7 @@ import { AmountField } from "@/components/AmountField";
 import { TxButton } from "@/components/TxButton";
 import { VaultPanel } from "@/components/VaultPanel";
 import { getChain, type TxOptions } from "@/lib/chain";
-import { formatBps, formatUsdc, parseUsdc } from "@/lib/format";
+import { formatBps, formatUsdc, formatUsdcExact, parseUsdc } from "@/lib/format";
 import { useChainQuery } from "@/lib/useChain";
 
 export default function WithdrawPage() {
@@ -91,24 +91,24 @@ export default function WithdrawPage() {
                     </div>
                     <div>
                       <dt>Back right away</dt>
-                      <dd>{formatUsdc(q.cashNow.receive)} USDC</dd>
+                      <dd>{formatUsdcExact(q.cashNow.receive)} USDC</dd>
                     </div>
                     <div>
                       <dt>Fee to the pool</dt>
                       <dd>
-                        {formatUsdc(q.cashNow.fee)} USDC ({formatBps(q.cashNow.feeBps)})
+                        {formatUsdcExact(q.cashNow.fee)} USDC ({formatBps(q.cashNow.feeBps)})
                       </dd>
                     </div>
                     <div>
                       <dt>Most you can lose</dt>
-                      <dd>{formatUsdc(q.cashNow.fee)} USDC</dd>
+                      <dd>{formatUsdcExact(q.cashNow.fee)} USDC</dd>
                     </div>
                   </dl>
                 ) : (
                   <p className="empty">{q && !q.cashNow.available ? q.cashNow.reason : assets ? "Reading the pool's price" : "Enter an amount to see the price."}</p>
                 )}
                 <TxButton
-                  label={q?.cashNow.available ? `Get ${formatUsdc(q.cashNow.receive)} USDC now` : "Get cash now"}
+                  label={q?.cashNow.available ? `Get ${formatUsdcExact(q.cashNow.receive)} USDC now` : "Get cash now"}
                   wallet={wallet.data}
                   blocked={blocked ?? (q && !q.cashNow.available ? "Not available for this amount." : !q ? "Reading the price." : null)}
                   action={(options) => withdraw(true, options)}

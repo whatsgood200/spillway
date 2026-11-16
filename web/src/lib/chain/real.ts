@@ -16,6 +16,7 @@ import type { ClaimDetail, History, HistoryRequest } from "../server/history";
 import race from "../../data/race.json";
 import { ADDRESSES, BASE_SEPOLIA_ID, BASE_SEPOLIA_RPC, erc20Abi, poolAbi, vaultAbi } from "./config";
 import {
+  CashNow,
   ChainError,
   type ChainAdapter,
   type Claim,
@@ -200,7 +201,8 @@ export function createRealAdapter(): ChainAdapter {
     const settled = request.settledAtMs !== null;
     return {
       requestId: request.id,
-      requester: request.requester,
+      // A one-step cash out has the pool file the request; the person who left is the seller.
+      requester: sale && same(request.requester, ADDRESSES.pool) ? sale.seller : request.requester,
       assets,
       status: sale ? "sold" : settled ? "paid" : "queued",
       position: index >= 0 && !sale ? index + 1 : null,
@@ -251,11 +253,12 @@ export function createRealAdapter(): ChainAdapter {
         publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "balanceOf", args: [address] }),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "balanceOf", args: [address] }),
       ]);
-      const [vaultBalance, poolBalance] = await Promise.all([
+      const [vaultBalance, poolBalance, unlocksAt] = await Promise.all([
         publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToAssets", args: [vaultShares] }),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "convertToAssets", args: [poolShares] }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "unlocksAt", args: [address] }),
       ]);
-      return { status: "connected", address, usdc, vaultBalance, poolBalance };
+      return { status: "connected", address, usdc, vaultBalance, poolBalance, poolUnlocksAtMs: Number(unlocksAt) * 1000 };
     },
 
     async connect() {
@@ -369,6 +372,11 @@ export function createRealAdapter(): ChainAdapter {
           ? { available: true, receive, fee, feeBps: Number(bps) }
           : { available: false, reason: "The pool does not hold enough cash for this amount right now. Try a smaller amount or wait in line." },
       };
+    },
+
+    async quoteSell(requestId): Promise<CashNow> {
+      const [receive, fee, bps, available] = await publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quoteClaim", args: [BigInt(requestId)] });
+      return available ? { available: true, receive, fee, feeBps: Number(bps) } : { available: false, reason: "The pool does not hold enough cash to buy this place right now. Keep waiting, or try again later." };
     },
 
     async getClaim(requestId) {

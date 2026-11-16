@@ -5,18 +5,20 @@ import { AmountField } from "@/components/AmountField";
 import { TxButton } from "@/components/TxButton";
 import { getChain } from "@/lib/chain";
 import { MAX_FEE_BPS, MIN_FEE_BPS } from "@/lib/fee";
-import { formatBps, formatUsdc, parseUsdc } from "@/lib/format";
+import { formatBps, formatUsdc, formatUsdcExact, parseUsdc } from "@/lib/format";
 import { useChainQuery, useNow } from "@/lib/useChain";
 
 export default function PoolPage() {
   const now = useNow(5000);
-  const [input, setInput] = useState("1000");
+  const [input, setInput] = useState(getChain().isMock ? "1000" : "2");
   const assets = parseUsdc(input);
   const wallet = useChainQuery((chain) => chain.getWallet(), "wallet");
   const pool = useChainQuery((chain) => chain.getPoolState(), "pool");
   const queue = useChainQuery((chain) => chain.getQueue(), "queue");
   const connected = wallet.data?.status === "connected" ? wallet.data : undefined;
   const held = queue.data?.filter((entry) => entry.heldByPool) ?? [];
+  const locked = connected !== undefined && connected.poolUnlocksAtMs > now;
+  const unlockTime = locked ? new Date(connected.poolUnlocksAtMs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
 
   return (
     <>
@@ -65,13 +67,21 @@ export default function PoolPage() {
               label={assets ? `Take ${formatUsdc(assets)} USDC out` : "Take out"}
               wallet={wallet.data}
               secondary
-              blocked={!assets ? "Enter an amount." : connected && assets > connected.poolBalance ? "That is more than you have in the pool." : null}
+              blocked={
+                !assets
+                  ? "Enter an amount."
+                  : locked
+                    ? `Your latest deposit is locked until ${unlockTime}, one hour after it was made.`
+                    : connected && assets > connected.poolBalance
+                      ? "That is more than you have in the pool."
+                      : null
+              }
               action={async (options) => {
                 if (assets) await getChain().poolWithdraw(assets, options);
               }}
             />
           </div>
-          <p className="muted">You can only take out cash the pool is holding. Cash spent on queue places comes back when the vault pays them. Share accounting is simplified in this preview.</p>
+          <p className="muted">You can only take out cash the pool is holding. Cash spent on queue places comes back when the vault pays them. A new deposit can be taken out after one hour, so nobody can add cash just before a sale and leave just after.</p>
         </section>
 
         <section className="panel" aria-label="Pool state">
@@ -95,7 +105,7 @@ export default function PoolPage() {
               <dt>Fee on the next place</dt>
             </div>
             <div>
-              <dd>{pool.data ? formatUsdc(pool.data.feesEarned) : <span className="skeleton" />}</dd>
+              <dd>{pool.data ? formatUsdcExact(pool.data.feesEarned) : <span className="skeleton" />}</dd>
               <dt>USDC earned in fees</dt>
             </div>
           </dl>

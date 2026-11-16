@@ -41,7 +41,9 @@ First v2 loop, 2026-11-16, started from the web app's demo console (demo account
 | Reactive contract requests the callback | Reactive Lasna | `0x2707fa2e2431555896fb929d8e79a5011366d1007e664a65cfcaab0725bd4218` |
 | Callback pays request 1 (block 59470337, 1794815936200 ms) | Base Sepolia | `0x41a262da466f549441d053d69e1b98ae17f965378c8d386f0d2d405931b55251` |
 
-Repayment to payout: 2,000 ms (10 Base Sepolia blocks). Recorded in `SpillwayCallback.loops(0)` and `QueueVault.requests(1)`. One loop; the 200 loop measurement is still to run.
+Repayment to payout: 2,000 ms (10 Base Sepolia blocks). Recorded in `SpillwayCallback.loops(0)` and `QueueVault.requests(1)`.
+
+200-loop measurement, 2026-11-16: 204 loops recorded in `SpillwayCallback` storage, median 1.6 s, p90 2.4 s, p99 4.0 s. Method, failures and every transaction: `measurements/README.md` and `measurements/loops-2026-11-16.jsonl`.
 
 These are our own transactions made to show the flow. They are not user traction.
 

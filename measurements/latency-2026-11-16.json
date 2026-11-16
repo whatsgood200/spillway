@@ -1,0 +1,2057 @@
+{
+  "summary": {
+    "source": "SpillwayCallback 0xfCA6031Dd3655CdB2B6D47F0A84F3e3e7c812C20 on Base Sepolia, loops 1 to 204",
+    "loops": 204,
+    "p50": 1600,
+    "p90": 2400,
+    "p95": 2800,
+    "p99": 4000,
+    "min": 1000,
+    "max": 6600,
+    "mean": 1722,
+    "underTwoSeconds": 173,
+    "generatedAt": "2026-11-16T13:22:25.625Z"
+  },
+  "rows": [
+    {
+      "loop": 1,
+      "originTx": "0x9a9834231faa36165e83c8342d13240b544421fff6b296fda7188899a71eb3ed",
+      "originBlock": 59470327,
+      "payoutBlock": 59470337,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 2,
+      "originTx": "0x19d26c5b547977304e1660ab77d3afec3c71fc64a5f395d21d20d8716fb8f858",
+      "originBlock": 59471319,
+      "payoutBlock": 59471326,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 3,
+      "originTx": "0xbd0920cf972486e3d8fb7d4a476d68ecc168c64f952c5284676bbc5a3fa203aa",
+      "originBlock": 59471367,
+      "payoutBlock": 59471374,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 4,
+      "originTx": "0x0e89dffb207fad01b4dbef0f8ef67fbfb3578a60ef7f15f6cc0a9f83034ebfda",
+      "originBlock": 59471531,
+      "payoutBlock": 59471539,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.7
+    },
+    {
+      "loop": 5,
+      "originTx": "0xb4ef8930b0caad638a6c6c2c9da6e614e53550e3bb190fc48db38c0e0337da5e",
+      "originBlock": 59471581,
+      "payoutBlock": 59471586,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 6,
+      "originTx": "0xd963e99dd89269078d91e679360f63580a9504a28aee52089109d2307a46fd9f",
+      "originBlock": 59471630,
+      "payoutBlock": 59471639,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.8
+    },
+    {
+      "loop": 7,
+      "originTx": "0x41d37db8e1cedb07b5ae0de9d37e00c0f0ece4f94a451d7f961ae06602d945e5",
+      "originBlock": 59471682,
+      "payoutBlock": 59471692,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.6
+    },
+    {
+      "loop": 8,
+      "originTx": "0x1e448122c795f7c15e45c19e6ff2e1de249dbcc4a0ae3db3b878e9d6707150e4",
+      "originBlock": 59471740,
+      "payoutBlock": 59471749,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 9,
+      "originTx": "0x3f78c1ec2aa505674fd84bbf7e6093d276663d8e39699e2c7327c4a31d5a95ec",
+      "originBlock": 59471790,
+      "payoutBlock": 59471796,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 10,
+      "originTx": "0xe79f743b0d9255803ffd3503f4da546f40b5293c0de47081973072b37815453e",
+      "originBlock": 59471839,
+      "payoutBlock": 59471847,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 11,
+      "originTx": "0x36914e6588de5451eeede50f8fd5c0b8e7ae477b46dd470f185afa6785022ec8",
+      "originBlock": 59471887,
+      "payoutBlock": 59471894,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.4
+    },
+    {
+      "loop": 12,
+      "originTx": "0x0c9b32f7fd0e076a4cdbad9a17dfc73759499c7a43b2f13adfad05278b18299c",
+      "originBlock": 59471935,
+      "payoutBlock": 59471942,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 13,
+      "originTx": "0x257a1e05e2f5e4d82dcb632d18eed0e721e044b12cb68a9686d1e28b3a0da6c8",
+      "originBlock": 59471997,
+      "payoutBlock": 59472005,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 14,
+      "originTx": "0x0d5332d644d95d316eed49ac36692548d3f0bade55122864eeccaaead56ce2e7",
+      "originBlock": 59472057,
+      "payoutBlock": 59472062,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 15,
+      "originTx": "0xb26a108addef8246a375706742516c25bebdfcb0e7050da6e2b419e88946804a",
+      "originBlock": 59472104,
+      "payoutBlock": 59472110,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.7
+    },
+    {
+      "loop": 16,
+      "originTx": "0x1279d26c9e807d93b3502b83c9018ade4aa5d23047b45c84b68ece019157f162",
+      "originBlock": 59472154,
+      "payoutBlock": 59472163,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.6
+    },
+    {
+      "loop": 17,
+      "originTx": "0xff4aa5d9ca2ca87cd65fa861aa88086b5ef5d4f9810529ddf764049a986bd17c",
+      "originBlock": 59472207,
+      "payoutBlock": 59472217,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.1
+    },
+    {
+      "loop": 18,
+      "originTx": "0x4df4ec4e3c7389f36b326998e5e2425c2000980f3cdade4ee2d50dcc26c795c9",
+      "originBlock": 59472266,
+      "payoutBlock": 59472275,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 19,
+      "originTx": "0x9345d5d7642165e9e5876e65a6727f2cae65e6d73bd8944eeb0b8dcd63b8b777",
+      "originBlock": 59472317,
+      "payoutBlock": 59472323,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 20,
+      "originTx": "0x59da1c8a09844b187355b390755c5c83693e65afdfbc42d8fef0fa0c1ced6e97",
+      "originBlock": 59472364,
+      "payoutBlock": 59472388,
+      "blocks": 24,
+      "latencyMs": 4800,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 21,
+      "originTx": "0xcb4485d2b8de2b51f12d6de41d8cd6218032d489cdd3eedb42d971246b1f7f91",
+      "originBlock": 59472430,
+      "payoutBlock": 59472440,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 22,
+      "originTx": "0x1eb1f46f70f93b617600dac2bc3e1d56652b00cd256ee574c67bc04cc296baf7",
+      "originBlock": 59472495,
+      "payoutBlock": 59472502,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 3
+    },
+    {
+      "loop": 23,
+      "originTx": "0x3c5ea6a7445051dd11e3dbf05525f5cbccb593388e6ddbd57fb1aa20499877d2",
+      "originBlock": 59472542,
+      "payoutBlock": 59472549,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 24,
+      "originTx": "0xa4aa5e2ff6ab95196afb97eff2d14c89311ca0869fd88479eea0e8a2895338cd",
+      "originBlock": 59472590,
+      "payoutBlock": 59472596,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 25,
+      "originTx": "0x1b841bf940d78696ea158d87b131c74e39ddaaa7930db320dd8f988b5e6138c3",
+      "originBlock": 59472637,
+      "payoutBlock": 59472644,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.7
+    },
+    {
+      "loop": 26,
+      "originTx": "0x976ac4c025a875992e3f51c30544060f49a553ed9eeabe6902f2c631d0d2be82",
+      "originBlock": 59472685,
+      "payoutBlock": 59472692,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 27,
+      "originTx": "0xa49c60a4967aa708fb10415604e91413a27a107e0efe3e8af7ed0449795f0781",
+      "originBlock": 59472737,
+      "payoutBlock": 59472745,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 3
+    },
+    {
+      "loop": 28,
+      "originTx": "0x475d0d96c2c5e1b22e16c231432077ebb1e1939aed99fa5923a8c948e5411983",
+      "originBlock": 59473247,
+      "payoutBlock": 59473256,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 29,
+      "originTx": "0x12aaf9d088b183423d489cc17bc876431e2eb1bbe56055a650c0dddc47e93ee6",
+      "originBlock": 59473295,
+      "payoutBlock": 59473303,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.1
+    },
+    {
+      "loop": 30,
+      "originTx": "0x18c0367f4825523789d7da8f185d03d775d84a950fbbeddd334c6683930c81e7",
+      "originBlock": 59473344,
+      "payoutBlock": 59473351,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 31,
+      "originTx": "0xaeb9e57902935a3407132d049f8da5bf41360237334fb0fa805c412fb026fa83",
+      "originBlock": 59546486,
+      "payoutBlock": 59546491,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 4,
+      "usdc": 9.8
+    },
+    {
+      "loop": 32,
+      "originTx": "0xaeb9e57902935a3407132d049f8da5bf41360237334fb0fa805c412fb026fa83",
+      "originBlock": 59546486,
+      "payoutBlock": 59546499,
+      "blocks": 13,
+      "latencyMs": 2600,
+      "settled": 3,
+      "usdc": 8.4
+    },
+    {
+      "loop": 33,
+      "originTx": "0xd24ca619f44ace8c237ad48936fb36932a9026e72acef86566a709cc55bd9116",
+      "originBlock": 59546862,
+      "payoutBlock": 59546867,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.1
+    },
+    {
+      "loop": 34,
+      "originTx": "0xb301b8a6a87da8dc5af329acc36ecdb469566104a7f127d47804ab076874494a",
+      "originBlock": 59546932,
+      "payoutBlock": 59546941,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.399999
+    },
+    {
+      "loop": 35,
+      "originTx": "0x9e2f51ea797be207ad2bcf714e90a245d916356e245a645c3a683ff0e25763e4",
+      "originBlock": 59547018,
+      "payoutBlock": 59547027,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 36,
+      "originTx": "0xbaa8498e92d88429c2196326c149ff50aa7538b5a636ae580fc31c88d1dce0e5",
+      "originBlock": 59547233,
+      "payoutBlock": 59547241,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 37,
+      "originTx": "0x71413ffdc8bd5f3e3d013c0d3c3069c64843998a0a885c94956fbd289553907a",
+      "originBlock": 59547331,
+      "payoutBlock": 59547336,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.299999
+    },
+    {
+      "loop": 38,
+      "originTx": "0x1e03c6df62fca19c8d855b4c42062b31894a74e243686c6fd3d3f6415a8ef040",
+      "originBlock": 59547454,
+      "payoutBlock": 59547463,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.499999
+    },
+    {
+      "loop": 39,
+      "originTx": "0xa364b4bcb9fb009c865f3d254a46c70f6268e8dc818c3b148041e370e99a3f5a",
+      "originBlock": 59547560,
+      "payoutBlock": 59547567,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.999999
+    },
+    {
+      "loop": 40,
+      "originTx": "0x69ac9e1988050d312513dcd38179f0151b12db0eff1fa88cd7f17c79defba93c",
+      "originBlock": 59547666,
+      "payoutBlock": 59547672,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 41,
+      "originTx": "0xcfe3ddbc67df47f0eca1f4f4add92220039e7f1acaf49eeb2faad2a105f82bce",
+      "originBlock": 59547779,
+      "payoutBlock": 59547785,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.499999
+    },
+    {
+      "loop": 42,
+      "originTx": "0xb9ff99658b7480b3b58e7190882c3b093af3e9d81c261bb0c4fb7baa37874a43",
+      "originBlock": 59547894,
+      "payoutBlock": 59547903,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 43,
+      "originTx": "0x0ab86c9f89218db9028aeb8cc52b4f9a90c47b5f689992153d3f48c3a6680bce",
+      "originBlock": 59548007,
+      "payoutBlock": 59548016,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 44,
+      "originTx": "0x52f64827fd2e6e0875490d2e8e9d8b8b56bbc62bea6c1ffac15a089faafe8533",
+      "originBlock": 59548118,
+      "payoutBlock": 59548128,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.299999
+    },
+    {
+      "loop": 45,
+      "originTx": "0xf674e6ff0541a8c36a4242025406970f3f4e91945112af0eea43b913ea29011e",
+      "originBlock": 59548207,
+      "payoutBlock": 59548212,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.499999
+    },
+    {
+      "loop": 46,
+      "originTx": "0xa4c021a14d89950b95aa2ce951fc468f5c257e4f9c747aae1b97d1a2b005caaf",
+      "originBlock": 59548300,
+      "payoutBlock": 59548306,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 47,
+      "originTx": "0x6564b9ce9122805689c64b6365d8eccdf3adce385ed051ad8623e6a5dba7feeb",
+      "originBlock": 59548406,
+      "payoutBlock": 59548411,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.699999
+    },
+    {
+      "loop": 48,
+      "originTx": "0xcdb6ffdbd3feaf345fc691353995810e0ce9aa0079781ed07e107363ccc0cdaf",
+      "originBlock": 59548489,
+      "payoutBlock": 59548496,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 49,
+      "originTx": "0xe4a5b604c9e2a103285754d4d6a99bb4b7447d5563de1652185a4aa5ca412989",
+      "originBlock": 59548576,
+      "payoutBlock": 59548583,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.399999
+    },
+    {
+      "loop": 50,
+      "originTx": "0x721968fabbe0e6c1660696aafe13016a69c2b9cdce5565a1d8fe4c9812550ef0",
+      "originBlock": 59548667,
+      "payoutBlock": 59548675,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 51,
+      "originTx": "0x7fcb0e82de8043f0c11f7754180e2459663e23bcebd8b65ee96ec73626e123d1",
+      "originBlock": 59548753,
+      "payoutBlock": 59548761,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.999999
+    },
+    {
+      "loop": 52,
+      "originTx": "0xc55c92d65314f383e4a62acaeadcac7cfe7540ddc403086eec222da553fa9362",
+      "originBlock": 59548837,
+      "payoutBlock": 59548842,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.499999
+    },
+    {
+      "loop": 53,
+      "originTx": "0xbce77c6274ca300cd4162707078ef71661d0f4139ac59f119da8aa794522a05a",
+      "originBlock": 59548937,
+      "payoutBlock": 59548943,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.899999
+    },
+    {
+      "loop": 54,
+      "originTx": "0x8e691324a96d2708d790d1442c3820c55b86eb57762eac228ca0d121132675d9",
+      "originBlock": 59549026,
+      "payoutBlock": 59549036,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.899999
+    },
+    {
+      "loop": 55,
+      "originTx": "0xadd5eeab4a9b6f0147337fd16be6d57ea721f20bc2625884d9cbe1052b73ae77",
+      "originBlock": 59549125,
+      "payoutBlock": 59549131,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 56,
+      "originTx": "0x2ecc4bf9d834f2f1c0daf904d387c7854567bc62cac78946e80ca49bad629fa1",
+      "originBlock": 59549205,
+      "payoutBlock": 59549213,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.799999
+    },
+    {
+      "loop": 57,
+      "originTx": "0x1d6874a3e7e6f7d004acd5b65e36f76a0ecf479b864f692c58843219eed55d19",
+      "originBlock": 59549370,
+      "payoutBlock": 59549403,
+      "blocks": 33,
+      "latencyMs": 6600,
+      "settled": 1,
+      "usdc": 1.399999
+    },
+    {
+      "loop": 58,
+      "originTx": "0xdcc7c15e30ef1de04ef77ada64611675401255ee7f258adbe381b3c6fbfa5cb5",
+      "originBlock": 59549565,
+      "payoutBlock": 59549575,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 59,
+      "originTx": "0xe756f5a8dc569c01a920b7e5ee3af5fb724928d9b44d1bf4e941a4312cfc4a43",
+      "originBlock": 59549757,
+      "payoutBlock": 59549764,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 60,
+      "originTx": "0x97f9299204f8d1ccbd0cdc51c0ab57feb56b46d23daf860c117dc30e3abd6d8c",
+      "originBlock": 59549922,
+      "payoutBlock": 59549938,
+      "blocks": 16,
+      "latencyMs": 3200,
+      "settled": 1,
+      "usdc": 2.799999
+    },
+    {
+      "loop": 61,
+      "originTx": "0xd3a3390d90270e622cbf4660e6aaf319c1c28c22c6e1c8baed3ca3967eb85cd5",
+      "originBlock": 59550084,
+      "payoutBlock": 59550091,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.399999
+    },
+    {
+      "loop": 62,
+      "originTx": "0x9b29d81d361d8bfa27184fabef6ea587af231b85cff514730431232d9e2876dd",
+      "originBlock": 59550249,
+      "payoutBlock": 59550259,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.499999
+    },
+    {
+      "loop": 63,
+      "originTx": "0x9db395b3a697b161487cd70795d3d51a0a7289954ccba194c9520d9de01b74c4",
+      "originBlock": 59550463,
+      "payoutBlock": 59550472,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 64,
+      "originTx": "0x18a131eebd8145bf051e5b7f0cf937d712c3ce349feceb6fe02a8f10b0f1aca0",
+      "originBlock": 59550688,
+      "payoutBlock": 59550701,
+      "blocks": 13,
+      "latencyMs": 2600,
+      "settled": 1,
+      "usdc": 1.799999
+    },
+    {
+      "loop": 65,
+      "originTx": "0x1c31b89fff8d83c39f709c81b24fd4ee3c4877130008a28b176903933338c56a",
+      "originBlock": 59550867,
+      "payoutBlock": 59550874,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.699999
+    },
+    {
+      "loop": 66,
+      "originTx": "0xfb0ad1990378ff8eb07797fefdd60cc1f672bdd55039cc00cc4b6fea3431f13c",
+      "originBlock": 59551170,
+      "payoutBlock": 59551179,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.799999
+    },
+    {
+      "loop": 67,
+      "originTx": "0x3efe0e289db4708df7de1c3d5624ec4905ebbbc455f4c8c3f19e25dc3e02dd61",
+      "originBlock": 59551356,
+      "payoutBlock": 59551367,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 2.299999
+    },
+    {
+      "loop": 68,
+      "originTx": "0x4743f0414f164ba758ed14ae07d54f4acef6ae2352175659e3247fd9685d084f",
+      "originBlock": 59551510,
+      "payoutBlock": 59551516,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.399999
+    },
+    {
+      "loop": 69,
+      "originTx": "0xd62b33d3f1eb65e6ea421a961658f5e9ac3d8fa3fcbf29fd377239ed0748dfe0",
+      "originBlock": 59551725,
+      "payoutBlock": 59551735,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 70,
+      "originTx": "0xb2dbf1c61de274f66429c68bd352c8032a811faa6636b81fd9c24a7f97c3a7e9",
+      "originBlock": 59551852,
+      "payoutBlock": 59551858,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 71,
+      "originTx": "0x3eaf84c97f642614bd0566c02a3732aa1290211e5fce0ea9cfb2b300e9bf7220",
+      "originBlock": 59552034,
+      "payoutBlock": 59552043,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.199999
+    },
+    {
+      "loop": 72,
+      "originTx": "0x0ee7b7c04aaffdde51f9d5ad18ec643219d4b410d62f3009da560778674b802e",
+      "originBlock": 59552192,
+      "payoutBlock": 59552203,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 2.199999
+    },
+    {
+      "loop": 73,
+      "originTx": "0x78df3f5e8864a5308a83db7ba0d1fd6df88a1778c91232a532b51455eb4563c2",
+      "originBlock": 59552435,
+      "payoutBlock": 59552443,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 74,
+      "originTx": "0x97284a21829d20120b7bd6104ecf94510301d523f4bbb37bd8fc0f4deea59d31",
+      "originBlock": 59552605,
+      "payoutBlock": 59552617,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 2.399999
+    },
+    {
+      "loop": 75,
+      "originTx": "0x233960c336180bfed655fe6ad55540fa31ae359195e3c977e51de801123b7d46",
+      "originBlock": 59552800,
+      "payoutBlock": 59552805,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 76,
+      "originTx": "0xe615f329434ce6297b7c37aedd041f21b60de49ad12faa62f9a03186233a25b5",
+      "originBlock": 59552992,
+      "payoutBlock": 59553000,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.099999
+    },
+    {
+      "loop": 77,
+      "originTx": "0x6d35a2e354a85718b4eddd8b8a74e742d144cb1765673d826fb890e4eb508b18",
+      "originBlock": 59553164,
+      "payoutBlock": 59553173,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.099999
+    },
+    {
+      "loop": 78,
+      "originTx": "0xe456854ce50a533b4f9046cd19ff0a42787774a268631fd86a36e6674f755e8c",
+      "originBlock": 59553351,
+      "payoutBlock": 59553360,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.099999
+    },
+    {
+      "loop": 79,
+      "originTx": "0x0eae4153d146e3d783aa9cfdbbb6c56bd0d15b31217577baca2b93a5aae911e7",
+      "originBlock": 59553498,
+      "payoutBlock": 59553505,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.799999
+    },
+    {
+      "loop": 80,
+      "originTx": "0x149cea64e4cddb9ab90b4538a879ddedfb726186bde346c4c74f726b6b65f132",
+      "originBlock": 59553668,
+      "payoutBlock": 59553678,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.599999
+    },
+    {
+      "loop": 81,
+      "originTx": "0xea2a9e028d0670528c7d9ec7f690a108c218897419b66ab3c32801f10c27b740",
+      "originBlock": 59553829,
+      "payoutBlock": 59553846,
+      "blocks": 17,
+      "latencyMs": 3400,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 82,
+      "originTx": "0x83beade4e24204e0a47fac9846591a92ecf8212ff1839a1019b259603a9f0391",
+      "originBlock": 59553998,
+      "payoutBlock": 59554016,
+      "blocks": 18,
+      "latencyMs": 3600,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 83,
+      "originTx": "0x25f2aae4220d7e11bd4609e18cf62674d5d73ace654a216fa022c305f8d60b54",
+      "originBlock": 59554153,
+      "payoutBlock": 59554161,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 84,
+      "originTx": "0xd557eab4dd39f7f203475e2b62e86032aeb9dea42046e43d89d2e1e65fb20edb",
+      "originBlock": 59554321,
+      "payoutBlock": 59554327,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.999999
+    },
+    {
+      "loop": 85,
+      "originTx": "0x302f5ba99e1634d7dee9444fcdf6c7012e4c3531574c609e06d3a33bf3ad9407",
+      "originBlock": 59554476,
+      "payoutBlock": 59554483,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 86,
+      "originTx": "0x3101ac903e85627d5fdda3a531c148b0673745f5ab59315007d56c5a1138770c",
+      "originBlock": 59554665,
+      "payoutBlock": 59554672,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.099999
+    },
+    {
+      "loop": 87,
+      "originTx": "0x86ee295a65b99cd13c43c5005d59653a48d8c2df56dc7bcd13284eaee4fa487d",
+      "originBlock": 59554826,
+      "payoutBlock": 59554840,
+      "blocks": 14,
+      "latencyMs": 2800,
+      "settled": 1,
+      "usdc": 2.399999
+    },
+    {
+      "loop": 88,
+      "originTx": "0xcc16819c480ac4a87bb6efca9f34a17516a9fb722bc19d7c453c3673011da92e",
+      "originBlock": 59554988,
+      "payoutBlock": 59554995,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.799999
+    },
+    {
+      "loop": 89,
+      "originTx": "0x1d84f38261dfb21661c18fb0473496abe5abed4640cd224d9de13165c2466e6a",
+      "originBlock": 59555157,
+      "payoutBlock": 59555164,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.999999
+    },
+    {
+      "loop": 90,
+      "originTx": "0x08dcb2f9b6281bf4f6b438853c266b035e8499d1b335a65096f32d7aa2aa9210",
+      "originBlock": 59555281,
+      "payoutBlock": 59555292,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 2.499999
+    },
+    {
+      "loop": 91,
+      "originTx": "0x2d5b855844cec340cf7f972b98d7697e34a6f845cc03c0e324fec328e1653881",
+      "originBlock": 59555384,
+      "payoutBlock": 59555391,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 92,
+      "originTx": "0xd9f84fe1279167b56f65e1d53baada0f17f1aae42437a880677815ce237f041d",
+      "originBlock": 59555485,
+      "payoutBlock": 59555492,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.899999
+    },
+    {
+      "loop": 93,
+      "originTx": "0x890330dd05f368f36aba5a7566dd124355d2f83ee3810ab08a15f4822167d036",
+      "originBlock": 59555576,
+      "payoutBlock": 59555588,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 94,
+      "originTx": "0xa23ba5171b249e12396c08d84cd4a9a062c3394938f517d844230ad1226184d5",
+      "originBlock": 59555688,
+      "payoutBlock": 59555694,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.299999
+    },
+    {
+      "loop": 95,
+      "originTx": "0x623078bbdd2c34869703e6969c7660a161f9f53ee0524e414a59250ba1158946",
+      "originBlock": 59555773,
+      "payoutBlock": 59555778,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 96,
+      "originTx": "0x3996729847ba2b4310bec349391b34884eefc2797632467d7e0778979d133706",
+      "originBlock": 59555851,
+      "payoutBlock": 59555861,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.699999
+    },
+    {
+      "loop": 97,
+      "originTx": "0x7d07daa4676908235c79d5288585ab263753d45a3b76a5bc22384985f95e0f86",
+      "originBlock": 59555934,
+      "payoutBlock": 59555941,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.599999
+    },
+    {
+      "loop": 98,
+      "originTx": "0x6b94944b5226099b7eb02a1fca15c65642dde58a84a13ee39ed87a6a1f168fde",
+      "originBlock": 59556010,
+      "payoutBlock": 59556015,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.699999
+    },
+    {
+      "loop": 99,
+      "originTx": "0x32b6aa0016d509765c2438eb97c894afdb815097529f291b25f2228774250175",
+      "originBlock": 59556090,
+      "payoutBlock": 59556099,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.899999
+    },
+    {
+      "loop": 100,
+      "originTx": "0xa5a29d4f1e650f507cce5cd2694da17dd634a8c89395a9f184f8fae53aa940d2",
+      "originBlock": 59556183,
+      "payoutBlock": 59556189,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.399999
+    },
+    {
+      "loop": 101,
+      "originTx": "0x70a497f54e94c4cb133586dc6d5a223fbe5f13c79d6594dfcedff6fcb3eddee6",
+      "originBlock": 59556258,
+      "payoutBlock": 59556270,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 102,
+      "originTx": "0x394ce999b24576a52343745737131d839ba8cd922923d4e86d715fc2799f877b",
+      "originBlock": 59556360,
+      "payoutBlock": 59556366,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.299999
+    },
+    {
+      "loop": 103,
+      "originTx": "0x728dc88155955140f135c66d2b46cf72ebbed0b82f8333609febd010e17123f9",
+      "originBlock": 59556433,
+      "payoutBlock": 59556448,
+      "blocks": 15,
+      "latencyMs": 3000,
+      "settled": 1,
+      "usdc": 1.399999
+    },
+    {
+      "loop": 104,
+      "originTx": "0x28f6d37c9b32d92ba2100afc11870a5c410178598a518c74764f73c7df056270",
+      "originBlock": 59556593,
+      "payoutBlock": 59556602,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 3.899999
+    },
+    {
+      "loop": 105,
+      "originTx": "0x696f28942fe679aac37ab7e6de10ae7bdcf67fd10c0e016b43fab3aecf775ea4",
+      "originBlock": 59556679,
+      "payoutBlock": 59556689,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 106,
+      "originTx": "0x4a9833f8a8957d1054a234cd7b1b1be6c4c43e792cc1dfb76033badfbaf13243",
+      "originBlock": 59556872,
+      "payoutBlock": 59556880,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.999999
+    },
+    {
+      "loop": 107,
+      "originTx": "0xc796d2b6d83d88a92635a1d8866e47abca0e34a5e44393d3115db2d5c609ad8f",
+      "originBlock": 59556976,
+      "payoutBlock": 59556985,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.899999
+    },
+    {
+      "loop": 108,
+      "originTx": "0x61fb009a3fb7c8168544cb794570f6b0a4d706749c38d75c41b197a48bd569fd",
+      "originBlock": 59557058,
+      "payoutBlock": 59557064,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.699999
+    },
+    {
+      "loop": 109,
+      "originTx": "0x0357065723dfb6f5ea8b9c5df6db38563228917dc9760eac1ccddae33d20106f",
+      "originBlock": 59557167,
+      "payoutBlock": 59557175,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.599999
+    },
+    {
+      "loop": 110,
+      "originTx": "0xe03299b395ddf65f0eb1f2ac9be54d8f006b6169d4ccd0356eea6f72cf717e35",
+      "originBlock": 59557273,
+      "payoutBlock": 59557282,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.899999
+    },
+    {
+      "loop": 111,
+      "originTx": "0xaec2401a046affd81a9231cff784a49ec9842eed65e4a78d2306e753758e6302",
+      "originBlock": 59557387,
+      "payoutBlock": 59557399,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 1.199999
+    },
+    {
+      "loop": 112,
+      "originTx": "0xcb3b6c2608cbe9d8e633325f15162d2bba9b2193581df51a93876ccae9c9a7c5",
+      "originBlock": 59557495,
+      "payoutBlock": 59557504,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.099999
+    },
+    {
+      "loop": 113,
+      "originTx": "0x25c129cf784e54bb84bb90f3de8438f0daac9dc32427f7c543deabe9b0d0250b",
+      "originBlock": 59557593,
+      "payoutBlock": 59557606,
+      "blocks": 13,
+      "latencyMs": 2600,
+      "settled": 1,
+      "usdc": 1.2
+    },
+    {
+      "loop": 114,
+      "originTx": "0x78735f67ec4201cf73cf06d40fb2618b971bba973ac118d9004254ec3fe40911",
+      "originBlock": 59557701,
+      "payoutBlock": 59557706,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 115,
+      "originTx": "0x2dc429292a16033e3d7e24fa9670c1ad007fd56f33fdba3849a29ed031069709",
+      "originBlock": 59557801,
+      "payoutBlock": 59557808,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.2
+    },
+    {
+      "loop": 116,
+      "originTx": "0xdad8f3daaa4c2261c9b6e87809a27cd576c16da6a864d4bf328aaa598f0140d0",
+      "originBlock": 59557915,
+      "payoutBlock": 59557922,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 117,
+      "originTx": "0x2787e145fe2061589ad50e2ea450c5840db4ce012f26ad09612a7814f48adc00",
+      "originBlock": 59558015,
+      "payoutBlock": 59558024,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 118,
+      "originTx": "0xed2ad4c0715adc77cf548a85c9de71cda079824eed4696bc3bd211c38955e281",
+      "originBlock": 59558141,
+      "payoutBlock": 59558148,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.5
+    },
+    {
+      "loop": 119,
+      "originTx": "0x47c6c431c6cea3aa15fb7b30c190cb4109b060721a125b8071d58b5fb5e6a348",
+      "originBlock": 59558247,
+      "payoutBlock": 59558255,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.2
+    },
+    {
+      "loop": 120,
+      "originTx": "0x95cd5293cace647708e7e5d15ed12e29d932fdf00832bad0caffdb19f8800e75",
+      "originBlock": 59558353,
+      "payoutBlock": 59558367,
+      "blocks": 14,
+      "latencyMs": 2800,
+      "settled": 1,
+      "usdc": 3
+    },
+    {
+      "loop": 121,
+      "originTx": "0xe2481d17b85fdde2a4ea5c615a4cef4d13ded114da84a579f07670c69fc6e841",
+      "originBlock": 59558475,
+      "payoutBlock": 59558486,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 122,
+      "originTx": "0x03021f36aad4fceddce6f48dd64f761b670727dd0b8e950db27f18dd005e42d0",
+      "originBlock": 59558601,
+      "payoutBlock": 59558610,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 123,
+      "originTx": "0xd1c118c9b19fc5fb7bf5b809e3ba53cbf4af3a7e266d225a10cd2543e69f87e9",
+      "originBlock": 59558701,
+      "payoutBlock": 59558712,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 1.8
+    },
+    {
+      "loop": 124,
+      "originTx": "0x1b88b9607ec8991e837a26719d7f54f8a47db7225039edfac9aa3061aca77c2e",
+      "originBlock": 59558815,
+      "payoutBlock": 59558825,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.9
+    },
+    {
+      "loop": 125,
+      "originTx": "0x41506fa651c96f728e8bebf2a66e54907da4b86533e414e73465280d4ec8b7f5",
+      "originBlock": 59558943,
+      "payoutBlock": 59558953,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 126,
+      "originTx": "0xb746d26c879809c3ed449b97fb56533771e160309f07ad1ae7d879d9144afa45",
+      "originBlock": 59559067,
+      "payoutBlock": 59559077,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 127,
+      "originTx": "0xf78db9718ee00556097d7eacb80f6f56cb5c20e59d69c351241396aee778bf38",
+      "originBlock": 59559155,
+      "payoutBlock": 59559164,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 128,
+      "originTx": "0xb18ef2a6174087377bc364b12b9175bcd873b87b436566a7f522d64b970fd718",
+      "originBlock": 59559250,
+      "payoutBlock": 59559260,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 129,
+      "originTx": "0x2818216d7a869693633e2b2c856e740b2b52ff88ff682d8afeb036e82e236ee1",
+      "originBlock": 59559348,
+      "payoutBlock": 59559356,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 130,
+      "originTx": "0xae2fdfc487e4e0819474ed4d50c617f9abe3989d7f936fbeb5a40fd3f5fc1ef0",
+      "originBlock": 59559424,
+      "payoutBlock": 59559431,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 131,
+      "originTx": "0xd3fc65fa53877298f5e53c194cce897466424f238327ce9b379e2e2c37c995c6",
+      "originBlock": 59559511,
+      "payoutBlock": 59559520,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 132,
+      "originTx": "0xb7ba3946ea04bbafca12a4428d905706e414230f8fbfc3ea9113bac7754a06a3",
+      "originBlock": 59559603,
+      "payoutBlock": 59559610,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 133,
+      "originTx": "0x9350bcd91d3707c1d6fc19c32103051c7b3088eb3be1bc4c02b91fe168322637",
+      "originBlock": 59559692,
+      "payoutBlock": 59559702,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.3
+    },
+    {
+      "loop": 134,
+      "originTx": "0x86268cef404dace2fbc40b531c8975022c2a5d196675f1ac0eca50f551d95b44",
+      "originBlock": 59559798,
+      "payoutBlock": 59559804,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 135,
+      "originTx": "0x195c239bce00967b4659927d525627f1951a47b74e5080acb6174a54091e620a",
+      "originBlock": 59559899,
+      "payoutBlock": 59559919,
+      "blocks": 20,
+      "latencyMs": 4000,
+      "settled": 1,
+      "usdc": 1.4
+    },
+    {
+      "loop": 136,
+      "originTx": "0xeecccbf133bb6e59aa8166b0f9cfa16d417a7393b4b4df4a3481e42a2cfa5d34",
+      "originBlock": 59560017,
+      "payoutBlock": 59560025,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 137,
+      "originTx": "0xf40026483e006d5741c827c852db43fb8117a324f62bfe6117d6aed1fbf9e8e2",
+      "originBlock": 59560121,
+      "payoutBlock": 59560126,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.2
+    },
+    {
+      "loop": 138,
+      "originTx": "0xb7417a65dc1ef183d63305bdb4df10c76b940612d165fedceeb7cbf8811daae1",
+      "originBlock": 59560222,
+      "payoutBlock": 59560230,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 139,
+      "originTx": "0x34c0196b5a0c793552c1ff3a21c58b48971697b2fbc14dde08ea9cfe4d584e2a",
+      "originBlock": 59560332,
+      "payoutBlock": 59560342,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 140,
+      "originTx": "0x10436edb6afbeec7379ef47dacb2a017cf66a4177b4ce5eda738776e0bf0b0e5",
+      "originBlock": 59560462,
+      "payoutBlock": 59560472,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.9
+    },
+    {
+      "loop": 141,
+      "originTx": "0x9e942cb9e9e3f8b2a69cf047760b58943f5efbd16f46b5549884c6ec2f1e29ad",
+      "originBlock": 59560577,
+      "payoutBlock": 59560583,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 142,
+      "originTx": "0xeb06ecbb4b411c72a777521714e5254bacb7f8fc103f999ec4f3e31db0aa45f7",
+      "originBlock": 59560687,
+      "payoutBlock": 59560699,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 2.5
+    },
+    {
+      "loop": 143,
+      "originTx": "0xae979e74e913eb68fb2fd49c7dac0c2461600ccd6199ba9e8c731be1cec7c3ec",
+      "originBlock": 59560789,
+      "payoutBlock": 59560796,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.1
+    },
+    {
+      "loop": 144,
+      "originTx": "0x8fad1b7e457eb2263c9847c3d60e84b8c01586584f1667e23a7e506b36e5b602",
+      "originBlock": 59560894,
+      "payoutBlock": 59560901,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 145,
+      "originTx": "0x6722a562f42857009588e734533984ddbe18d7d2994605e7fae1295c77011342",
+      "originBlock": 59560982,
+      "payoutBlock": 59560991,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 146,
+      "originTx": "0x24d6a361180e6789a05552b43d7f20df9ed568407f79b171d1b02589f9488222",
+      "originBlock": 59561062,
+      "payoutBlock": 59561068,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 147,
+      "originTx": "0x40f08a9d25451c5cdae779e4d29f55788349b9d8af55bc509a67f194ee28b9c3",
+      "originBlock": 59561138,
+      "payoutBlock": 59561144,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.9
+    },
+    {
+      "loop": 148,
+      "originTx": "0x30b80c34b138a10e6b921401e373ad1d4e9d3334e385f2c9af054910550e8a17",
+      "originBlock": 59561212,
+      "payoutBlock": 59561221,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 149,
+      "originTx": "0xcc9747f6e36fe1fbe3d0e266f26bcc36cd84e0727a1de0cc7d194c096285c442",
+      "originBlock": 59561294,
+      "payoutBlock": 59561300,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 150,
+      "originTx": "0x40b2f056a73543f9877ba371cd2aff6b99a1bccba8ff7b1735516dfb7b265df1",
+      "originBlock": 59561372,
+      "payoutBlock": 59561379,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 3
+    },
+    {
+      "loop": 151,
+      "originTx": "0x30b5454a62b5f6818a029e0f2627b329ab452c56e0c32084400b71515c2ff917",
+      "originBlock": 59561467,
+      "payoutBlock": 59561473,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.6
+    },
+    {
+      "loop": 152,
+      "originTx": "0x8f3776ad4b5e8ebefde4f57e17d59fd50048037f8864ad9da8506c2f5d62c0d4",
+      "originBlock": 59561546,
+      "payoutBlock": 59561555,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.8
+    },
+    {
+      "loop": 153,
+      "originTx": "0xa2026d4fb2920dc412e400437b248fbba22f439d25b9be1a0d2ca27b2618d629",
+      "originBlock": 59561624,
+      "payoutBlock": 59561629,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 154,
+      "originTx": "0x1d252ce565e717d3e197e835e88f3fa2f87039d4fb23e9a847368a930c76efa4",
+      "originBlock": 59561698,
+      "payoutBlock": 59561703,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 155,
+      "originTx": "0x09e654c85873cd6a949ccdcc356422ed6ddf9b1161d43feef64ddef7d45ea602",
+      "originBlock": 59561777,
+      "payoutBlock": 59561784,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.7
+    },
+    {
+      "loop": 156,
+      "originTx": "0x9f2048a3a447e01fbe1c880210bd42ad418a882dfe225571e3fbf8f59d354dd8",
+      "originBlock": 59561852,
+      "payoutBlock": 59561859,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.9
+    },
+    {
+      "loop": 157,
+      "originTx": "0x870c683e2805d9952b16b280552ecc76203105d037402935b3352cd93763cce5",
+      "originBlock": 59561936,
+      "payoutBlock": 59561944,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 158,
+      "originTx": "0x7f92157d2fba8340026653b25490b4e3e9e1840ab3a29de5ddeee954c7afa0d8",
+      "originBlock": 59562013,
+      "payoutBlock": 59562020,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.5
+    },
+    {
+      "loop": 159,
+      "originTx": "0xbcccdad522a459b6bd20b7bd4348f9cd437e52f36e3e850ff766643d2d775082",
+      "originBlock": 59562084,
+      "payoutBlock": 59562089,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.6
+    },
+    {
+      "loop": 160,
+      "originTx": "0x56b44fb0caf7909e0262ecd09d0a8217d96496d39efa4ac5c5158f7d6eeb0b7a",
+      "originBlock": 59562158,
+      "payoutBlock": 59562164,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.9
+    },
+    {
+      "loop": 161,
+      "originTx": "0xd135542eb5f5ff44fb0559a8b960f2b6cb1f5db7ab96d1b1866a259246d3ad64",
+      "originBlock": 59562257,
+      "payoutBlock": 59562263,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.5
+    },
+    {
+      "loop": 162,
+      "originTx": "0xb37ec0ac3f756f0cb20cbcebf2d278d2f92d76962959b83d8635a6a9790d3944",
+      "originBlock": 59562330,
+      "payoutBlock": 59562336,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 163,
+      "originTx": "0x070b43a41a70c37cf0997999b38325e2090facd2452af94d8c164dd6707d9386",
+      "originBlock": 59562415,
+      "payoutBlock": 59562421,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 164,
+      "originTx": "0xed02263f7ff6e6fd68d4d1ff86b669e59542039475e7bca800b18371e2b0444d",
+      "originBlock": 59562514,
+      "payoutBlock": 59562520,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 165,
+      "originTx": "0x6f17684563910a5783ac44c5a8fdbc8899a4d37306876aa13787ab4ef13afbbf",
+      "originBlock": 59562591,
+      "payoutBlock": 59562597,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 166,
+      "originTx": "0x8e80bfae1c78979998001a1df0bb5bce941305cabc9d9d1b8e9dc29633965407",
+      "originBlock": 59562689,
+      "payoutBlock": 59562696,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.3
+    },
+    {
+      "loop": 167,
+      "originTx": "0x1f3a80a8c4d6c051bc5beba9b78118b00045680b4f27cb9b5a10cdab1173f51a",
+      "originBlock": 59562798,
+      "payoutBlock": 59562803,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 168,
+      "originTx": "0x9318694774b3bb7612012db0f3e182284fe9acc865901616a8fecc4689a85255",
+      "originBlock": 59562955,
+      "payoutBlock": 59562960,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 169,
+      "originTx": "0xdc637dbb2801203f11e8939f2924e95941c5d6bd9f47f4f63926bcf6e3a396e8",
+      "originBlock": 59563024,
+      "payoutBlock": 59563034,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 170,
+      "originTx": "0xc9cadb55fdfe3bc8cc276d9cb9ec38360d938019e501541320b7e692945dcc85",
+      "originBlock": 59563111,
+      "payoutBlock": 59563123,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 171,
+      "originTx": "0x750657555c533faf448ff5fd828d0c99d3ad414ff98947ed6933d5ef3ccf9832",
+      "originBlock": 59563196,
+      "payoutBlock": 59563205,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 172,
+      "originTx": "0x22ebc242e7b972ca7f06317301d8e6fb2953b42baaec8ce41c7380c355206d55",
+      "originBlock": 59563276,
+      "payoutBlock": 59563285,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 173,
+      "originTx": "0xf4b481fd6c5486c837c27fa37dd351d3ec103afc3bc3653fbc07b73a7e632a3e",
+      "originBlock": 59563349,
+      "payoutBlock": 59563358,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 174,
+      "originTx": "0xacbc0019de8960699b73699ef1ebe44e85e6cc704e9424ccca71847b7c6616a6",
+      "originBlock": 59563429,
+      "payoutBlock": 59563436,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 175,
+      "originTx": "0x32c24a5a684de360f92413d3c672aac89b7e2a19527b6c8fa3e1195e3fd8c639",
+      "originBlock": 59563591,
+      "payoutBlock": 59563596,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.3
+    },
+    {
+      "loop": 176,
+      "originTx": "0x9ea6665bdd25822bb634bb0387af6c9ed8f796553d6e241250532de5ad5cd6b2",
+      "originBlock": 59563671,
+      "payoutBlock": 59563678,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 177,
+      "originTx": "0x8040d9ffb91c24bcb96adaa5cedfcb62eef7de0628f88f85fa05dbc7d7f56f38",
+      "originBlock": 59563746,
+      "payoutBlock": 59563755,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 178,
+      "originTx": "0xb4bbeb37fc951e06da0ab1bb721698254f558555c04650543c05fc50e0612d4e",
+      "originBlock": 59563820,
+      "payoutBlock": 59563831,
+      "blocks": 11,
+      "latencyMs": 2200,
+      "settled": 1,
+      "usdc": 1.3
+    },
+    {
+      "loop": 179,
+      "originTx": "0x5a8e32a0a598bed94ddbe9467e30b5e0aa04bd3382ae73d1bc7e7afbae397ba3",
+      "originBlock": 59563903,
+      "payoutBlock": 59563915,
+      "blocks": 12,
+      "latencyMs": 2400,
+      "settled": 1,
+      "usdc": 1.3
+    },
+    {
+      "loop": 180,
+      "originTx": "0x32add890a52a8f2c2e0ee6345e7d1f55e97287fd439e539af003f72771da5121",
+      "originBlock": 59564012,
+      "payoutBlock": 59564021,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 181,
+      "originTx": "0x8ec4fb4d6b7024a96d12e92e791c630faa55cd8a49686a1a33c1a3d2e4cec64d",
+      "originBlock": 59564111,
+      "payoutBlock": 59564116,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 182,
+      "originTx": "0x86780307eced3f11cfb6e74cb53bc8a11439594fa248b8ddb92210c55d23e221",
+      "originBlock": 59564186,
+      "payoutBlock": 59564194,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2.4
+    },
+    {
+      "loop": 183,
+      "originTx": "0xf7e83c41cb92a5384b1f8fbbcd48023d9087a958bb047ff2c47c9dc3d33c1f17",
+      "originBlock": 59564276,
+      "payoutBlock": 59564286,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 184,
+      "originTx": "0xd3126d59eb12190767a21449d859cb154c787fdee9d8c7621b498901cc4cb8fe",
+      "originBlock": 59564380,
+      "payoutBlock": 59564386,
+      "blocks": 6,
+      "latencyMs": 1200,
+      "settled": 1,
+      "usdc": 2.2
+    },
+    {
+      "loop": 185,
+      "originTx": "0xb97c7496bb23ccc9c0a41fa08c09b525c78339374f4df5e616ed136ad07f2c27",
+      "originBlock": 59564456,
+      "payoutBlock": 59564465,
+      "blocks": 9,
+      "latencyMs": 1800,
+      "settled": 1,
+      "usdc": 2.1
+    },
+    {
+      "loop": 186,
+      "originTx": "0x517e31ece614b7ccf2c822e73bba6644e55e1711bc97d27f0827e4e93e4b2d70",
+      "originBlock": 59564548,
+      "payoutBlock": 59564562,
+      "blocks": 14,
+      "latencyMs": 2800,
+      "settled": 1,
+      "usdc": 2.8
+    },
+    {
+      "loop": 187,
+      "originTx": "0xcf92db0f480761caa092b0db447d01a0306c3ac0f6b2ab585a2b82c16f64593b",
+      "originBlock": 59564655,
+      "payoutBlock": 59564662,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 188,
+      "originTx": "0xba8d0143001442044ab1166bf33982d54c14a96481489a216de0ef09fd908521",
+      "originBlock": 59564783,
+      "payoutBlock": 59564793,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 189,
+      "originTx": "0x7271aea5051cb86f34ff91c16a5159da8fc878173c99d6cf06257b814ff8159c",
+      "originBlock": 59564880,
+      "payoutBlock": 59564890,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 190,
+      "originTx": "0xea238358ceb7492f28ab53cbadba6cc47a7147ddbcd0090b4c1577a3d0b1b686",
+      "originBlock": 59564996,
+      "payoutBlock": 59565006,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 1.1
+    },
+    {
+      "loop": 191,
+      "originTx": "0x4b8a006db102683b585497abc259e3525f2d45774c94c5ae366946fb6de615e4",
+      "originBlock": 59565087,
+      "payoutBlock": 59565097,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.2
+    },
+    {
+      "loop": 192,
+      "originTx": "0x28b15470f93f4bb0883a8c531634b2f5f6cf37d56e91e631bf7a3c9ba99b508b",
+      "originBlock": 59565227,
+      "payoutBlock": 59565237,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.4
+    },
+    {
+      "loop": 193,
+      "originTx": "0x8cc9aca122984da505bc01e938f9519974f91692f2227003d277e7600253c3ac",
+      "originBlock": 59565342,
+      "payoutBlock": 59565349,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 194,
+      "originTx": "0x13b719a6e0ea7221bbc488d38a7d8f7b00ec23bdca8eebb5377ed8a8931d9b17",
+      "originBlock": 59565459,
+      "payoutBlock": 59565474,
+      "blocks": 15,
+      "latencyMs": 3000,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 195,
+      "originTx": "0x290f619ec425fa1b5303b0c051ccb6e987d358e07c2c554c53b037096dbbb5ab",
+      "originBlock": 59565562,
+      "payoutBlock": 59565576,
+      "blocks": 14,
+      "latencyMs": 2800,
+      "settled": 1,
+      "usdc": 2.7
+    },
+    {
+      "loop": 196,
+      "originTx": "0x96b290d2bbab15d7f909281e41424c10d3b0a0b9bff284c8c47c0481382e098a",
+      "originBlock": 59565688,
+      "payoutBlock": 59565696,
+      "blocks": 8,
+      "latencyMs": 1600,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 197,
+      "originTx": "0xa583ba6517fb1cb55a230f31a645df33aa249e91959493a7fe2e5b61f390edd1",
+      "originBlock": 59565804,
+      "payoutBlock": 59565820,
+      "blocks": 16,
+      "latencyMs": 3200,
+      "settled": 1,
+      "usdc": 1.6
+    },
+    {
+      "loop": 198,
+      "originTx": "0xade8408b784cbe5f5836ff7bc73a931582bf206c30807bf51b89e07be1d80caa",
+      "originBlock": 59565915,
+      "payoutBlock": 59565931,
+      "blocks": 16,
+      "latencyMs": 3200,
+      "settled": 1,
+      "usdc": 1.9
+    },
+    {
+      "loop": 199,
+      "originTx": "0x674e80e7df25e0a15f143de02224f840e6882cb1425fe3ab4e1858b688322c48",
+      "originBlock": 59566018,
+      "payoutBlock": 59566028,
+      "blocks": 10,
+      "latencyMs": 2000,
+      "settled": 1,
+      "usdc": 2.5
+    },
+    {
+      "loop": 200,
+      "originTx": "0x2c450d6448fc7e57779013d502fb00f6e4ea844f5b8f3535f6d675cd28e48408",
+      "originBlock": 59566159,
+      "payoutBlock": 59566166,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1.5
+    },
+    {
+      "loop": 201,
+      "originTx": "0xd6ecdeb2cb4e84df4fb18a82305c93a137d477051f7bd09dc62e8dc94762876e",
+      "originBlock": 59566317,
+      "payoutBlock": 59566322,
+      "blocks": 5,
+      "latencyMs": 1000,
+      "settled": 1,
+      "usdc": 1
+    },
+    {
+      "loop": 202,
+      "originTx": "0xfd7afaf41d51e677338e8c0cef66d8d88a9da187823e7cfaa5e6f8d711972e35",
+      "originBlock": 59566708,
+      "payoutBlock": 59566721,
+      "blocks": 13,
+      "latencyMs": 2600,
+      "settled": 1,
+      "usdc": 2.3
+    },
+    {
+      "loop": 203,
+      "originTx": "0xac84da1a2d38846a5ca719eec6e17bf97d1b978d41bdbe3cb10b2fe5d3e90975",
+      "originBlock": 59566850,
+      "payoutBlock": 59566857,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 2
+    },
+    {
+      "loop": 204,
+      "originTx": "0x5365dfdd015e7dac1ef99c3efc7f22f30ccf3bc1d3b16877ace9f43922c5b3eb",
+      "originBlock": 59566976,
+      "payoutBlock": 59566983,
+      "blocks": 7,
+      "latencyMs": 1400,
+      "settled": 1,
+      "usdc": 1
+    }
+  ]
+}

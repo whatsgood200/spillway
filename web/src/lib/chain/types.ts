@@ -40,7 +40,8 @@ export type ClaimStatus = "queued" | "sold" | "paid";
 
 export interface ClaimEvent {
   kind: "queued" | "sold" | "liquidity" | "reactive" | "paid";
-  atMs: number;
+  /** Null when the time is not known, as for the reactive transaction on Lasna. */
+  atMs: number | null;
   txHash: string;
   network: Network;
 }
@@ -73,7 +74,8 @@ export interface Loop {
   assets: bigint;
   latencyMs: number;
   repayTx: string;
-  reactiveTx: string;
+  /** Null when the reactive transaction could not be looked up on Lasna. */
+  reactiveTx: string | null;
   payoutTx: string;
 }
 
@@ -126,12 +128,17 @@ export interface ChainAdapter {
   getLatencyStats(): Promise<LatencyStats>;
 
   deposit(assets: bigint, options?: TxOptions): Promise<void>;
-  requestRedeem(assets: bigint, options?: TxOptions): Promise<{ requestId: number; paidAtOnce: boolean }>;
+  /** Wait in line. `requestId` is null when the vault paid at once and there is no place in the queue. */
+  requestRedeem(assets: bigint, options?: TxOptions): Promise<{ requestId: number | null; paidAtOnce: boolean }>;
+  /** Cash now, in one step: the pool queues in its own name and pays the caller. */
+  cashOut(assets: bigint, options?: TxOptions): Promise<{ requestId: number | null; received: bigint; paidAtOnce: boolean }>;
+  /** Sell a place the caller already holds in the queue. */
   sellClaim(requestId: number, options?: TxOptions): Promise<{ received: bigint }>;
   poolDeposit(assets: bigint, options?: TxOptions): Promise<void>;
   poolWithdraw(assets: bigint, options?: TxOptions): Promise<void>;
 
   /** Demo console: actions taken by the labelled demo borrower, not by the user. */
+  demoQueueWithdrawal(assets: bigint): Promise<{ requestId: number | null }>;
   demoRepay(assets: bigint): Promise<void>;
   demoBorrowIdle(): Promise<void>;
   demoSetNextFailure(failure: "rejected" | "reverted" | null): Promise<void>;

@@ -1,7 +1,8 @@
 "use client";
 
 import { getChain } from "@/lib/chain";
-import { formatBps, formatMs, formatUsdc, shortHash } from "@/lib/format";
+import { TxLink } from "@/components/TxLink";
+import { formatBps, formatMs, formatUsdc } from "@/lib/format";
 import { useChainQuery } from "@/lib/useChain";
 
 export default function LatencyPage() {
@@ -74,7 +75,8 @@ export default function LatencyPage() {
           <section className="panel" aria-label="Race experiment">
             <h2 className="label">Why one second matters</h2>
             <p className="empty">Freed liquidity is contested. A competing borrower tries to take each repayment a fixed delay after it lands. This is how much of it reached the queue first.</p>
-            {data && (
+            {data && data.race.length === 0 && <p className="empty">Not measured yet. The experiment has not been run on the live contracts.</p>}
+            {data && data.race.length > 0 && (
               <div className="table-scroll">
                 <table>
                   <thead>
@@ -94,14 +96,14 @@ export default function LatencyPage() {
                 </table>
               </div>
             )}
-            <p className="muted">On the previous Reactive Network, with blocks about 7 s apart, a borrower 2 s behind would have won every time.</p>
+            <p className="muted">On the previous Reactive Network, with blocks about 7 s apart, the queue could not have answered inside a few seconds.</p>
           </section>
         </div>
       )}
 
       {loops.data && loops.data.length > 0 && (
         <section className="panel" style={{ marginTop: "var(--space-5)" }} aria-label="Raw loops">
-          <h2 className="label">Latest 25 loops, raw</h2>
+          <h2 className="label">Latest {loops.data.length} loops, raw</h2>
           <div className="table-scroll">
             <table>
               <thead>
@@ -118,9 +120,15 @@ export default function LatencyPage() {
                 {loops.data.map((loop) => (
                   <tr key={loop.id}>
                     <td>{loop.id}</td>
-                    <td>{shortHash(loop.repayTx)}</td>
-                    <td>{shortHash(loop.reactiveTx)}</td>
-                    <td>{shortHash(loop.payoutTx)}</td>
+                    <td>
+                      <TxLink hash={loop.repayTx} network="base-sepolia" />
+                    </td>
+                    <td>
+                      <TxLink hash={loop.reactiveTx} network="lasna" />
+                    </td>
+                    <td>
+                      <TxLink hash={loop.payoutTx} network="base-sepolia" />
+                    </td>
                     <td className="num">{formatUsdc(loop.assets)}</td>
                     <td className="num good">{loop.latencyMs} ms</td>
                   </tr>

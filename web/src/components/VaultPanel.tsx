@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useChainQuery } from "@/lib/useChain";
-import { formatBps, formatMs, formatUsdc, shortHash } from "@/lib/format";
+import { TxLink } from "@/components/TxLink";
+import { formatBps, formatMs, formatUsdc } from "@/lib/format";
 
 /** The line as tickets, the vault's numbers and the latest payouts. Shown beside every money action. */
 export function VaultPanel({ label }: { label: string }) {
@@ -65,7 +66,9 @@ export function VaultPanel({ label }: { label: string }) {
             <tbody>
               {loops.data.map((loop) => (
                 <tr key={loop.id}>
-                  <td>{shortHash(loop.payoutTx)}</td>
+                  <td>
+                    <TxLink hash={loop.payoutTx} network="base-sepolia" />
+                  </td>
                   <td className="num">{formatUsdc(loop.assets)}</td>
                   <td className="num good">{formatMs(loop.latencyMs)}</td>
                 </tr>

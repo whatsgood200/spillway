@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { TxButton } from "@/components/TxButton";
+import { TxLink } from "@/components/TxLink";
 import { getChain, type Claim, type ClaimEvent } from "@/lib/chain";
-import { formatBps, formatMs, formatUsdc, shortHash } from "@/lib/format";
+import { formatBps, formatMs, formatUsdc } from "@/lib/format";
 import { useChainQuery, useNow } from "@/lib/useChain";
 
 const STEP_TEXT: Record<ClaimEvent["kind"], string> = {
@@ -98,7 +99,8 @@ export default function ClaimPage() {
                   <div>
                     <p>{STEP_TEXT[event.kind]}</p>
                     <p className="when">
-                      {clock(event.atMs)} · {NETWORK_TEXT[event.network]} · tx {shortHash(event.txHash)}
+                      {event.atMs !== null && `${clock(event.atMs)} · `}
+                      {NETWORK_TEXT[event.network]} · tx <TxLink hash={event.txHash} network={event.network} />
                     </p>
                   </div>
                 </li>

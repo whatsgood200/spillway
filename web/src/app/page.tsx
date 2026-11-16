@@ -12,7 +12,8 @@ import { useChainQuery } from "@/lib/useChain";
 
 export default function WithdrawPage() {
   const router = useRouter();
-  const [input, setInput] = useState("1000");
+  const [input, setInput] = useState(getChain().isMock ? "1000" : "2");
+  const [paid, setPaid] = useState<bigint | null>(null);
   const assets = parseUsdc(input);
   const wallet = useChainQuery((chain) => chain.getWallet(), "wallet");
   const quote = useChainQuery((chain) => (assets ? chain.quoteWithdraw(assets) : Promise.resolve(null)), `quote-${assets ?? "none"}`);
@@ -28,12 +29,14 @@ export default function WithdrawPage() {
         : "That is more than you have in the vault."
       : null;
 
-  async function queueThenMaybeSell(sell: boolean, options: TxOptions) {
+  async function withdraw(cashNow: boolean, options: TxOptions) {
     if (!assets) return;
+    setPaid(null);
     const chain = getChain();
-    const { requestId, paidAtOnce } = await chain.requestRedeem(assets, options);
-    if (sell && !paidAtOnce) await chain.sellClaim(requestId, options);
-    router.push(`/claim/${requestId}`);
+    const result = cashNow ? await chain.cashOut(assets, options) : await chain.requestRedeem(assets, options);
+    // Paid at once means there is no place in the queue to show; say so here instead.
+    if (result.requestId === null) setPaid(assets);
+    else router.push(`/claim/${result.requestId}`);
   }
 
   const open = claims.data?.filter((claim) => claim.status === "queued") ?? [];
@@ -74,7 +77,7 @@ export default function WithdrawPage() {
                   <dd>0.00 USDC</dd>
                 </div>
               </dl>
-              <TxButton label={`Withdraw ${formatUsdc(q.assets)} USDC`} wallet={wallet.data} blocked={blocked} action={(options) => queueThenMaybeSell(false, options)} />
+              <TxButton label={`Withdraw ${formatUsdc(q.assets)} USDC`} wallet={wallet.data} blocked={blocked} action={(options) => withdraw(false, options)} />
             </div>
           ) : (
             <div className="options">
@@ -108,7 +111,7 @@ export default function WithdrawPage() {
                   label={q?.cashNow.available ? `Get ${formatUsdc(q.cashNow.receive)} USDC now` : "Get cash now"}
                   wallet={wallet.data}
                   blocked={blocked ?? (q && !q.cashNow.available ? "Not available for this amount." : !q ? "Reading the price." : null)}
-                  action={(options) => queueThenMaybeSell(true, options)}
+                  action={(options) => withdraw(true, options)}
                 />
               </div>
               <div className="option">
@@ -140,14 +143,20 @@ export default function WithdrawPage() {
                   wallet={wallet.data}
                   blocked={blocked ?? (!q ? "Reading the queue." : null)}
                   secondary
-                  action={(options) => queueThenMaybeSell(false, options)}
+                  action={(options) => withdraw(false, options)}
                 />
               </div>
             </div>
           )}
 
+          {paid !== null && (
+            <p className="tx-note good" role="status">
+              Paid {formatUsdc(paid)} USDC at once. The vault had cash and nobody was waiting.
+            </p>
+          )}
+
           <p className="muted">
-            Cash now takes two confirmations: one to join the queue, one to sell your place. The fee rises as the pool empties. Queue payouts depend on borrowers repaying; nobody can
+            The first time, your wallet asks for an approval before the withdrawal itself. The fee rises as the pool empties. Queue payouts depend on borrowers repaying; nobody can
             promise when.
           </p>
 

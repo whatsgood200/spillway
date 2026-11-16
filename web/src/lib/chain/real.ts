@@ -1,0 +1,510 @@
+import {
+  BaseError,
+  ContractFunctionRevertedError,
+  UserRejectedRequestError,
+  createPublicClient,
+  createWalletClient,
+  custom,
+  decodeEventLog,
+  http,
+  maxUint256,
+  type EIP1193Provider,
+  type Hex,
+} from "viem";
+import { baseSepolia } from "viem/chains";
+import type { History, HistoryEvent, HistoryLoop } from "../server/history";
+import { ADDRESSES, BASE_SEPOLIA_ID, BASE_SEPOLIA_RPC, erc20Abi, poolAbi, vaultAbi } from "./config";
+import {
+  ChainError,
+  type ChainAdapter,
+  type Claim,
+  type ClaimEvent,
+  type LatencyStats,
+  type Loop,
+  type PoolState,
+  type QueueEntry,
+  type TxOptions,
+  type VaultState,
+  type WalletState,
+  type WithdrawQuote,
+} from "./types";
+
+/**
+ * The live adapter. State is read from Base Sepolia over the public RPC, history from this app's own
+ * /api/history route, and transactions are signed by the visitor's browser wallet.
+ * Screens only ever see confirmed state: every write waits for its receipt before resolving.
+ */
+
+type Address = `0x${string}`;
+const SLIPPAGE_BPS = 50n; // The pool's fee can move between quote and inclusion; accept up to 0.5 percent less.
+const POLL_MS = 4_000;
+
+function provider(): EIP1193Provider | null {
+  if (typeof window === "undefined") return null;
+  return (window as unknown as { ethereum?: EIP1193Provider }).ethereum ?? null;
+}
+
+function requireProvider(): EIP1193Provider {
+  const found = provider();
+  if (!found) throw new ChainError("disconnected", "No browser wallet found. Install MetaMask or another wallet, or use the demo console, which needs no wallet.");
+  return found;
+}
+
+const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
+
+function explain(cause: unknown): ChainError {
+  if (cause instanceof ChainError) return cause;
+  if (cause instanceof BaseError) {
+    if (cause.walk((error) => error instanceof UserRejectedRequestError)) {
+      return new ChainError("rejected", "You declined the request in your wallet. Nothing was sent.");
+    }
+    const revert = cause.walk((error) => error instanceof ContractFunctionRevertedError) as ContractFunctionRevertedError | null;
+    if (revert) {
+      const name = revert.data?.errorName;
+      if (name === "NotEnoughCash") return new ChainError("unavailable", "The pool does not hold enough cash for this amount right now. Try a smaller amount or wait in line.");
+      if (name === "ReceiveBelowMinimum") return new ChainError("reverted", "The pool's price moved while your transaction was pending. Nothing was taken; check the new price and try again.");
+      if (name === "RequestTooSmall") return new ChainError("reverted", "The smallest withdrawal is 1 USDC.");
+      return new ChainError("reverted", `The transaction would revert${name ? ` (${name})` : ""}. Your balances are unchanged.`);
+    }
+    return new ChainError("reverted", cause.shortMessage || "The network rejected the transaction. Your balances are unchanged.");
+  }
+  return new ChainError("unavailable", cause instanceof Error ? cause.message : "Something went wrong talking to the network.");
+}
+
+export function createRealAdapter(): ChainAdapter {
+  const publicClient = createPublicClient({ chain: baseSepolia, transport: http(BASE_SEPOLIA_RPC), batch: { multicall: true } });
+  const listeners = new Set<() => void>();
+  const notify = () => listeners.forEach((listener) => listener());
+  let polling: ReturnType<typeof setInterval> | null = null;
+  let history: { at: number; promise: Promise<History> } | null = null;
+
+  function startWatching() {
+    if (polling || typeof window === "undefined") return;
+    polling = setInterval(notify, POLL_MS);
+    const wallet = provider() as (EIP1193Provider & { on?: (event: string, handler: () => void) => void }) | null;
+    wallet?.on?.("accountsChanged", notify);
+    wallet?.on?.("chainChanged", notify);
+  }
+
+  /** One history request serves every panel on the page for a few seconds. */
+  function getHistory(): Promise<History> {
+    if (history && Date.now() - history.at < 3_000) return history.promise;
+    const promise = fetch("/api/history")
+      .then(async (response) => {
+        const body = (await response.json()) as { data: History | null; error: string | null };
+        if (!response.ok || !body.data) throw new ChainError("unavailable", body.error ?? "Could not read the event history.");
+        return body.data;
+      })
+      .catch((cause) => {
+        history = null;
+        throw cause;
+      });
+    history = { at: Date.now(), promise };
+    return promise;
+  }
+
+  async function account(): Promise<Address | null> {
+    const wallet = provider();
+    if (!wallet) return null;
+    const accounts = (await wallet.request({ method: "eth_accounts" })) as Address[];
+    return accounts[0] ?? null;
+  }
+
+  async function signer(): Promise<{ address: Address; write: ReturnType<typeof createWalletClient> }> {
+    const wallet = requireProvider();
+    const address = await account();
+    if (!address) throw new ChainError("disconnected", "Connect a wallet first.");
+    const chainId = Number(BigInt((await wallet.request({ method: "eth_chainId" })) as string));
+    if (chainId !== BASE_SEPOLIA_ID) throw new ChainError("wrong-network", "Your wallet is on another network. Switch to Base Sepolia.");
+    return { address, write: createWalletClient({ account: address, chain: baseSepolia, transport: custom(wallet) }) };
+  }
+
+  /** Sends one transaction and waits for it to be included. Returns its logs for the caller to read. */
+  async function send(
+    options: TxOptions | undefined,
+    request: { address: Address; abi: readonly unknown[]; functionName: string; args: readonly unknown[] },
+  ): Promise<{ address: string; data: Hex; topics: Hex[] }[]> {
+    try {
+      const { address, write } = await signer();
+      // Simulate first so a doomed transaction is refused before the wallet opens.
+      await publicClient.simulateContract({ ...request, account: address } as never);
+      options?.onPhase?.("wallet");
+      const hash = await write.writeContract({ ...request, account: address, chain: baseSepolia } as never);
+      options?.onPhase?.("pending");
+      const receipt = await publicClient.waitForTransactionReceipt({ hash, timeout: 90_000 });
+      if (receipt.status !== "success") throw new ChainError("reverted", "The transaction reverted on Base Sepolia. Your balances are unchanged.");
+      history = null;
+      return receipt.logs as unknown as { address: string; data: Hex; topics: Hex[] }[];
+    } catch (cause) {
+      throw explain(cause);
+    }
+  }
+
+  async function approveIfNeeded(options: TxOptions | undefined, token: Address, spender: Address, needed: bigint) {
+    const owner = await account();
+    if (!owner) throw new ChainError("disconnected", "Connect a wallet first.");
+    const allowance = await publicClient.readContract({ address: token, abi: erc20Abi, functionName: "allowance", args: [owner, spender] });
+    if (allowance < needed) await send(options, { address: token, abi: erc20Abi, functionName: "approve", args: [spender, maxUint256] });
+  }
+
+  /** Shares to burn for `assets`. Asking for the whole balance burns every share, so no dust is left behind. */
+  async function sharesFor(assets: bigint, owner: Address): Promise<bigint> {
+    const balance = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "balanceOf", args: [owner] });
+    const worth = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToAssets", args: [balance] });
+    if (assets > worth) throw new ChainError("insufficient", "You have less than that in the vault.");
+    if (assets === worth) return balance;
+    return publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToShares", args: [assets] });
+  }
+
+  function findEvent<T extends string>(logs: { address: string; data: Hex; topics: Hex[] }[], contract: Address, abi: typeof vaultAbi | typeof poolAbi, name: T) {
+    for (const log of logs) {
+      if (!same(log.address, contract)) continue;
+      try {
+        const decoded = decodeEventLog({ abi: abi as typeof vaultAbi, data: log.data, topics: log.topics as [Hex, ...Hex[]] });
+        if (decoded.eventName === name) return decoded.args as Record<string, unknown>;
+      } catch {
+        // Some other event.
+      }
+    }
+    return null;
+  }
+
+  async function readQueue(): Promise<{ ids: readonly bigint[]; owners: readonly Address[]; amounts: readonly bigint[] }> {
+    const [ids, owners, amounts] = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queueSlice", args: [0n, 100n] });
+    return { ids, owners, amounts };
+  }
+
+  function buildClaim(requestId: number, events: HistoryEvent[], loops: HistoryLoop[], queue: { ids: readonly bigint[]; amounts: readonly bigint[] }): Claim | null {
+    const mine = events.filter((event) => event.requestId === requestId && event.kind !== "paid-at-once");
+    const queued = mine.find((event) => event.kind === "queued");
+    if (!queued) return null;
+    const bought = mine.find((event) => event.kind === "bought");
+    const settled = mine.find((event) => event.kind === "settled");
+    const loop = settled ? loops.find((candidate) => candidate.payoutTx === settled.txHash) : undefined;
+
+    const timeline: ClaimEvent[] = [{ kind: "queued", atMs: queued.atMs, txHash: queued.txHash, network: "base-sepolia" }];
+    if (bought) timeline.push({ kind: "sold", atMs: bought.atMs, txHash: bought.txHash, network: "base-sepolia" });
+    if (settled) {
+      if (loop) {
+        timeline.push({ kind: "liquidity", atMs: loop.originMs, txHash: loop.originTx, network: "base-sepolia" });
+        if (loop.reactiveTx) timeline.push({ kind: "reactive", atMs: null, txHash: loop.reactiveTx, network: "lasna" });
+      }
+      timeline.push({ kind: "paid", atMs: loop?.paidAtMs ?? settled.atMs, txHash: settled.txHash, network: "base-sepolia" });
+    }
+
+    const index = queue.ids.findIndex((id) => Number(id) === requestId);
+    const assets = BigInt(queued.assets);
+    return {
+      requestId,
+      assets,
+      status: bought ? "sold" : settled ? "paid" : "queued",
+      position: index >= 0 && !bought ? index + 1 : null,
+      aheadAssets: index >= 0 ? queue.amounts.slice(0, index).reduce((sum, amount) => sum + amount, 0n) : 0n,
+      received: bought ? BigInt(bought.paid ?? "0") : settled ? assets : null,
+      fee: bought ? BigInt(bought.fee ?? "0") : settled ? 0n : null,
+      latencyMs: loop?.latencyMs ?? null,
+      events: timeline,
+    };
+  }
+
+  async function demo(action: "queue" | "repay" | "borrow", amount?: bigint): Promise<Record<string, unknown>> {
+    const response = await fetch("/api/demo", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action, amount: amount?.toString() }),
+    });
+    const body = (await response.json()) as { data: Record<string, unknown> | null; error: string | null };
+    if (!response.ok || !body.data) throw new ChainError("unavailable", body.error ?? "The demo account could not do that.");
+    history = null;
+    notify();
+    return body.data;
+  }
+
+  const simulationOnly = async (): Promise<never> => {
+    throw new ChainError("unavailable", "This control only exists in the simulation.");
+  };
+
+  return {
+    isMock: false,
+
+    subscribe(listener) {
+      listeners.add(listener);
+      startWatching();
+      return () => listeners.delete(listener);
+    },
+
+    async getWallet(): Promise<WalletState> {
+      const wallet = provider();
+      const address = await account();
+      if (!wallet || !address) return { status: "disconnected" };
+      const chainId = Number(BigInt((await wallet.request({ method: "eth_chainId" })) as string));
+      if (chainId !== BASE_SEPOLIA_ID) return { status: "wrong-network", address };
+      const [usdc, vaultShares, poolShares] = await Promise.all([
+        publicClient.readContract({ address: ADDRESSES.usdc, abi: erc20Abi, functionName: "balanceOf", args: [address] }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "balanceOf", args: [address] }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "balanceOf", args: [address] }),
+      ]);
+      const [vaultBalance, poolBalance] = await Promise.all([
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToAssets", args: [vaultShares] }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "convertToAssets", args: [poolShares] }),
+      ]);
+      return { status: "connected", address, usdc, vaultBalance, poolBalance };
+    },
+
+    async connect() {
+      try {
+        await requireProvider().request({ method: "eth_requestAccounts" });
+        notify();
+      } catch (cause) {
+        throw explain(cause);
+      }
+    },
+
+    async disconnect() {
+      // Browser wallets do not let a site disconnect itself; the visitor does that from the wallet.
+      throw new ChainError("unavailable", "Disconnect from inside your wallet.");
+    },
+
+    async switchNetwork() {
+      const wallet = requireProvider();
+      const chainId = `0x${BASE_SEPOLIA_ID.toString(16)}` as const;
+      try {
+        await wallet.request({ method: "wallet_switchEthereumChain", params: [{ chainId }] });
+      } catch {
+        try {
+          await wallet.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId,
+                chainName: "Base Sepolia",
+                nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+                rpcUrls: [BASE_SEPOLIA_RPC],
+                blockExplorerUrls: ["https://sepolia.basescan.org"],
+              },
+            ],
+          });
+        } catch (cause) {
+          throw explain(cause);
+        }
+      }
+      notify();
+    },
+
+    async getVaultState(): Promise<VaultState> {
+      const [supplied, withdrawable, queueLength, queuedAssets] = await Promise.all([
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "suppliedAssets" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "withdrawable" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queueLength" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queuedAssets" }),
+      ]);
+      const lentOut = supplied - withdrawable;
+      return {
+        totalAssets: supplied,
+        lentOut,
+        withdrawable,
+        utilizationBps: supplied === 0n ? 0 : Number((lentOut * 10_000n) / supplied),
+        queueLength: Number(queueLength),
+        queuedAssets,
+      };
+    },
+
+    async getQueue(): Promise<QueueEntry[]> {
+      const [queue, me, past] = await Promise.all([readQueue(), account(), getHistory().catch(() => null)]);
+      return queue.ids.map((id, index) => {
+        const requestId = Number(id);
+        const queuedEvent = past?.events.find((event) => event.kind === "queued" && event.requestId === requestId);
+        return {
+          requestId,
+          position: index + 1,
+          assets: queue.amounts[index],
+          queuedAtMs: queuedEvent?.atMs ?? Date.now(),
+          heldByPool: same(queue.owners[index], ADDRESSES.pool),
+          mine: me !== null && same(queue.owners[index], me),
+        };
+      });
+    },
+
+    async getPoolState(): Promise<PoolState> {
+      const [totalAssets, idle, claimsValue, feeBpsNow, queue, past] = await Promise.all([
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "totalAssets" }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "idle" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "pendingAssets", args: [ADDRESSES.pool] }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "feeBps", args: [0n] }),
+        readQueue(),
+        getHistory().catch(() => null),
+      ]);
+      return {
+        totalAssets,
+        idle,
+        claimsHeld: queue.owners.filter((owner) => same(owner, ADDRESSES.pool)).length,
+        claimsValue,
+        depthBps: totalAssets === 0n ? 0 : Number((idle * 10_000n) / totalAssets),
+        feeBpsNow: Number(feeBpsNow),
+        feesEarned: past ? past.events.filter((event) => event.kind === "bought").reduce((sum, event) => sum + BigInt(event.fee ?? "0"), 0n) : 0n,
+      };
+    },
+
+    async quoteWithdraw(assets): Promise<WithdrawQuote> {
+      const [queueLength, queuedAssets, withdrawable, quote] = await Promise.all([
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queueLength" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "queuedAssets" }),
+        publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "withdrawable" }),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quote", args: [assets] }),
+      ]);
+      const [receive, fee, bps, available] = quote;
+      return {
+        assets,
+        paidAtOnce: queueLength === 0n && withdrawable >= assets,
+        position: Number(queueLength) + 1,
+        aheadAssets: queuedAssets,
+        cashNow: available
+          ? { available: true, receive, fee, feeBps: Number(bps) }
+          : { available: false, reason: "The pool does not hold enough cash for this amount right now. Try a smaller amount or wait in line." },
+      };
+    },
+
+    async getClaim(requestId) {
+      const [past, queue] = await Promise.all([getHistory(), readQueue()]);
+      return buildClaim(requestId, past.events, past.loops, queue);
+    },
+
+    async getMyClaims() {
+      const me = await account();
+      if (!me) return [];
+      const [past, queue] = await Promise.all([getHistory(), readQueue()]);
+      const ids = new Set<number>();
+      for (const event of past.events) {
+        if ((event.kind === "queued" || event.kind === "bought") && same(event.account, me)) ids.add(event.requestId);
+      }
+      return [...ids]
+        .sort((a, b) => b - a)
+        .map((id) => buildClaim(id, past.events, past.loops, queue))
+        .filter((claim): claim is Claim => claim !== null);
+    },
+
+    async getLoops(limit): Promise<Loop[]> {
+      const past = await getHistory();
+      return past.loops
+        .slice(-limit)
+        .reverse()
+        .map((loop) => ({
+          id: loop.id,
+          atMs: loop.paidAtMs,
+          assets: BigInt(loop.assets),
+          latencyMs: loop.latencyMs,
+          repayTx: loop.originTx,
+          reactiveTx: loop.reactiveTx,
+          payoutTx: loop.payoutTx,
+        }));
+    },
+
+    async getLatencyStats(): Promise<LatencyStats> {
+      const past = await getHistory();
+      const sorted = past.loops.map((loop) => loop.latencyMs).sort((a, b) => a - b);
+      const at = (quantile: number) => (sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(quantile * sorted.length))] : 0);
+      const buckets = new Map<number, number>();
+      for (const latency of sorted) {
+        const from = Math.floor(latency / 200) * 200;
+        buckets.set(from, (buckets.get(from) ?? 0) + 1);
+      }
+      return {
+        count: sorted.length,
+        p50: at(0.5),
+        p90: at(0.9),
+        p99: at(0.99),
+        min: sorted[0] ?? 0,
+        max: sorted[sorted.length - 1] ?? 0,
+        histogram: [...buckets.entries()].sort((a, b) => a[0] - b[0]).map(([fromMs, count]) => ({ fromMs, count })),
+        // Filled from the race experiment's recorded results once it has been run.
+        race: [],
+      };
+    },
+
+    async deposit(assets, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      await approveIfNeeded(options, ADDRESSES.usdc, ADDRESSES.vault, assets);
+      await send(options, { address: ADDRESSES.vault, abi: vaultAbi, functionName: "deposit", args: [assets, address] });
+      notify();
+    },
+
+    async requestRedeem(assets, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      const shares = await sharesFor(assets, address);
+      const logs = await send(options, { address: ADDRESSES.vault, abi: vaultAbi, functionName: "requestRedeem", args: [shares, address] });
+      notify();
+      const queued = findEvent(logs, ADDRESSES.vault, vaultAbi, "RedeemQueued");
+      return queued ? { requestId: Number(queued.requestId), paidAtOnce: false } : { requestId: null, paidAtOnce: true };
+    },
+
+    async cashOut(assets, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      const shares = await sharesFor(assets, address);
+      const [quoted] = await publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quote", args: [assets] });
+      const minReceive = (quoted * (10_000n - SLIPPAGE_BPS)) / 10_000n;
+      await approveIfNeeded(options, ADDRESSES.vault, ADDRESSES.pool, shares);
+      const logs = await send(options, { address: ADDRESSES.pool, abi: poolAbi, functionName: "cashOut", args: [shares, minReceive, address] });
+      notify();
+      const bought = findEvent(logs, ADDRESSES.pool, poolAbi, "ClaimBought");
+      if (bought) return { requestId: Number(bought.requestId), received: bought.paid as bigint, paidAtOnce: false };
+      const passed = findEvent(logs, ADDRESSES.pool, poolAbi, "PassedThrough");
+      return { requestId: null, received: (passed?.assets as bigint | undefined) ?? assets, paidAtOnce: true };
+    },
+
+    async sellClaim(requestId, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      const queue = await readQueue();
+      const index = queue.ids.findIndex((id) => Number(id) === requestId);
+      if (index < 0 || !same(queue.owners[index], address)) throw new ChainError("unavailable", "This place in the queue is no longer yours to sell.");
+      const [quoted] = await publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "quote", args: [queue.amounts[index]] });
+      const minReceive = (quoted * (10_000n - SLIPPAGE_BPS)) / 10_000n;
+      await send(options, { address: ADDRESSES.vault, abi: vaultAbi, functionName: "approveClaim", args: [BigInt(requestId), ADDRESSES.pool] });
+      const logs = await send(options, { address: ADDRESSES.pool, abi: poolAbi, functionName: "buyClaim", args: [BigInt(requestId), minReceive, address] });
+      notify();
+      const bought = findEvent(logs, ADDRESSES.pool, poolAbi, "ClaimBought");
+      return { received: (bought?.paid as bigint | undefined) ?? quoted };
+    },
+
+    async poolDeposit(assets, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      await approveIfNeeded(options, ADDRESSES.usdc, ADDRESSES.pool, assets);
+      await send(options, { address: ADDRESSES.pool, abi: poolAbi, functionName: "deposit", args: [assets, address] });
+      notify();
+    },
+
+    async poolWithdraw(assets, options) {
+      const { address } = await signer().catch((cause) => {
+        throw explain(cause);
+      });
+      await send(options, { address: ADDRESSES.pool, abi: poolAbi, functionName: "withdraw", args: [assets, address, address] });
+      notify();
+    },
+
+    async demoQueueWithdrawal(assets) {
+      const data = await demo("queue", assets);
+      return { requestId: typeof data.requestId === "number" ? data.requestId : null };
+    },
+
+    async demoRepay(assets) {
+      await demo("repay", assets);
+    },
+
+    async demoBorrowIdle() {
+      await demo("borrow");
+    },
+
+    demoSetNextFailure: simulationOnly,
+    demoSetWrongNetwork: simulationOnly,
+    demoReset: simulationOnly,
+  };
+}

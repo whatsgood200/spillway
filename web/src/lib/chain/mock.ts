@@ -196,8 +196,9 @@ export function createMockAdapter(): ChainAdapter {
 
   /** Pays the queue head first, strictly in order, for as long as idle liquidity covers the next request. */
   function settle(s: MockState, repayEvent: ClaimEvent, latencyMs: number) {
-    const reactive = event("reactive", "lasna", repayEvent.atMs + Math.round(latencyMs * 0.55));
-    const paidAt = repayEvent.atMs + latencyMs;
+    const repaidAt = repayEvent.atMs ?? Date.now();
+    const reactive = event("reactive", "lasna", repaidAt + Math.round(latencyMs * 0.55));
+    const paidAt = repaidAt + latencyMs;
     while (s.queue.length > 0 && s.vaultIdle >= s.queue[0].assets) {
       const head = s.queue.shift()!;
       s.vaultIdle -= head.assets;
@@ -380,7 +381,7 @@ export function createMockAdapter(): ChainAdapter {
       }),
 
     async requestRedeem(assets, options) {
-      let result = { requestId: 0, paidAtOnce: false };
+      let result: { requestId: number | null; paidAtOnce: boolean } = { requestId: null, paidAtOnce: false };
       await transact(options, (s) => {
         if (s.myVaultBalance < assets) throw new ChainError("insufficient", "You have less than that in the vault.");
         s.myVaultBalance -= assets;
@@ -403,11 +404,18 @@ export function createMockAdapter(): ChainAdapter {
           s.vaultIdle -= assets;
           s.walletUsdc += assets;
         } else {
-          s.queue.push({ requestId, assets, queuedAtMs: queued.atMs, heldByPool: false, mine: true, paidOut: 0n });
+          s.queue.push({ requestId, assets, queuedAtMs: queued.atMs ?? Date.now(), heldByPool: false, mine: true, paidOut: 0n });
         }
         result = { requestId, paidAtOnce };
       });
       return result;
+    },
+
+    async cashOut(assets, options) {
+      const { requestId, paidAtOnce } = await this.requestRedeem(assets, options);
+      if (paidAtOnce || requestId === null) return { requestId: null, received: assets, paidAtOnce: true };
+      const { received } = await this.sellClaim(requestId, options);
+      return { requestId, received, paidAtOnce: false };
     },
 
     async sellClaim(requestId, options) {
@@ -449,6 +457,18 @@ export function createMockAdapter(): ChainAdapter {
         s.poolIdle -= assets;
         s.walletUsdc += assets;
       }),
+
+    async demoQueueWithdrawal(assets) {
+      const s = load();
+      requireConnected(s);
+      await wait(900 + random() * 500);
+      // The demo lender's deposit is lent straight back out, so the request has to queue.
+      s.vaultLent += assets;
+      const requestId = s.nextRequestId++;
+      s.queue.push({ requestId, assets, queuedAtMs: Date.now(), heldByPool: false, mine: false, paidOut: 0n });
+      commit();
+      return { requestId };
+    },
 
     async demoRepay(assets) {
       const s = load();

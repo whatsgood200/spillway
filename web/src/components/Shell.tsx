@@ -43,20 +43,29 @@ export function Shell({ children }: { children: React.ReactNode }) {
           <span>Base Sepolia testnet · chain 84532</span>
           {!state && <span>Reading wallet</span>}
           {state?.status === "disconnected" && (
-            <button type="button" className="link-button" onClick={() => chain.connect()}>
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => chain.connect().catch((cause: unknown) => window.alert(cause instanceof Error ? cause.message : "Could not connect."))}
+            >
               Connect wallet
             </button>
           )}
           {state?.status === "wrong-network" && (
-            <button type="button" className="link-button warn" onClick={() => chain.switchNetwork()}>
+            <button type="button" className="link-button warn" onClick={() => chain.switchNetwork().catch(() => undefined)}>
               Wrong network · switch
             </button>
           )}
-          {state?.status === "connected" && (
-            <button type="button" className="link-button" title="Disconnect" onClick={() => chain.disconnect()}>
-              {shortHash(state.address)} · {formatUsdc(state.usdc)} USDC
-            </button>
-          )}
+          {state?.status === "connected" &&
+            (chain.isMock ? (
+              <button type="button" className="link-button" title="Disconnect" onClick={() => chain.disconnect()}>
+                {shortHash(state.address)} · {formatUsdc(state.usdc)} USDC
+              </button>
+            ) : (
+              <span className="link-button">
+                {shortHash(state.address)} · {formatUsdc(state.usdc)} USDC
+              </span>
+            ))}
         </div>
       </header>
       <main className="wrap">{children}</main>

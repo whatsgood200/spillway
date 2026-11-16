@@ -37,6 +37,7 @@ export const vaultAbi = parseAbi([
   "function balanceOf(address owner) view returns (uint256)",
   "function convertToAssets(uint256 shares) view returns (uint256)",
   "function convertToShares(uint256 assets) view returns (uint256)",
+  "function previewWithdraw(uint256 assets) view returns (uint256)",
   "function suppliedAssets() view returns (uint256)",
   "function withdrawable() view returns (uint256)",
   "function queueLength() view returns (uint256)",

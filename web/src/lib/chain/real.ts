@@ -122,21 +122,36 @@ export function createRealAdapter(): ChainAdapter {
   }
 
   /** Sends one transaction and waits for it to be included. Returns its logs for the caller to read. */
+  /** When our last transaction confirmed, in ms; see `send`. */
+  let lastSentAt = 0;
+
   async function send(
     options: TxOptions | undefined,
     request: { address: Address; abi: readonly unknown[]; functionName: string; args: readonly unknown[] },
   ): Promise<{ address: string; data: Hex; topics: Hex[] }[]> {
     try {
       const { address, write } = await signer();
-      // Simulate first so a doomed transaction is refused before the wallet opens.
-      await publicClient.simulateContract({ ...request, account: address } as never);
-      // Headroom over the estimate: a node a block behind can estimate too low for the path the transaction takes.
-      const estimate = await publicClient.estimateContractGas({ ...request, account: address } as never);
+      // Simulate first so a doomed transaction is refused before the wallet opens. The public RPC is load balanced:
+      // right after our own transaction (an approval before a deposit or sale) a node a block behind can still see
+      // the old state, so a refusal then is re-checked a few times before it is believed.
+      let estimate: bigint;
+      for (let attempt = 1; ; attempt++) {
+        try {
+          await publicClient.simulateContract({ ...request, account: address } as never);
+          // Headroom over the estimate: a node a block behind can estimate too low for the path the transaction takes.
+          estimate = await publicClient.estimateContractGas({ ...request, account: address } as never);
+          break;
+        } catch (cause) {
+          if (attempt >= 5 || Date.now() - lastSentAt > 30_000) throw cause;
+          await new Promise((resolve) => setTimeout(resolve, 1200));
+        }
+      }
       options?.onPhase?.("wallet");
       const hash = await write.writeContract({ ...request, account: address, chain: baseSepolia, gas: (estimate * 3n) / 2n + 60_000n } as never);
       options?.onPhase?.("pending");
       const receipt = await publicClient.waitForTransactionReceipt({ hash, timeout: 90_000 });
       if (receipt.status !== "success") throw new ChainError("reverted", "The transaction reverted on Base Sepolia. Your balances are unchanged.");
+      lastSentAt = Date.now();
       history = null;
       return receipt.logs as unknown as { address: string; data: Hex; topics: Hex[] }[];
     } catch (cause) {
@@ -157,7 +172,10 @@ export function createRealAdapter(): ChainAdapter {
     const worth = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToAssets", args: [balance] });
     if (assets > worth) throw new ChainError("insufficient", "You have less than that in the vault.");
     if (assets === worth) return balance;
-    return publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "convertToShares", args: [assets] });
+    // Round up, so the request is worth at least what was asked: rounding down could leave a 1 USDC request at
+    // 0.999999, under the vault's minimum, and it would revert.
+    const shares = await publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "previewWithdraw", args: [assets] });
+    return shares > balance ? balance : shares;
   }
 
   function findEvent<T extends string>(logs: { address: string; data: Hex; topics: Hex[] }[], contract: Address, abi: typeof vaultAbi | typeof poolAbi, name: T) {

@@ -24,3 +24,8 @@ contracts/lib/
 contracts/out/
 contracts/cache/
 contracts/broadcast/
+
+# Internal workspace files: kept locally, never published.
+AGENTS.md
+CLAUDE.md
+EVENT.md

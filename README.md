@@ -1,116 +1,111 @@
-<!-- Starter README. Fill every <placeholder>, delete every comment, delete sections that truly do not apply. Order matters: a judge reads top to bottom and stops early. Rules: AGENTS.md Sections 5, 6, 13 and 14. No hype words, no em or en dashes. -->
+# Spillway
 
-# <Product name>
+**Sell your place in a withdrawal queue for cash now.**
 
-**<One line: what it does for whom, under ten words.>**
-
-<Two sentences: the problem with one real number we measured ourselves, then what the product does about it.>
+When a lending vault is fully lent out, withdrawals wait, and returning cash goes to whoever is fastest. Spillway's queue pays waiting lenders in order the moment a borrower repays (a median 1.6 s later, over 204 live loops), and its pool buys queue places from lenders who would rather leave now.
 
 > **Maturity, stated up front.**
-> - Network: <testnet or mainnet, chain id>. Funds: <test or real>.
-> - Real: <contracts, data feeds, integrations that actually run>.
-> - Simulated or partial: <anything that is not the production path, said plainly>.
-> - Limits: see [Security and limitations](#security-and-limitations).
+> - Network: Base Sepolia (84532) and Reactive Lasna (5318007). Test funds only. Unaudited.
+> - Real: the vault lends on the deployed Morpho Blue contract, the reactive contract runs on Reactive Network, and every payout shown in the app is a transaction on chain.
+> - Ours: the Morpho market (USDC against a demo collateral token with a fixed-price oracle), the demo account, and every transaction so far. None of it is user traffic.
+> - Limits: see [Limits](#limits).
 
 ## Demo
 
 | | |
 |---|---|
-| Live app (how a judge gets in without a wallet) | <short production URL> |
-| Pitch video (<length>) | <link> |
-| Technical demo (<length>) | <link> |
-| Judge tour, three minutes | [JUDGES.md](JUDGES.md) |
-| Claims with file and line | [docs/claims.md](docs/claims.md) |
-| Tracks and bounties entered | <track> · <bounty> · <bounty> |
+| Live app, no wallet needed | https://spillway-phi.vercel.app/demo |
+| Measured latency and the race experiment | https://spillway-phi.vercel.app/latency |
+| Contract addresses and transactions | [deployments.md](deployments.md) |
+| How every number was measured | [measurements/README.md](measurements/README.md) |
+| Track | Reactive Omni Buildathon, Every Second Counts |
 
-**Team:** <names, one line each>. **AI tools:** <disclose as the rules require>.
+On the demo page, press **Queue a 2 USDC withdrawal**, then **Repay 2 USDC**, then open the request. It shows the repayment on Base Sepolia, the reactive transaction on Lasna and the payout on Base Sepolia, each linked to its explorer, and how many milliseconds the loop took.
 
 ## The problem
 
-<Who has it, how they cope today, why existing options fail. One measured fact or user quote.>
+Curated lending vaults lend out most of what they hold. When borrowing is heavy, utilization reaches 100 percent and withdrawals cannot be paid. On 4 November 2025, after the Stream Finance collapse, Gauntlet reported withdrawable liquidity in two of its Morpho vaults below 1 percent for about six hours. When cash does come back, the lender with the fastest bot gets it; everyone else keeps refreshing.
 
 ## What it does
 
-<Three or four sentences, or one short formula if the product is a rule.>
+- **A queue that settles itself.** A withdrawal the vault cannot pay joins a first in, first out queue. A reactive contract on Reactive Network watches the Morpho market for repayments, new deposits and liquidations. When cash arrives and someone is waiting, it calls the vault on Base Sepolia, and the vault pays the queue from the front. No keeper, no cron job, no claim button.
+- **Cash now, for a fee you see first.** The pool buys a place in the queue and pays the lender at once, minus a fee of 0.08 to 3 percent that rises as the pool's cash runs down. When the vault later pays that place, the pool gets the full amount. The fee is the pool's income.
 
-## Claims you can check
+## Measured results
 
-<!-- Every row must be falsifiable: a transaction link, a command, or a file and line. No row without proof. -->
+From [measurements/README.md](measurements/README.md), all on chain:
 
-| Claim | Check it |
+| | |
 |---|---|
-| <claim> | <explorer link, or `command`> |
+| Repayment to payout, 204 loops | median 1.6 s, p90 2.4 s, p99 4.0 s, 1.0 s to 6.6 s |
+| Loops paid within 2 s | 173 of 204 |
+| Competitor landing within 1.4 s of a repayment | won the cash 16 of 16 times |
+| Competitor landing 1.6 to 2.6 s after | queue won 12 of 14 |
+| Competitor landing 3.2 s or later | queue won 10 of 10 |
 
-## Traction
+**Why this needs Reactive Omni.** Cash that a borrower repays is contested. A bot on the same chain that acts within about a second will always get it first, and Spillway does not claim otherwise. Anyone slower, such as a person, a keeper polling on a schedule, or a bot that waits a few blocks, now loses it to the queue. On the previous Reactive Network, with blocks about 7 s apart, the loop alone took longer than that (an estimate from block times, not measured).
 
-<!-- Counted facts only. Label our own transactions as ours. -->
-
-- <users, trades, volume, integrations by other teams>
-- Our own test activity: <count>, labelled as ours.
-
-**Next 30 days:** <three concrete steps>.
-
-## Remove a sponsor and <Product> stops
-
-| Remove | What breaks |
-|---|---|
-| <Sponsor tool> | <the function that no longer works> |
-| <Chain> | <why the design needs this chain: one mechanism> |
-
-## How it fits each sponsor
-
-### <Sponsor>: <bounty name>
-
-| Requirement (verbatim) | How we meet it | Proof |
-|---|---|---|
-| <requirement> | <what we built> | <tx, link or clip> |
-
-## Deployed contracts
-
-Full list with deploy and demo transactions: [deployments.md](deployments.md).
-
-| Contract | Address | Verified |
-|---|---|---|
-| <name> | <explorer link> | <yes or no> |
-
-## Architecture
+## How it works
 
 ```mermaid
-flowchart LR
-  user[User] --> app[App]
-  app --> chain[Contracts]
+sequenceDiagram
+    participant B as Borrower (Base Sepolia)
+    participant M as Morpho Blue
+    participant R as QueueReactor (Reactive Lasna)
+    participant C as SpillwayCallback (Base Sepolia)
+    participant V as QueueVault
+    B->>M: repay
+    M-->>R: Repay event for our market
+    R->>R: someone waiting? request a callback
+    R->>C: callback through Reactive's callback proxy
+    C->>V: settle(maxItems)
+    V->>M: withdraw what the queue needs
+    V-->>B: pays waiting lenders, first in first out
+    C->>C: records the loop (origin block, payout time)
 ```
 
-Key decisions and their tradeoffs: [docs/decisions/](docs/decisions/).
+| Contract | Chain | Job |
+|---|---|---|
+| [`QueueVault`](contracts/src/QueueVault.sol) | Base Sepolia | ERC-4626 deposits lent on one Morpho Blue market. `requestRedeem` pays at once or queues. `settle` pays the queue in order and is open to anyone. Keeps every request in storage. |
+| [`InstantPool`](contracts/src/InstantPool.sol) | Base Sepolia | Buys queue places: `cashOut` in one step, or `buyClaim` for a place already held. Fee rises as its cash drains. |
+| [`QueueReactor`](contracts/src/QueueReactor.sol) | Reactive Lasna | Subscribes to Morpho `Repay`, `Supply` and `Liquidate` for this market and to the vault's queue events. Requests a callback only when someone is waiting, and again while more can be paid. |
+| [`SpillwayCallback`](contracts/src/SpillwayCallback.sol) | Base Sepolia | Accepts calls only from Reactive's callback proxy acting for our reactor, settles the queue, records each loop with a millisecond timestamp. |
 
-## Verification
+Decisions worth knowing:
+- **History lives in contract storage.** The app reads requests, sales and loops with view calls, so it needs no indexer.
+- **Latency is timed on chain.** Start: the repayment block's millisecond timestamp. End: the time `SpillwayCallback` stored, read from Base's `BaseTime` predeploy, because `block.timestamp` is whole seconds while Base Sepolia makes a block every 200 ms.
+- **Strict order, no partial payments.** A request too large for the cash that came back waits for more, and nobody behind it skips ahead. That is the fairness promise, and it is also why the pool exists.
 
-| Suite | Result (<date>) |
-|---|---|
-| <contracts: unit, fuzz, invariant> | <n passed> |
-| <app> | <n passed> |
+## Tests
 
-One command runs everything: `<command>`. Not tested: <say what>.
+59 Foundry tests in [`contracts/test`](contracts/test): unit tests, fuzz tests (256 runs), six invariants (64 runs of 80 random calls each, no reverts), a simulated reactive loop including the callback proxy's sender check, and five fork tests against the Morpho Blue contract on Base Sepolia.
+
+```bash
+cd contracts && ./install-deps.sh
+BASE_SEPOLIA_RPC=https://sepolia.base.org forge test
+```
 
 ## Run it yourself
 
+```bash
+cd web && pnpm install
+cp .env.example .env.local      # set NEXT_PUBLIC_CHAIN_ADAPTER=real
+node scripts/create-demo-wallet.mjs   # optional: a throwaway testnet account for the demo console
+pnpm dev
 ```
-<clone, install, env from .env.example, test, start>
-```
 
-## Security and limitations
+Deploying your own copy of the contracts: the four commands at the end of [deployments.md](deployments.md).
 
-Full list: [docs/limits.md](docs/limits.md).
+## Limits
 
-- Not audited. <What was reviewed and how.>
-- <The largest trust assumption, named plainly.>
-- <What is roadmap and not built.>
+- Unaudited, testnet only. Do not send real funds.
+- A bot on the same chain that acts within about a second beats the queue to returning cash.
+- Strict first in, first out: one large request at the front blocks smaller ones behind it until enough is repaid.
+- A queued request is fixed in USDC when made and earns nothing while it waits.
+- The pool values queue places at full value, so its providers carry the risk that a place is never paid.
+- One market, a demo collateral token and a fixed-price oracle. Liquidations were not exercised live.
+- The demo console's rate limit is held in memory on each server instance, which is enough for a testnet demo, not for production.
 
-## Built during the event, and what existed before
+## License
 
-- **Built in the window (<dates>):** <list>.
-- **Pre-existing:** <list, or "nothing">.
-
-## Licence
-
-<licence>
+MIT. See [LICENSE](LICENSE).

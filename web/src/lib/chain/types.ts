@@ -76,7 +76,8 @@ export interface Loop {
   repayTx: string;
   /** Null when the reactive transaction could not be looked up on Lasna. */
   reactiveTx: string | null;
-  payoutTx: string;
+  /** Null for older loops whose payout transaction has not been looked up. */
+  payoutTx: string | null;
 }
 
 export interface LatencyStats {

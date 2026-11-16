@@ -282,6 +282,52 @@ contract ReactiveLoopTest is BaseTest {
         assertEq(vault.pendingAssets(address(pool)), 0);
     }
 
+    function test_loopsAreRecordedOnChain() public {
+        uint256 a = _deposit(ana, 300 * USDC);
+        uint256 b = _deposit(ben, 200 * USDC);
+        _borrowAll();
+        _request(ana, a);
+        _request(ben, b);
+        _repay(500 * USDC);
+
+        bytes memory payload = abi.encodeWithSignature("settle(address,uint256,uint256,uint256)", address(0), uint256(0xfeed), uint256(77), uint256(5));
+        (bool ok,) = proxy.deliver(address(reactor), address(callback), payload);
+        assertTrue(ok);
+        // A second callback with nothing left to pay must not add a record.
+        (ok,) = proxy.deliver(address(reactor), address(callback), payload);
+        assertTrue(ok);
+
+        assertEq(callback.loopCount(), 1);
+        SpillwayCallback.Loop[] memory page = callback.loopsSlice(0, 10);
+        assertEq(page.length, 1);
+        assertEq(page[0].originTxHash, 0xfeed);
+        assertEq(page[0].originBlock, 77);
+        assertEq(page[0].payoutBlock, block.number);
+        assertEq(page[0].settled, 2);
+        assertEq(page[0].assets, 500 * USDC);
+        assertEq(page[0].paidAtMs, block.timestamp * 1000);
+        assertEq(callback.loopsSlice(1, 10).length, 0);
+    }
+
+    function test_gasFundsGoBackOnlyToTheDeployer() public {
+        vm.deal(address(callback), 1 ether);
+        vm.deal(address(reactor), 1 ether);
+        vm.prank(ana);
+        vm.expectRevert(SpillwayCallback.NotDeployer.selector);
+        callback.withdrawGasFunds(1 ether);
+        vm.prank(ana);
+        vm.expectRevert(QueueReactor.NotDeployer.selector);
+        reactor.withdrawGasFunds(1 ether);
+
+        uint256 before = address(this).balance;
+        callback.withdrawGasFunds(1 ether);
+        reactor.withdrawGasFunds(0.4 ether);
+        assertEq(address(this).balance - before, 1.4 ether);
+        assertEq(address(reactor).balance, 0.6 ether);
+    }
+
+    receive() external payable {}
+
     function test_loopClosedRecordsOriginAndCount() public {
         uint256 shares = _deposit(ana, 300 * USDC);
         _borrowAll();

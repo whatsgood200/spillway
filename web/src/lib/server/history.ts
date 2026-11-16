@@ -1,39 +1,36 @@
 import "server-only";
-import { decodeEventLog, type Hex } from "viem";
-import {
-  ADDRESSES,
-  BASE_DEPLOY_BLOCK,
-  BASE_SEPOLIA_RPC,
-  BLOCKSCOUT_API,
-  LASNA_DEPLOY_BLOCK,
-  LASNA_RPC,
-  callbackAbi,
-  poolAbi,
-  reactorAbi,
-  vaultAbi,
-} from "../chain/config";
+import { createPublicClient, decodeEventLog, http, parseAbiItem, type Hex } from "viem";
+import { baseSepolia } from "viem/chains";
+import { ADDRESSES, BASE_SEPOLIA_RPC, LASNA_DEPLOY_BLOCK, LASNA_RPC, callbackAbi, poolAbi, reactorAbi, vaultAbi } from "../chain/config";
 
 /**
- * Event history for the app, read server side so the browser never scans logs.
+ * History for the app, read from the contracts' own storage. There is no indexer and no third-party API:
+ * the vault keeps every request, the pool keeps every sale and the callback contract keeps every loop.
  *
- * Two sources feed one in-memory log store:
- * - The Base Sepolia RPC serves only 200 blocks of logs per call, so it covers the live tail (the last 40 s).
- * - Blockscout serves any range but rate limits, so it is asked rarely, and only for blocks not yet seen.
- * If either source fails, the page keeps showing what is already known.
+ * Two things are not in storage and come from the RPC instead:
+ * - the origin block's millisecond timestamp (needed for latency), one block lookup per loop, cached;
+ * - transaction hashes, found by asking for the logs of the single block each record names, cached.
  * Amounts are decimal strings because JSON has no bigint.
  */
 
-export interface HistoryEvent {
-  kind: "queued" | "settled" | "paid-at-once" | "transferred" | "bought";
-  requestId: number;
-  /** queued: receiver that owns the place. settled: who was paid. bought: the seller. */
-  account: string;
-  assets: string;
-  paid?: string;
-  fee?: string;
-  txHash: string;
-  block: number;
+export interface HistorySale {
+  seller: string;
+  paid: string;
+  fee: string;
   atMs: number;
+  atBlock: number;
+}
+
+export interface HistoryRequest {
+  id: number;
+  owner: string;
+  requester: string;
+  assets: string;
+  queuedAtMs: number;
+  queuedBlock: number;
+  settledAtMs: number | null;
+  settledBlock: number | null;
+  sale: HistorySale | null;
 }
 
 export interface HistoryLoop {
@@ -42,7 +39,8 @@ export interface HistoryLoop {
   originBlock: number;
   originMs: number;
   reactiveTx: string | null;
-  payoutTx: string;
+  /** Looked up for the most recent loops only; older rows link by block. */
+  payoutTx: string | null;
   payoutBlock: number;
   paidAtMs: number;
   latencyMs: number;
@@ -51,103 +49,128 @@ export interface HistoryLoop {
 }
 
 export interface History {
-  events: HistoryEvent[];
+  requests: HistoryRequest[];
   loops: HistoryLoop[];
   fetchedAtMs: number;
 }
 
-interface RawLog {
-  address: string;
-  blockNumber: string;
-  data: Hex;
-  topics: (Hex | null)[];
-  transactionHash: string;
-  logIndex: string;
+export interface ClaimDetail {
+  request: HistoryRequest | null;
+  queuedTx: string | null;
+  soldTx: string | null;
+  settledTx: string | null;
+  loop: HistoryLoop | null;
 }
 
-const RESPONSE_CACHE_MS = 3_000;
-const BLOCKSCOUT_EVERY_MS = 25_000;
-const BLOCKSCOUT_BACKOFF_MS = 60_000;
-const LASNA_EVERY_MS = 6_000;
-const TAIL_BLOCKS = 190;
-const WATCHED = [ADDRESSES.vault, ADDRESSES.pool, ADDRESSES.callback] as const;
+const RESPONSE_CACHE_MS = 2_500;
+const LASNA_EVERY_MS = 5_000;
+const PAGE = 100n;
+const RECENT_LOOPS_WITH_TX = 25;
 
-const store = new Map<string, RawLog>();
+const client = createPublicClient({
+  chain: baseSepolia,
+  transport: http(BASE_SEPOLIA_RPC, { batch: { batchSize: 25, wait: 20 }, timeout: 20_000 }),
+  batch: { multicall: true },
+});
+
+const queuedEvent = parseAbiItem("event RedeemQueued(uint256 indexed requestId, address indexed owner, uint256 assets)");
+const settledEvent = parseAbiItem("event RedeemSettled(uint256 indexed requestId, address indexed owner, uint256 assets)");
+const boughtEvent = parseAbiItem("event ClaimBought(uint256 indexed requestId, address indexed seller, uint256 assets, uint256 paid, uint256 fee)");
+const loopClosedEvent = parseAbiItem("event LoopClosed(uint256 indexed originTxHash, uint256 originBlock, uint256 settled, uint256 paidAtMs, bool more)");
+
+/** Records that can no longer change are kept; only open requests and new loops are re-read. */
+const finalRequests = new Map<number, HistoryRequest>();
+const loopStore: HistoryLoop[] = [];
 const blockMsCache = new Map<number, number>();
+const txCache = new Map<string, string | null>();
 const reactiveByOrigin = new Map<string, string>();
-let backfilledTo = BASE_DEPLOY_BLOCK;
-let backfilledOnce = false;
-let blockscoutNotBefore = 0;
 let lasnaNotBefore = 0;
 let lasnaScannedTo = LASNA_DEPLOY_BLOCK;
 let cached: { at: number; value: History } | null = null;
 let inFlight: Promise<History> | null = null;
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function fetchJson(url: string, init?: RequestInit): Promise<unknown> {
-  const response = await fetch(url, { ...init, cache: "no-store", signal: AbortSignal.timeout(15_000) });
-  if (!response.ok) throw new Error(`${new URL(url).host} answered ${response.status}`);
-  return response.json();
+/** Millisecond timestamp of a Base Sepolia block. Blocks are 200 ms apart; `timestamp` alone is whole seconds. */
+async function blockMs(block: number): Promise<number> {
+  const known = blockMsCache.get(block);
+  if (known !== undefined) return known;
+  const result = (await client.request({ method: "eth_getBlockByNumber", params: [`0x${block.toString(16)}`, false] })) as unknown as {
+    timestamp: Hex;
+    timestampMs?: Hex;
+  } | null;
+  if (!result) throw new Error(`Base Sepolia block ${block} not found`);
+  const ms = result.timestampMs ? Number(BigInt(result.timestampMs)) : Number(BigInt(result.timestamp)) * 1000;
+  blockMsCache.set(block, ms);
+  return ms;
 }
 
-async function rpc(url: string, method: string, params: unknown[]): Promise<unknown> {
-  const body = (await fetchJson(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
-  })) as { result?: unknown; error?: { message: string } };
-  if (body.error) throw new Error(body.error.message);
-  return body.result;
-}
-
-function remember(logs: RawLog[]) {
-  for (const log of logs) store.set(`${log.transactionHash}:${Number(BigInt(log.logIndex))}`, log);
-}
-
-/** The last 40 seconds, straight from the chain. This is what makes a fresh payout appear at once. */
-async function refreshTail() {
-  const latest = Number(BigInt((await rpc(BASE_SEPOLIA_RPC, "eth_blockNumber", [])) as string));
-  const logs = (await rpc(BASE_SEPOLIA_RPC, "eth_getLogs", [
-    { address: WATCHED, fromBlock: `0x${(latest - TAIL_BLOCKS).toString(16)}`, toBlock: `0x${latest.toString(16)}` },
-  ])) as RawLog[];
-  remember(logs);
-}
-
-/** Everything older, from Blockscout, asked for only from the last block already covered. */
-async function refreshBackfill() {
-  if (Date.now() < blockscoutNotBefore) return;
-  blockscoutNotBefore = Date.now() + BLOCKSCOUT_EVERY_MS;
+/** The transaction that emitted one specific event, found by reading the logs of the single block it is in. */
+async function txOf(key: string, lookup: () => Promise<readonly { transactionHash: Hex | null }[]>): Promise<string | null> {
+  if (txCache.has(key)) return txCache.get(key) ?? null;
   try {
-    let highest = backfilledTo;
-    for (const address of WATCHED) {
-      let fromBlock = backfilledTo;
-      // Blockscout returns at most 1,000 logs per call; page forward by block until a short page.
-      for (let page = 0; page < 10; page++) {
-        const body = (await fetchJson(`${BLOCKSCOUT_API}?module=logs&action=getLogs&fromBlock=${fromBlock}&toBlock=latest&address=${address}`)) as {
-          message?: string;
-          result?: RawLog[] | null;
-        };
-        // An empty range is reported as "No logs found". Anything else without a list (a rate limit notice,
-        // for example) is a failure and must not be mistaken for "nothing happened".
-        if (!Array.isArray(body.result) && !/no (logs|records) found/i.test(body.message ?? "")) {
-          throw new Error(`Blockscout: ${body.message ?? "unexpected response"}`);
-        }
-        const logs = Array.isArray(body.result) ? body.result : [];
-        remember(logs);
-        for (const log of logs) highest = Math.max(highest, Number(BigInt(log.blockNumber)));
-        if (logs.length < 1000) break;
-        fromBlock = Number(BigInt(logs[logs.length - 1].blockNumber));
-      }
-      await sleep(350);
-    }
-    backfilledTo = highest;
-    backfilledOnce = true;
+    const logs = await lookup();
+    const hash = logs[0]?.transactionHash ?? null;
+    if (hash) txCache.set(key, hash); // A miss is not cached: the node may simply be a block behind.
+    return hash;
   } catch (cause) {
-    blockscoutNotBefore = Date.now() + BLOCKSCOUT_BACKOFF_MS;
-    if (!backfilledOnce) throw cause;
-    console.warn("history backfill skipped", cause instanceof Error ? cause.message : cause);
+    console.warn("transaction lookup skipped", key, cause instanceof Error ? cause.message : cause);
+    return null;
   }
+}
+
+const queuedTx = (request: HistoryRequest) =>
+  txOf(`queued:${request.id}`, () =>
+    client.getLogs({ address: ADDRESSES.vault, event: queuedEvent, args: { requestId: BigInt(request.id) }, fromBlock: BigInt(request.queuedBlock), toBlock: BigInt(request.queuedBlock) }),
+  );
+
+const settledTx = (request: HistoryRequest) =>
+  request.settledBlock === null
+    ? Promise.resolve(null)
+    : txOf(`settled:${request.id}`, () =>
+        client.getLogs({ address: ADDRESSES.vault, event: settledEvent, args: { requestId: BigInt(request.id) }, fromBlock: BigInt(request.settledBlock!), toBlock: BigInt(request.settledBlock!) }),
+      );
+
+const soldTx = (request: HistoryRequest) =>
+  request.sale === null
+    ? Promise.resolve(null)
+    : txOf(`sold:${request.id}`, () =>
+        client.getLogs({ address: ADDRESSES.pool, event: boughtEvent, args: { requestId: BigInt(request.id) }, fromBlock: BigInt(request.sale!.atBlock), toBlock: BigInt(request.sale!.atBlock) }),
+      );
+
+const payoutTx = (loop: HistoryLoop) =>
+  txOf(`loop:${loop.id}`, () =>
+    client.getLogs({ address: ADDRESSES.callback, event: loopClosedEvent, args: { originTxHash: BigInt(loop.originTx) }, fromBlock: BigInt(loop.payoutBlock), toBlock: BigInt(loop.payoutBlock) }),
+  );
+
+async function refreshRequests(): Promise<HistoryRequest[]> {
+  const next = Number(await client.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "nextRequestId" }));
+  let firstOpen = 1;
+  while (finalRequests.has(firstOpen)) firstOpen++;
+
+  const open: HistoryRequest[] = [];
+  for (let from = firstOpen; from < next; from += Number(PAGE)) {
+    const page = await client.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "requestsSlice", args: [BigInt(from), PAGE] });
+    const sales = await Promise.all(
+      page.map((_, index) => client.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "sales", args: [BigInt(from + index)] })),
+    );
+    page.forEach((raw, index) => {
+      const [seller, , paid, fee, atMs, atBlock] = sales[index];
+      const request: HistoryRequest = {
+        id: from + index,
+        owner: raw.owner,
+        requester: raw.requester,
+        assets: raw.assets.toString(),
+        queuedAtMs: Number(raw.queuedAtMs),
+        queuedBlock: Number(raw.queuedBlock),
+        settledAtMs: raw.settledAtMs === 0n ? null : Number(raw.settledAtMs),
+        settledBlock: raw.settledBlock === 0n ? null : Number(raw.settledBlock),
+        sale: atBlock === 0n ? null : { seller, paid: paid.toString(), fee: fee.toString(), atMs: Number(atMs), atBlock: Number(atBlock) },
+      };
+      // Once paid, a request and its sale record never change again.
+      if (request.settledAtMs !== null) finalRequests.set(request.id, request);
+      else open.push(request);
+    });
+  }
+  return [...finalRequests.values(), ...open].sort((a, b) => a.id - b.id);
 }
 
 /** Reactive transactions on Lasna, matched to loops by the origin transaction hash they carry. */
@@ -155,10 +178,20 @@ async function refreshReactive() {
   if (Date.now() < lasnaNotBefore) return;
   lasnaNotBefore = Date.now() + LASNA_EVERY_MS;
   try {
-    const logs = (await rpc(LASNA_RPC, "eth_getLogs", [
-      { address: ADDRESSES.reactor, fromBlock: `0x${lasnaScannedTo.toString(16)}`, toBlock: "latest" },
-    ])) as RawLog[];
-    for (const log of logs) {
+    const response = await fetch(LASNA_RPC, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(12_000),
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "eth_getLogs",
+        params: [{ address: ADDRESSES.reactor, fromBlock: `0x${lasnaScannedTo.toString(16)}`, toBlock: "latest" }],
+      }),
+    });
+    const body = (await response.json()) as { result?: { data: Hex; topics: Hex[]; transactionHash: string; blockNumber: Hex }[] };
+    for (const log of body.result ?? []) {
       try {
         const decoded = decodeEventLog({ abi: reactorAbi, data: log.data, topics: log.topics as [Hex, ...Hex[]] });
         const origin = `0x${decoded.args.originTxHash.toString(16).padStart(64, "0")}`;
@@ -175,106 +208,44 @@ async function refreshReactive() {
   }
 }
 
-/** Millisecond timestamp of a Base Sepolia block. Blocks are 200 ms apart; `timestamp` alone is whole seconds. */
-async function blockMs(block: number): Promise<number> {
-  const known = blockMsCache.get(block);
-  if (known !== undefined) return known;
-  const result = (await rpc(BASE_SEPOLIA_RPC, "eth_getBlockByNumber", [`0x${block.toString(16)}`, false])) as {
-    timestamp: string;
-    timestampMs?: string;
-  } | null;
-  if (!result) throw new Error(`Base Sepolia block ${block} not found`);
-  const ms = result.timestampMs ? Number(BigInt(result.timestampMs)) : Number(BigInt(result.timestamp)) * 1000;
-  blockMsCache.set(block, ms);
-  return ms;
-}
-
-function decode<TAbi extends typeof vaultAbi | typeof poolAbi | typeof callbackAbi>(abi: TAbi, log: RawLog) {
-  try {
-    return decodeEventLog({ abi: abi as typeof vaultAbi, data: log.data, topics: log.topics.filter(Boolean) as [Hex, ...Hex[]] });
-  } catch {
-    return null; // ERC-20 Transfer and other events the app does not show.
-  }
-}
-
-const same = (a: string, b: string) => a.toLowerCase() === b.toLowerCase();
-
-async function build(): Promise<History> {
-  const logs = [...store.values()].sort(
-    (a, b) => Number(BigInt(a.blockNumber)) - Number(BigInt(b.blockNumber)) || Number(BigInt(a.logIndex)) - Number(BigInt(b.logIndex)),
-  );
-  const events: HistoryEvent[] = [];
-  const settledByTx = new Map<string, bigint>();
-  const loops: HistoryLoop[] = [];
-
-  for (const log of logs) {
-    const block = Number(BigInt(log.blockNumber));
-
-    if (same(log.address, ADDRESSES.vault)) {
-      const decoded = decode(vaultAbi, log);
-      if (!decoded) continue;
-      const base = { txHash: log.transactionHash, block, atMs: await blockMs(block) };
-      if (decoded.eventName === "RedeemQueued") {
-        events.push({ kind: "queued", requestId: Number(decoded.args.requestId), account: decoded.args.owner, assets: decoded.args.assets.toString(), ...base });
-      } else if (decoded.eventName === "RedeemSettled") {
-        events.push({ kind: "settled", requestId: Number(decoded.args.requestId), account: decoded.args.owner, assets: decoded.args.assets.toString(), ...base });
-        settledByTx.set(log.transactionHash, (settledByTx.get(log.transactionHash) ?? 0n) + decoded.args.assets);
-      } else if (decoded.eventName === "RedeemPaidAtOnce") {
-        events.push({ kind: "paid-at-once", requestId: 0, account: decoded.args.receiver, assets: decoded.args.assets.toString(), ...base });
-      } else if (decoded.eventName === "ClaimTransferred") {
-        events.push({ kind: "transferred", requestId: Number(decoded.args.requestId), account: decoded.args.to, assets: decoded.args.assets.toString(), ...base });
-      }
-    } else if (same(log.address, ADDRESSES.pool)) {
-      const decoded = decode(poolAbi, log) as { eventName: string; args: { requestId: bigint; seller: string; assets: bigint; paid: bigint; fee: bigint } } | null;
-      if (!decoded || decoded.eventName !== "ClaimBought") continue;
-      events.push({
-        kind: "bought",
-        requestId: Number(decoded.args.requestId),
-        account: decoded.args.seller,
-        assets: decoded.args.assets.toString(),
-        paid: decoded.args.paid.toString(),
-        fee: decoded.args.fee.toString(),
-        txHash: log.transactionHash,
-        block,
-        atMs: await blockMs(block),
-      });
-    } else if (same(log.address, ADDRESSES.callback)) {
-      const decoded = decode(callbackAbi, log) as { eventName: string; args: { originTxHash: bigint; originBlock: bigint; settled: bigint; paidAtMs: bigint } } | null;
-      if (!decoded || decoded.eventName !== "LoopClosed") continue;
-      const settled = Number(decoded.args.settled);
-      if (settled === 0) continue; // A callback that found nothing to pay is not a loop.
-      const originBlock = Number(decoded.args.originBlock);
-      const originMs = await blockMs(originBlock);
-      const paidAtMs = Number(decoded.args.paidAtMs);
-      const originTx = `0x${decoded.args.originTxHash.toString(16).padStart(64, "0")}`;
-      loops.push({
-        id: loops.length + 1,
-        originTx,
-        originBlock,
-        originMs,
-        reactiveTx: reactiveByOrigin.get(originTx) ?? null,
-        payoutTx: log.transactionHash,
-        payoutBlock: block,
+async function refreshLoops(): Promise<HistoryLoop[]> {
+  const count = Number(await client.readContract({ address: ADDRESSES.callback, abi: callbackAbi, functionName: "loopCount" }));
+  while (loopStore.length < count) {
+    const offset = loopStore.length;
+    const page = await client.readContract({ address: ADDRESSES.callback, abi: callbackAbi, functionName: "loopsSlice", args: [BigInt(offset), PAGE] });
+    if (page.length === 0) break;
+    const origins = await Promise.all(page.map((raw) => blockMs(Number(raw.originBlock))));
+    page.forEach((raw, index) => {
+      const paidAtMs = Number(raw.paidAtMs);
+      loopStore.push({
+        id: offset + index + 1,
+        originTx: `0x${raw.originTxHash.toString(16).padStart(64, "0")}`,
+        originBlock: Number(raw.originBlock),
+        originMs: origins[index],
+        reactiveTx: null,
+        payoutTx: null,
+        payoutBlock: Number(raw.payoutBlock),
         paidAtMs,
-        latencyMs: paidAtMs - originMs,
-        settled,
-        assets: "0",
+        latencyMs: paidAtMs - origins[index],
+        settled: raw.settled,
+        assets: raw.assets.toString(),
       });
-    }
+    });
   }
-
-  // Vault logs sort before the callback's LoopClosed in the same transaction, so totals are complete by now.
-  for (const loop of loops) loop.assets = (settledByTx.get(loop.payoutTx) ?? 0n).toString();
-  return { events, loops, fetchedAtMs: Date.now() };
+  const recent = loopStore.slice(-RECENT_LOOPS_WITH_TX);
+  await Promise.all(
+    recent.map(async (loop) => {
+      if (!loop.payoutTx) loop.payoutTx = await payoutTx(loop);
+    }),
+  );
+  for (const loop of loopStore) loop.reactiveTx ??= reactiveByOrigin.get(loop.originTx) ?? null;
+  return loopStore.map((loop) => ({ ...loop }));
 }
 
 async function load(): Promise<History> {
-  const tail = refreshTail().catch((cause: unknown) => {
-    // Without any history yet there is nothing to fall back on, so let the backfill decide whether to fail.
-    console.warn("history tail skipped", cause instanceof Error ? cause.message : cause);
-  });
-  await Promise.all([tail, refreshBackfill(), refreshReactive()]);
-  return build();
+  const [requests] = await Promise.all([refreshRequests(), refreshReactive()]);
+  const loops = await refreshLoops();
+  return { requests, loops, fetchedAtMs: Date.now() };
 }
 
 export async function getHistory(): Promise<History> {
@@ -286,7 +257,7 @@ export async function getHistory(): Promise<History> {
         return value;
       })
       .catch((cause) => {
-        // Serve the last good answer through an outage rather than blanking the page.
+        // Serve the last good answer through an RPC hiccup rather than blanking the page.
         if (cached) return cached.value;
         throw cause;
       })
@@ -295,4 +266,15 @@ export async function getHistory(): Promise<History> {
       });
   }
   return inFlight;
+}
+
+/** Everything the claim page shows for one request, including the transactions behind each step. */
+export async function getClaimDetail(id: number): Promise<ClaimDetail> {
+  const history = await getHistory();
+  const request = history.requests.find((candidate) => candidate.id === id) ?? null;
+  if (!request) return { request: null, queuedTx: null, soldTx: null, settledTx: null, loop: null };
+  const loop = request.settledBlock === null ? null : (history.loops.find((candidate) => candidate.payoutBlock === request.settledBlock) ?? null);
+  const [queued, sold, settled] = await Promise.all([queuedTx(request), soldTx(request), settledTx(request)]);
+  if (loop && !loop.payoutTx) loop.payoutTx = settled;
+  return { request, queuedTx: queued, soldTx: sold, settledTx: settled, loop };
 }

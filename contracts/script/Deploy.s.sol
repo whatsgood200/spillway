@@ -77,7 +77,7 @@ contract DeployReactor is Script {
         bytes32 marketId = vm.envBytes32("MARKET_ID");
         uint256 funding = vm.envOr("REACTOR_FUNDING_WEI", uint256(2 ether));
         uint64 gasLimit = uint64(vm.envOr("CALLBACK_GAS_LIMIT", uint256(1_000_000)));
-        uint256 maxItems = vm.envOr("MAX_ITEMS", uint256(5));
+        uint256 maxItems = vm.envOr("MAX_ITEMS", uint256(4));
 
         vm.startBroadcast();
         QueueReactor reactor = new QueueReactor{value: funding}(BASE_SEPOLIA, MORPHO, marketId, vault, gasLimit, maxItems);

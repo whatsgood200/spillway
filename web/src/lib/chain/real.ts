@@ -12,7 +12,7 @@ import {
   type Hex,
 } from "viem";
 import { baseSepolia } from "viem/chains";
-import type { History, HistoryEvent, HistoryLoop } from "../server/history";
+import type { ClaimDetail, History, HistoryRequest } from "../server/history";
 import { ADDRESSES, BASE_SEPOLIA_ID, BASE_SEPOLIA_RPC, erc20Abi, poolAbi, vaultAbi } from "./config";
 import {
   ChainError,
@@ -174,34 +174,36 @@ export function createRealAdapter(): ChainAdapter {
     return { ids, owners, amounts };
   }
 
-  function buildClaim(requestId: number, events: HistoryEvent[], loops: HistoryLoop[], queue: { ids: readonly bigint[]; amounts: readonly bigint[] }): Claim | null {
-    const mine = events.filter((event) => event.requestId === requestId && event.kind !== "paid-at-once");
-    const queued = mine.find((event) => event.kind === "queued");
-    if (!queued) return null;
-    const bought = mine.find((event) => event.kind === "bought");
-    const settled = mine.find((event) => event.kind === "settled");
-    const loop = settled ? loops.find((candidate) => candidate.payoutTx === settled.txHash) : undefined;
-
-    const timeline: ClaimEvent[] = [{ kind: "queued", atMs: queued.atMs, txHash: queued.txHash, network: "base-sepolia" }];
-    if (bought) timeline.push({ kind: "sold", atMs: bought.atMs, txHash: bought.txHash, network: "base-sepolia" });
-    if (settled) {
+  /** A claim from the contract's stored record. Transaction hashes come with the detail lookup, when asked for. */
+  function buildClaim(
+    request: HistoryRequest,
+    queue: { ids: readonly bigint[]; amounts: readonly bigint[] },
+    detail?: ClaimDetail,
+  ): Claim {
+    const sale = request.sale;
+    const loop = detail?.loop ?? null;
+    const timeline: ClaimEvent[] = [{ kind: "queued", atMs: request.queuedAtMs, txHash: detail?.queuedTx ?? "", network: "base-sepolia" }];
+    if (sale) timeline.push({ kind: "sold", atMs: sale.atMs, txHash: detail?.soldTx ?? "", network: "base-sepolia" });
+    if (request.settledAtMs !== null) {
       if (loop) {
         timeline.push({ kind: "liquidity", atMs: loop.originMs, txHash: loop.originTx, network: "base-sepolia" });
         if (loop.reactiveTx) timeline.push({ kind: "reactive", atMs: null, txHash: loop.reactiveTx, network: "lasna" });
       }
-      timeline.push({ kind: "paid", atMs: loop?.paidAtMs ?? settled.atMs, txHash: settled.txHash, network: "base-sepolia" });
+      timeline.push({ kind: "paid", atMs: request.settledAtMs, txHash: detail?.settledTx ?? "", network: "base-sepolia" });
     }
 
-    const index = queue.ids.findIndex((id) => Number(id) === requestId);
-    const assets = BigInt(queued.assets);
+    const index = queue.ids.findIndex((id) => Number(id) === request.id);
+    const assets = BigInt(request.assets);
+    const settled = request.settledAtMs !== null;
     return {
-      requestId,
+      requestId: request.id,
       assets,
-      status: bought ? "sold" : settled ? "paid" : "queued",
-      position: index >= 0 && !bought ? index + 1 : null,
+      status: sale ? "sold" : settled ? "paid" : "queued",
+      position: index >= 0 && !sale ? index + 1 : null,
       aheadAssets: index >= 0 ? queue.amounts.slice(0, index).reduce((sum, amount) => sum + amount, 0n) : 0n,
-      received: bought ? BigInt(bought.paid ?? "0") : settled ? assets : null,
-      fee: bought ? BigInt(bought.fee ?? "0") : settled ? 0n : null,
+      received: sale ? BigInt(sale.paid) : settled ? assets : null,
+      fee: sale ? BigInt(sale.fee) : settled ? 0n : null,
+      // Paid by Reactive when a loop record matches; paid by a direct settle call otherwise.
       latencyMs: loop?.latencyMs ?? null,
       events: timeline,
     };
@@ -313,12 +315,12 @@ export function createRealAdapter(): ChainAdapter {
       const [queue, me, past] = await Promise.all([readQueue(), account(), getHistory().catch(() => null)]);
       return queue.ids.map((id, index) => {
         const requestId = Number(id);
-        const queuedEvent = past?.events.find((event) => event.kind === "queued" && event.requestId === requestId);
+        const record = past?.requests.find((request) => request.id === requestId);
         return {
           requestId,
           position: index + 1,
           assets: queue.amounts[index],
-          queuedAtMs: queuedEvent?.atMs ?? Date.now(),
+          queuedAtMs: record?.queuedAtMs ?? Date.now(),
           heldByPool: same(queue.owners[index], ADDRESSES.pool),
           mine: me !== null && same(queue.owners[index], me),
         };
@@ -326,13 +328,13 @@ export function createRealAdapter(): ChainAdapter {
     },
 
     async getPoolState(): Promise<PoolState> {
-      const [totalAssets, idle, claimsValue, feeBpsNow, queue, past] = await Promise.all([
+      const [totalAssets, idle, claimsValue, feeBpsNow, queue, feesEarned] = await Promise.all([
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "totalAssets" }),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "idle" }),
         publicClient.readContract({ address: ADDRESSES.vault, abi: vaultAbi, functionName: "pendingAssets", args: [ADDRESSES.pool] }),
         publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "feeBps", args: [0n] }),
         readQueue(),
-        getHistory().catch(() => null),
+        publicClient.readContract({ address: ADDRESSES.pool, abi: poolAbi, functionName: "feesCharged" }),
       ]);
       return {
         totalAssets,
@@ -341,7 +343,7 @@ export function createRealAdapter(): ChainAdapter {
         claimsValue,
         depthBps: totalAssets === 0n ? 0 : Number((idle * 10_000n) / totalAssets),
         feeBpsNow: Number(feeBpsNow),
-        feesEarned: past ? past.events.filter((event) => event.kind === "bought").reduce((sum, event) => sum + BigInt(event.fee ?? "0"), 0n) : 0n,
+        feesEarned,
       };
     },
 
@@ -365,22 +367,21 @@ export function createRealAdapter(): ChainAdapter {
     },
 
     async getClaim(requestId) {
-      const [past, queue] = await Promise.all([getHistory(), readQueue()]);
-      return buildClaim(requestId, past.events, past.loops, queue);
+      const [response, queue] = await Promise.all([fetch(`/api/claim?id=${requestId}`), readQueue()]);
+      const body = (await response.json()) as { data: ClaimDetail | null; error: string | null };
+      if (!response.ok || !body.data) throw new ChainError("unavailable", body.error ?? "Could not read this request.");
+      return body.data.request ? buildClaim(body.data.request, queue, body.data) : null;
     },
 
     async getMyClaims() {
       const me = await account();
       if (!me) return [];
       const [past, queue] = await Promise.all([getHistory(), readQueue()]);
-      const ids = new Set<number>();
-      for (const event of past.events) {
-        if ((event.kind === "queued" || event.kind === "bought") && same(event.account, me)) ids.add(event.requestId);
-      }
-      return [...ids]
-        .sort((a, b) => b - a)
-        .map((id) => buildClaim(id, past.events, past.loops, queue))
-        .filter((claim): claim is Claim => claim !== null);
+      // Yours if you asked for it, it pays you, or you sold it to the pool.
+      return past.requests
+        .filter((request) => same(request.requester, me) || same(request.owner, me) || (request.sale !== null && same(request.sale.seller, me)))
+        .sort((a, b) => b.id - a.id)
+        .map((request) => buildClaim(request, queue));
     },
 
     async getLoops(limit): Promise<Loop[]> {

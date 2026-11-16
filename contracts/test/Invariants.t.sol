@@ -142,8 +142,9 @@ contract InvariantsTest is Test {
     function invariant_queuedAssetsMatchesTheQueue() public view {
         uint256 sum;
         for (uint256 id = vault.head(); id < vault.nextRequestId(); id++) {
-            (address owner, uint256 assets) = vault.requests(id);
+            (address owner,, uint256 assets,,, uint64 settledAtMs,) = vault.requests(id);
             assertTrue(owner != address(0), "no holes in the queue");
+            assertEq(settledAtMs, 0, "nothing in the queue is marked paid");
             sum += assets;
         }
         assertEq(sum, vault.queuedAssets());
@@ -166,6 +167,17 @@ contract InvariantsTest is Test {
             sum += usdc.balanceOf(handler.actors(i));
         }
         assertEq(sum, handler.minted());
+    }
+
+    /// Everything in front of the queue is marked paid, exactly once, and the record of it is kept.
+    function invariant_paidRequestsKeepTheirRecord() public view {
+        for (uint256 id = 1; id < vault.head(); id++) {
+            (address owner,, uint256 assets, uint64 queuedAtMs,, uint64 settledAtMs,) = vault.requests(id);
+            assertTrue(owner != address(0));
+            assertGt(assets, 0);
+            assertGe(settledAtMs, queuedAtMs);
+            assertGt(settledAtMs, 0);
+        }
     }
 
     /// The vault's Morpho position always covers what it owes the queue.

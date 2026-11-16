@@ -118,6 +118,12 @@ contract QueueReactor is AbstractReactive {
         _coverDebt();
     }
 
+    /// @notice Returns unused gas money to the deployer. This contract never holds user funds.
+    function withdrawGasFunds(uint256 amount) external {
+        if (msg.sender != DEPLOYER) revert NotDeployer();
+        _pay(payable(DEPLOYER), amount);
+    }
+
     /// @dev LoopClosed data is (originBlock, settled, paidAtMs, more).
     function _moreFlag(bytes calldata data_) private pure returns (bool more) {
         if (data_.length < 128) return false;

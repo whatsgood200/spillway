@@ -7,6 +7,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
 import {IMorpho, MarketParams, Market, Id} from "morpho-blue/interfaces/IMorpho.sol";
 import {MarketParamsLib} from "morpho-blue/libraries/MarketParamsLib.sol";
 import {SharesMathLib} from "morpho-blue/libraries/SharesMathLib.sol";
+import {MsClock} from "./libraries/MsClock.sol";
 
 /// @title QueueVault
 /// @notice A USDC vault that lends on one Morpho Blue market. When the market cannot release cash, withdrawals
@@ -20,9 +21,16 @@ contract QueueVault is ERC4626, ReentrancyGuard {
     using MarketParamsLib for MarketParams;
     using SharesMathLib for uint256;
 
+    /// @dev Requests are kept after they are paid, so the full history can be read from the contract itself
+    /// with no indexer. `settledAtMs` is zero while the request is still waiting.
     struct Request {
         address owner;
+        address requester;
         uint256 assets;
+        uint64 queuedAtMs;
+        uint64 queuedBlock;
+        uint64 settledAtMs;
+        uint64 settledBlock;
     }
 
     /// @notice Smallest request the queue accepts, so the queue cannot be filled with dust.
@@ -59,6 +67,7 @@ contract QueueVault is ERC4626, ReentrancyGuard {
     error RequestTooSmall(uint256 assets, uint256 minimum);
     error NotClaimOwnerOrApproved();
     error UnknownRequest();
+    error AlreadySettled();
     error ZeroAddress();
     error NothingUnpaid();
 
@@ -104,6 +113,17 @@ contract QueueVault is ERC4626, ReentrancyGuard {
 
     function queueLength() public view returns (uint256) {
         return nextRequestId - head;
+    }
+
+    /// @notice A page of every request ever made, waiting or paid, starting at `firstId`.
+    function requestsSlice(uint256 firstId, uint256 limit) external view returns (Request[] memory page) {
+        if (firstId == 0) firstId = 1;
+        uint256 available = firstId >= nextRequestId ? 0 : nextRequestId - firstId;
+        uint256 count = available < limit ? available : limit;
+        page = new Request[](count);
+        for (uint256 i; i < count; i++) {
+            page[i] = requests[firstId + i];
+        }
     }
 
     /// @notice A page of the queue, front first.
@@ -188,7 +208,15 @@ contract QueueVault is ERC4626, ReentrancyGuard {
         }
 
         requestId = nextRequestId++;
-        requests[requestId] = Request({owner: receiver, assets: assets});
+        requests[requestId] = Request({
+            owner: receiver,
+            requester: msg.sender,
+            assets: assets,
+            queuedAtMs: uint64(MsClock.nowMs()),
+            queuedBlock: uint64(block.number),
+            settledAtMs: 0,
+            settledBlock: 0
+        });
         queuedAssets += assets;
         pendingAssets[receiver] += assets;
         emit RedeemQueued(requestId, receiver, assets);
@@ -208,7 +236,8 @@ contract QueueVault is ERC4626, ReentrancyGuard {
             if (request.assets > withdrawable()) break;
             if (settled == maxItems) return (settled, true);
 
-            delete requests[head];
+            requests[head].settledAtMs = uint64(MsClock.nowMs());
+            requests[head].settledBlock = uint64(block.number);
             delete claimApproval[head];
             queuedAssets -= request.assets;
             pendingAssets[request.owner] -= request.assets;
@@ -251,6 +280,7 @@ contract QueueVault is ERC4626, ReentrancyGuard {
         Request storage request = requests[requestId];
         address from = request.owner;
         if (from == address(0)) revert UnknownRequest();
+        if (requestId < head) revert AlreadySettled();
         if (msg.sender != from && msg.sender != claimApproval[requestId]) revert NotClaimOwnerOrApproved();
 
         delete claimApproval[requestId];

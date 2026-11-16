@@ -13,6 +13,22 @@ import {MsClock} from "./libraries/MsClock.sol";
 /// over the vault: `QueueVault.settle` is open to anyone.
 contract SpillwayCallback is AbstractCallback {
     QueueVault public immutable VAULT;
+    address public immutable DEPLOYER;
+
+    /// @dev One record per callback that paid someone. The origin block's own timestamp is not available on
+    /// chain here; latency is `paidAtMs` minus the origin block's millisecond timestamp, read from the RPC.
+    struct Loop {
+        uint256 originTxHash;
+        uint64 originBlock;
+        uint64 payoutBlock;
+        uint64 paidAtMs;
+        uint32 settled;
+        uint256 assets;
+    }
+
+    Loop[] public loops;
+
+    error NotDeployer();
 
     /// @param originTxHash The transaction on the origin chain whose event started this loop.
     /// @param originBlock The origin block number, used with its millisecond timestamp to measure latency.
@@ -23,6 +39,21 @@ contract SpillwayCallback is AbstractCallback {
 
     constructor(IPayable callbackProxy_, address reactive_, QueueVault vault_) payable AbstractCallback(callbackProxy_, reactive_) {
         VAULT = vault_;
+        DEPLOYER = msg.sender;
+    }
+
+    function loopCount() external view returns (uint256) {
+        return loops.length;
+    }
+
+    /// @notice A page of the recorded loops, oldest first.
+    function loopsSlice(uint256 offset, uint256 limit) external view returns (Loop[] memory page) {
+        uint256 available = offset >= loops.length ? 0 : loops.length - offset;
+        uint256 count = available < limit ? available : limit;
+        page = new Loop[](count);
+        for (uint256 i; i < count; i++) {
+            page[i] = loops[offset + i];
+        }
     }
 
     /// @param reactive_ Overwritten by the callback proxy with the reactive contract that requested the callback.
@@ -31,12 +62,32 @@ contract SpillwayCallback is AbstractCallback {
         onlyServiceProvider
         onlyCallbackSender(reactive_)
     {
+        uint256 owedBefore = VAULT.queuedAssets();
         (uint256 settled, bool more) = VAULT.settle(maxItems);
-        emit LoopClosed(originTxHash, originBlock, settled, MsClock.nowMs(), more);
+        uint256 paidAtMs = MsClock.nowMs();
+        if (settled > 0) {
+            loops.push(
+                Loop({
+                    originTxHash: originTxHash,
+                    originBlock: uint64(originBlock),
+                    payoutBlock: uint64(block.number),
+                    paidAtMs: uint64(paidAtMs),
+                    settled: uint32(settled),
+                    assets: owedBefore - VAULT.queuedAssets()
+                })
+            );
+        }
+        emit LoopClosed(originTxHash, originBlock, settled, paidAtMs, more);
     }
 
     /// @notice Settles any debt to the callback proxy from this contract's balance. Anyone can fund and call it.
     function coverDebt() external {
         _coverDebt();
+    }
+
+    /// @notice Returns unused callback gas money to the deployer. This contract never holds user funds.
+    function withdrawGasFunds(uint256 amount) external {
+        if (msg.sender != DEPLOYER) revert NotDeployer();
+        _pay(payable(DEPLOYER), amount);
     }
 }

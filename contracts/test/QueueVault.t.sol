@@ -177,6 +177,44 @@ contract QueueVaultTest is BaseTest {
         assertEq(usdc.balanceOf(cy), 500 * USDC, "the new owner is paid");
     }
 
+    function test_historyIsKeptOnChainAfterPayment() public {
+        uint256 a = _deposit(ana, 300 * USDC);
+        uint256 b = _deposit(ben, 200 * USDC);
+        _borrowAll();
+        vm.warp(1_000);
+        _request(ana, a);
+        _request(ben, b);
+        vm.warp(1_060);
+        vm.roll(block.number + 5);
+        _repay(300 * USDC);
+        vault.settle(5);
+
+        QueueVault.Request[] memory page = vault.requestsSlice(1, 10);
+        assertEq(page.length, 2);
+        assertEq(page[0].owner, ana);
+        assertEq(page[0].requester, ana);
+        assertEq(page[0].assets, 300 * USDC);
+        assertEq(page[0].queuedAtMs, 1_000_000);
+        assertEq(page[0].settledAtMs, 1_060_000);
+        assertEq(page[0].settledBlock, block.number);
+        assertEq(page[1].settledAtMs, 0, "Ben is still waiting");
+        assertEq(vault.requestsSlice(2, 10).length, 1);
+        assertEq(vault.requestsSlice(3, 10).length, 0);
+        assertEq(vault.requestsSlice(0, 1).length, 1, "id 0 is treated as the first request");
+    }
+
+    function test_aPaidPlaceCannotBeTransferred() public {
+        uint256 shares = _deposit(ana, 500 * USDC);
+        _borrowAll();
+        (uint256 id,,) = _request(ana, shares);
+        _repay(500 * USDC);
+        vault.settle(5);
+
+        vm.prank(ana);
+        vm.expectRevert(QueueVault.AlreadySettled.selector);
+        vault.transferClaim(id, ben);
+    }
+
     function test_transferOfUnknownRequestReverts() public {
         vm.expectRevert(QueueVault.UnknownRequest.selector);
         vault.transferClaim(99, ana);

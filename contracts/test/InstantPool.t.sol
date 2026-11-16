@@ -69,8 +69,15 @@ contract InstantPoolTest is BaseTest {
         vm.stopPrank();
 
         assertEq(usdc.balanceOf(ana), received);
-        (address owner,) = vault.requests(id);
+        (address owner,,,,,,) = vault.requests(id);
         assertEq(owner, address(pool));
+        (address seller, uint256 assets, uint256 paid, uint256 fee, uint64 atMs, uint64 atBlock) = pool.sales(id);
+        assertEq(seller, ana);
+        assertEq(paid, received);
+        assertEq(assets, paid + fee);
+        assertEq(pool.feesCharged(), fee);
+        assertEq(atBlock, block.number);
+        assertGt(atMs, 0);
     }
 
     function test_onlyTheOwnerCanSellAPlace() public {

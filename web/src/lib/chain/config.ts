@@ -43,6 +43,9 @@ export const vaultAbi = parseAbi([
   "function queuedAssets() view returns (uint256)",
   "function pendingAssets(address owner) view returns (uint256)",
   "function queueSlice(uint256 offset, uint256 limit) view returns (uint256[] ids, address[] owners, uint256[] amounts)",
+  "function nextRequestId() view returns (uint256)",
+  "struct Request { address owner; address requester; uint256 assets; uint64 queuedAtMs; uint64 queuedBlock; uint64 settledAtMs; uint64 settledBlock; }",
+  "function requestsSlice(uint256 firstId, uint256 limit) view returns (Request[] page)",
   "event RedeemQueued(uint256 indexed requestId, address indexed owner, uint256 assets)",
   "event RedeemSettled(uint256 indexed requestId, address indexed owner, uint256 assets)",
   "event RedeemPaidAtOnce(address indexed owner, address indexed receiver, uint256 assets)",
@@ -63,6 +66,8 @@ export const poolAbi = parseAbi([
   "function quote(uint256 assets) view returns (uint256 receiveAmount, uint256 fee, uint256 bps, bool available)",
   "function cashOut(uint256 shares, uint256 minReceive, address receiver) returns (uint256)",
   "function buyClaim(uint256 requestId, uint256 minReceive, address receiver) returns (uint256)",
+  "function sales(uint256 requestId) view returns (address seller, uint256 assets, uint256 paid, uint256 fee, uint64 atMs, uint64 atBlock)",
+  "function feesCharged() view returns (uint256)",
   "event ClaimBought(uint256 indexed requestId, address indexed seller, uint256 assets, uint256 paid, uint256 fee)",
   "event PassedThrough(address indexed seller, uint256 assets)",
   "error ReceiveBelowMinimum(uint256 receiveAmount, uint256 minimum)",
@@ -79,6 +84,9 @@ export const erc20Abi = parseAbi([
 
 export const callbackAbi = parseAbi([
   "event LoopClosed(uint256 indexed originTxHash, uint256 originBlock, uint256 settled, uint256 paidAtMs, bool more)",
+  "struct Loop { uint256 originTxHash; uint64 originBlock; uint64 payoutBlock; uint64 paidAtMs; uint32 settled; uint256 assets; }",
+  "function loopCount() view returns (uint256)",
+  "function loopsSlice(uint256 offset, uint256 limit) view returns (Loop[] page)",
 ]);
 
 export const reactorAbi = parseAbi(["event CallbackRequested(uint256 indexed originTxHash, uint256 originBlock, uint256 waiting)"]);

@@ -5,6 +5,7 @@ import {ERC4626, ERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/extens
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {QueueVault} from "./QueueVault.sol";
+import {MsClock} from "./libraries/MsClock.sol";
 
 /// @title InstantPool
 /// @notice Buys places in the QueueVault withdrawal queue for cash now, at a fee. When the vault pays a place,
@@ -20,6 +21,20 @@ contract InstantPool is ERC4626, ReentrancyGuard {
     uint256 private constant BPS = 10_000;
 
     QueueVault public immutable VAULT;
+
+    /// @dev One record per place bought, kept so the history can be read from the contract with no indexer.
+    struct Sale {
+        address seller;
+        uint256 assets;
+        uint256 paid;
+        uint256 fee;
+        uint64 atMs;
+        uint64 atBlock;
+    }
+
+    mapping(uint256 requestId => Sale) public sales;
+    /// @notice Total fees charged on places bought so far.
+    uint256 public feesCharged;
 
     event ClaimBought(uint256 indexed requestId, address indexed seller, uint256 assets, uint256 paid, uint256 fee);
     event PassedThrough(address indexed seller, uint256 assets);
@@ -110,7 +125,7 @@ contract InstantPool is ERC4626, ReentrancyGuard {
         nonReentrant
         returns (uint256 received)
     {
-        (address owner, uint256 assets) = VAULT.requests(requestId);
+        (address owner,, uint256 assets,,,,) = VAULT.requests(requestId);
         if (owner != msg.sender) revert NotClaimOwner();
         uint256 cashBefore = idle();
         uint256 totalBefore = totalAssets();
@@ -134,6 +149,15 @@ contract InstantPool is ERC4626, ReentrancyGuard {
         uint256 fee = (assets * bps) / BPS;
         received = assets - fee;
         if (cashBefore < received) revert NotEnoughCash(received, cashBefore);
+        sales[requestId] = Sale({
+            seller: msg.sender,
+            assets: assets,
+            paid: received,
+            fee: fee,
+            atMs: uint64(MsClock.nowMs()),
+            atBlock: uint64(block.number)
+        });
+        feesCharged += fee;
         emit ClaimBought(requestId, msg.sender, assets, received, fee);
     }
 

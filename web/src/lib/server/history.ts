@@ -1,7 +1,8 @@
 import "server-only";
-import { createPublicClient, decodeEventLog, http, parseAbiItem, type Hex } from "viem";
+import { createPublicClient, decodeEventLog, parseAbiItem, type Hex } from "viem";
 import { baseSepolia } from "viem/chains";
-import { ADDRESSES, BASE_SEPOLIA_RPC, LASNA_DEPLOY_BLOCK, LASNA_RPC, callbackAbi, poolAbi, reactorAbi, vaultAbi } from "../chain/config";
+import { serverTransport } from "./rpc";
+import { ADDRESSES, LASNA_DEPLOY_BLOCK, LASNA_RPC, callbackAbi, poolAbi, reactorAbi, vaultAbi } from "../chain/config";
 
 /**
  * History for the app, read from the contracts' own storage. There is no indexer and no third-party API:
@@ -69,7 +70,7 @@ const RECENT_LOOPS_WITH_TX = 25;
 
 const client = createPublicClient({
   chain: baseSepolia,
-  transport: http(BASE_SEPOLIA_RPC, { batch: { batchSize: 25, wait: 20 }, timeout: 20_000 }),
+  transport: serverTransport({ batch: { batchSize: 25, wait: 20 } }),
   batch: { multicall: true },
 });
 

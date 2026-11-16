@@ -1,8 +1,9 @@
 import "server-only";
-import { createPublicClient, createWalletClient, decodeEventLog, http, maxUint256, type Hex } from "viem";
+import { createPublicClient, createWalletClient, decodeEventLog, maxUint256, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
-import { ADDRESSES, BASE_SEPOLIA_RPC, MARKET_ID, erc20Abi, morphoAbi, vaultAbi } from "../chain/config";
+import { serverTransport } from "./rpc";
+import { ADDRESSES, MARKET_ID, erc20Abi, morphoAbi, vaultAbi } from "../chain/config";
 
 /**
  * The labelled demo account. It is a throwaway testnet wallet held by the server so a judge can cause a full
@@ -24,7 +25,7 @@ export const MAX_DEMO_AMOUNT = 20_000_000n;
 const DAILY_ACTION_CAP = 400;
 const COLLATERAL_TOP_UP = 10n * 10n ** 18n;
 
-const publicClient = createPublicClient({ chain: baseSepolia, transport: http(BASE_SEPOLIA_RPC) });
+const publicClient = createPublicClient({ chain: baseSepolia, transport: serverTransport() });
 
 let day = "";
 let actionsToday = 0;
@@ -34,7 +35,7 @@ function wallet() {
   const key = process.env.DEMO_PRIVATE_KEY;
   if (!key || !/^0x[0-9a-fA-F]{64}$/.test(key)) throw new DemoError("The demo account is not configured on this server.", 503);
   const account = privateKeyToAccount(key as Hex);
-  return { account, client: createWalletClient({ account, chain: baseSepolia, transport: http(BASE_SEPOLIA_RPC) }) };
+  return { account, client: createWalletClient({ account, chain: baseSepolia, transport: serverTransport() }) };
 }
 
 export function demoAddress(): string | null {

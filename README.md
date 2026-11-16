@@ -1,6 +1,10 @@
 # Spillway
 
+[![CI](https://github.com/whatsgood200/spillway/actions/workflows/ci.yml/badge.svg)](https://github.com/whatsgood200/spillway/actions/workflows/ci.yml)
+
 **Sell your place in a withdrawal queue for cash now.**
+
+Judges: the three-minute tour is [JUDGES.md](JUDGES.md), and every claim with the line that enforces it is in [docs/claims.md](docs/claims.md).
 
 When a lending vault is fully lent out, withdrawals wait, and returning cash goes to whoever is fastest. Spillway's queue pays waiting lenders in order the moment a borrower repays (a median 1.4 s later on the current contracts, 1.6 s over 204 earlier loops), and its pool buys queue places from lenders who would rather leave now.
 
@@ -15,6 +19,8 @@ When a lending vault is fully lent out, withdrawals wait, and returning cash goe
 | | |
 |---|---|
 | Live app, no wallet needed | https://spillway-phi.vercel.app/demo |
+| Three-minute tour for judges | [JUDGES.md](JUDGES.md) |
+| Every claim, with its line of code, test or transaction | [docs/claims.md](docs/claims.md) |
 | Measured latency and the race experiment | https://spillway-phi.vercel.app/latency |
 | Contract addresses, transactions and verified source | [deployments.md](deployments.md) |
 | How every number was measured | [measurements/README.md](measurements/README.md) |
@@ -84,7 +90,7 @@ A written abuse review lists every actor and every entry point, and asks for eac
 
 ## Tests
 
-77 Foundry tests in [`contracts/test`](contracts/test): unit tests, fuzz tests (256 runs), six invariants (64 runs of 80 random calls each, no reverts), attack tests for every threat-model finding, a simulated reactive loop including the callback proxy's sender check, and fork tests against the Morpho Blue contract on Base Sepolia. Line coverage of the contracts: 87 to 97 percent.
+77 Foundry tests in [`contracts/test`](contracts/test): unit tests, fuzz tests (256 runs), six invariants (64 runs of 80 random calls each, no reverts), attack tests for every threat-model finding, a simulated reactive loop including the callback proxy's sender check, and fork tests against the Morpho Blue contract on Base Sepolia. Line coverage of the contracts: 87 to 97 percent. The suite, a type-check, lint, production build and dependency audit of the web app run on every push ([CI](.github/workflows/ci.yml)).
 
 ```bash
 cd contracts && ./install-deps.sh

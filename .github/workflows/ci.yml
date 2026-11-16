@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Contracts (Foundry)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Install pinned dependencies
+        run: ./install-deps.sh
+      - name: Build
+        run: forge build --sizes
+      - name: Test (unit, fuzz, invariant, attack tests, and fork tests against Morpho Blue on Base Sepolia)
+        env:
+          BASE_SEPOLIA_RPC: https://sepolia.base.org
+        run: forge test -vv
+
+  web:
+    name: Web app (type-check, lint, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    env:
+      NEXT_PUBLIC_CHAIN_ADAPTER: real
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec tsc --noEmit
+      - run: pnpm lint
+      - run: pnpm build
+      - name: Dependency audit
+        run: pnpm audit --prod

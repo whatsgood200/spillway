@@ -21,8 +21,10 @@ export class DemoError extends Error {
 }
 
 export const MIN_DEMO_AMOUNT = 1_000_000n;
-export const MAX_DEMO_AMOUNT = 20_000_000n;
-const DAILY_ACTION_CAP = 400;
+export const MAX_DEMO_AMOUNT = 5_000_000n;
+// Each queue and repay pair is one loop, and every loop costs the reactor about 0.06 lREACT (measured 2026-11-16).
+// 80 actions a day is at most 40 loops, about 2.4 lREACT, so a visitor cannot drain the reactor in a day.
+const DAILY_ACTION_CAP = 80;
 const COLLATERAL_TOP_UP = 10n * 10n ** 18n;
 
 const publicClient = createPublicClient({ chain: baseSepolia, transport: serverTransport() });
@@ -105,7 +107,7 @@ async function borrowAll(): Promise<Hex | null> {
 }
 
 function checkAmount(amount: bigint) {
-  if (amount < MIN_DEMO_AMOUNT || amount > MAX_DEMO_AMOUNT) throw new DemoError("The demo amount must be between 1 and 20 USDC.", 400);
+  if (amount < MIN_DEMO_AMOUNT || amount > MAX_DEMO_AMOUNT) throw new DemoError("The demo amount must be between 1 and 5 USDC.", 400);
 }
 
 /** Demo lender deposits, the demo borrower takes every dollar the market can release, then the lender asks to withdraw. */

@@ -98,13 +98,14 @@ Deploying your own copy of the contracts: the four commands at the end of [deplo
 
 ## Limits
 
+The full security review and every known limit are in [docs/limits.md](docs/limits.md). The ones that matter most:
+
 - Unaudited, testnet only. Do not send real funds.
 - A bot on the same chain that acts within about a second beats the queue to returning cash.
 - Strict first in, first out: one large request at the front blocks smaller ones behind it until enough is repaid.
-- A queued request is fixed in USDC when made and earns nothing while it waits.
-- The pool values queue places at full value, so its providers carry the risk that a place is never paid.
-- One market, a demo collateral token and a fixed-price oracle. Liquidations were not exercised live.
-- The demo console's rate limit is held in memory on each server instance, which is enough for a testnet demo, not for production.
+- The pool's fee depends on how drained the pool is, not on how long a place will wait.
+- The demo market is ours: anyone can mint its collateral, so its cash can be borrowed and not repaid. Every demo loop brings its own cash, so the loop keeps working.
+- Anyone can make the reactor spend gas by touching the market; it stops if its lREACT runs out until it is topped up.
 
 ## License
 

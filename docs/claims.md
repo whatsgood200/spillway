@@ -7,7 +7,7 @@ cd contracts && ./install-deps.sh
 BASE_SEPOLIA_RPC=https://sepolia.base.org forge test   # 77 tests, including fork tests against the deployed Morpho Blue
 ```
 
-The same suite runs on every push in [GitHub Actions](https://github.com/whatsgood200/spillway/actions/workflows/ci.yml).
+The same suite runs on every push in [GitHub Actions](https://github.com/whatsgood200/spillway/actions/workflows/ci.yml); Foundry 1.9 there reports the six invariants as one test, so it shows 72.
 
 ## The reactive loop
 

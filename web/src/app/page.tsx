@@ -156,7 +156,7 @@ export default function WithdrawPage() {
           )}
 
           <p className="muted">
-            The first time, your wallet asks for an approval before the withdrawal itself. The fee rises as the pool empties. Queue payouts depend on borrowers repaying; nobody can
+            Your wallet first asks you to approve exactly this amount, then to confirm the withdrawal. The fee rises as the pool empties. Queue payouts depend on borrowers repaying; nobody can
             promise when.
           </p>
 

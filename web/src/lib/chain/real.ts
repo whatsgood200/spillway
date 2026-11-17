@@ -7,7 +7,6 @@ import {
   custom,
   decodeEventLog,
   http,
-  maxUint256,
   type EIP1193Provider,
   type Hex,
 } from "viem";
@@ -159,11 +158,12 @@ export function createRealAdapter(): ChainAdapter {
     }
   }
 
+  /** Approves exactly what the next action spends, never an unlimited amount, and only when it is not approved already. */
   async function approveIfNeeded(options: TxOptions | undefined, token: Address, spender: Address, needed: bigint) {
     const owner = await account();
     if (!owner) throw new ChainError("disconnected", "Connect a wallet first.");
     const allowance = await publicClient.readContract({ address: token, abi: erc20Abi, functionName: "allowance", args: [owner, spender] });
-    if (allowance < needed) await send(options, { address: token, abi: erc20Abi, functionName: "approve", args: [spender, maxUint256] });
+    if (allowance < needed) await send(options, { address: token, abi: erc20Abi, functionName: "approve", args: [spender, needed] });
   }
 
   /** Shares to burn for `assets`. Asking for the whole balance burns every share, so no dust is left behind. */
